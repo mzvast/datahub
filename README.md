@@ -1,6 +1,6 @@
-# 介绍
 
-## 开发
+![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/mzvast/datahub?branch=master&retina=true)
+# 开发
 
 确保机子装有NodeJS v6.9.0以上和[Angular CLI](https://github.com/angular/angular-cli)
 

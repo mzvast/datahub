@@ -13,7 +13,7 @@
     "electron": "electron .",
     "package": "electron-packager . datahub --platform win32 --arch x64 --out package/ --overwrite --icon=src/assets/app-icon.ico  --win32metadata.CompanyName=Lima.Tech --win32metadata.FileDescription=DataHub --win32metadata.OriginalFilename=DataHub.exe --win32metadata.ProductName=DataHub --app-copyright=Lima.Tech",
     "installer": "electron-installer-windows --src package/datahub-win32-x64/ --dest package/installers/",
-    "build-package":"npm run build && npm run package",
+    "build-package": "npm run build && npm run package",
     "dist": "npm run build-package && npm run installer"
   },
   "private": true,
