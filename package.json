@@ -1,0 +1,66 @@
+{
+  "name": "datahub",
+  "version": "0.0.1",
+  "main": "main.js",
+  "license": "MIT",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build --base-href .",
+    "test": "ng test",
+    "lint": "ng lint",
+    "e2e": "ng e2e",
+    "electron": "electron .",
+    "package": "electron-packager . datahub --platform win32 --arch x64 --out package/ --overwrite --icon=src/assets/app-icon.ico  --win32metadata.CompanyName=Lima.Tech --win32metadata.FileDescription=DataHub --win32metadata.OriginalFilename=DataHub.exe --win32metadata.ProductName=DataHub --app-copyright=Lima.Tech",
+    "installer": "electron-installer-windows --src package/datahub-win32-x64/ --dest package/installers/",
+    "build-package":"npm run build && npm run package",
+    "dist": "npm run build-package && npm run installer"
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/common": "^4.0.0",
+    "@angular/compiler": "^4.0.0",
+    "@angular/core": "^4.0.0",
+    "@angular/forms": "^4.0.0",
+    "@angular/http": "^4.0.0",
+    "@angular/platform-browser": "^4.0.0",
+    "@angular/platform-browser-dynamic": "^4.0.0",
+    "@angular/router": "^4.0.0",
+    "core-js": "^2.4.1",
+    "dotenv": "^4.0.0",
+    "rxjs": "^5.1.0",
+    "zone.js": "^0.8.4"
+  },
+  "devDependencies": {
+    "@angular/cli": "1.0.0",
+    "@angular/compiler-cli": "^4.0.0",
+    "@types/jasmine": "2.5.38",
+    "@types/node": "~6.0.60",
+    "codelyzer": "~2.0.0",
+    "electron": "^1.6.2",
+    "electron-installer-windows": "^0.2.0",
+    "electron-packager": "^8.6.0",
+    "jasmine-core": "~2.5.2",
+    "jasmine-spec-reporter": "~3.2.0",
+    "karma": "~1.4.1",
+    "karma-chrome-launcher": "~2.0.0",
+    "karma-cli": "~1.0.1",
+    "karma-coverage-istanbul-reporter": "^0.2.0",
+    "karma-jasmine": "~1.1.0",
+    "karma-jasmine-html-reporter": "^0.2.2",
+    "protractor": "~5.1.0",
+    "ts-node": "~2.0.0",
+    "tslint": "~4.5.0",
+    "typescript": "~2.2.0"
+  },
+  "author": {
+    "name": "mzvast",
+    "email": "mzvast@gmail.com",
+    "url": "https://github.com/mzvast"
+  },
+  "description": "An app handle data",
+  "productDescription": "An app handle data",
+  "tags": [
+    "Utility"
+  ]
+}
