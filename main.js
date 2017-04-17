@@ -7,11 +7,7 @@ if (setupEvents.handleSquirrelEvent()) {
   return;
 }
 
-const electron = require('electron')
-// Module to control application life.
-const app = electron.app
-// Module to create native browser window.
-const BrowserWindow = electron.BrowserWindow
+const { app, ipcMain, BrowserWindow } = require('electron')
 
 const path = require('path')
 const url = require('url')
