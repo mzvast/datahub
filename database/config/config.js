@@ -1,14 +1,14 @@
 module.exports = {
   "development": {
-    "storage": "./server/dev_db.sqlite",
+    "storage": "./database/dev_db.sqlite",
     "dialect": "sqlite"
   },
   "test": {
-    "storage": "./server/test_db.sqlite",
+    "storage": "./database/test_db.sqlite",
     "dialect": "sqlite"
   },
   "production": {
-    "storage": "./server/prod_db.sqlite",
+    "storage": "./database/prod_db.sqlite",
     "dialect": "sqlite"
   }
 }
