@@ -4,8 +4,10 @@
 
 确保机子装有NodeJS v6.9.0以上和[Angular CLI](https://github.com/angular/angular-cli)
 
+由于要通过node-gyp将sqlite3编译到electron平台，需要确保装有相关build工具，详见[node-gyp](https://github.com/nodejs/node-gyp)。
+
 主要命令如下，更多参见package.json
-- `npm start` 启动开发服务器
+- `npm start` 启动开发服务器（Angular2）
 - `npm run electron` 启动Electron
 
 ---以下为Angular CLI自动生成---

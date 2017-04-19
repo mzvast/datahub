@@ -14,7 +14,9 @@
     "package": "electron-packager . datahub --platform win32 --arch x64 --out package/ --overwrite --icon=src/assets/app-icon.ico  --win32metadata.CompanyName=Lima.Tech --win32metadata.FileDescription=DataHub --win32metadata.OriginalFilename=DataHub.exe --win32metadata.ProductName=DataHub --app-copyright=Lima.Tech",
     "installer": "electron-installer-windows --src package/datahub-win32-x64/ --dest package/installers/",
     "build-package": "npm run build && npm run package",
-    "dist": "npm run build-package && npm run installer"
+    "dist": "npm run build-package && npm run installer",
+    "rebuild": "electron-rebuild -f -w sqlite3",
+    "postinstall": "npm run rebuild"
   },
   "private": true,
   "dependencies": {
@@ -42,6 +44,7 @@
     "electron": "^1.6.2",
     "electron-installer-windows": "^0.2.0",
     "electron-packager": "^8.6.0",
+    "electron-rebuild": "^1.5.7",
     "jasmine-core": "~2.5.2",
     "jasmine-spec-reporter": "~3.2.0",
     "karma": "~1.4.1",
