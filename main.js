@@ -6,24 +6,32 @@ if (setupEvents.handleSquirrelEvent()) {
   // squirrel event handled and app will exit in 1000ms, so don't do anything else
   return;
 }
-
 const { app, ipcMain, BrowserWindow } = require('electron')
 
 const path = require('path')
 const url = require('url')
 require('dotenv').config();//载入.env文件的环境变量
+/**
+ * Database Sequelize
+ */
+global['models'] = require('./database/models')
+/**
+ * UDP
+ */
+global['dgram'] = require('dgram')
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win
 
-function createWindow () {
+function createWindow() {
   // Create the browser window.
-  win = new BrowserWindow({width: 800, height: 600})
+  win = new BrowserWindow({ width: 800, height: 600 })
 
- /**
-  * 根据env区分程序入口
-  */
-  if (process.env.DEV === 'true'){//开发环境
+  /**
+   * 根据env区分程序入口
+   */
+  if (process.env.DEV === 'true') {//开发环境
     win.loadURL(process.env.HOST);
     win.webContents.openDevTools();
   } else {//生产环境

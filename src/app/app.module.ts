@@ -5,6 +5,7 @@ import { HttpModule } from '@angular/http';
 
 import { AppComponent } from './app.component';
 import { DatabaseService } from './database.service';
+import { UdpService } from './udp.service';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,7 @@ import { DatabaseService } from './database.service';
     FormsModule,
     HttpModule
   ],
-  providers: [DatabaseService],
+  providers: [DatabaseService, UdpService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

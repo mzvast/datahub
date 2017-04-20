@@ -1,5 +1,7 @@
-import { DatabaseService } from './database.service';
 import { Component } from '@angular/core';
+
+import { DatabaseService } from './database.service';
+import { UdpService } from './udp.service';
 
 @Component({
   selector: 'app-root',
@@ -9,7 +11,7 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title: string;
-  constructor(databaseService: DatabaseService) {
+  constructor(databaseService: DatabaseService, udpService: UdpService) {
     this.title = databaseService.getData();
   }
 }
