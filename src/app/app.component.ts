@@ -12,6 +12,6 @@ import { UdpService } from './udp.service';
 export class AppComponent {
   title: string;
   constructor(databaseService: DatabaseService, udpService: UdpService) {
-    this.title = databaseService.getData();
+    this.title = 'Hey God';
   }
 }
