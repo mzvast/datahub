@@ -1,0 +1,17 @@
+<md-card class="example-card">
+  <md-card-content>
+    <h2>发送方向</h2>
+    <md-nav-list dense class="subnav">
+      <a md-list-item href={{link.url}} *ngFor="let link of protocols">
+        <h4 md-line>{{link.name}}</h4>
+      </a>
+    </md-nav-list>
+    <div class="proto-content">
+      <router-outlet></router-outlet>
+    </div>
+  </md-card-content>
+  <md-card-actions>
+    <button md-button>保存</button>
+    <button md-button>取消</button>
+  </md-card-actions>
+</md-card>

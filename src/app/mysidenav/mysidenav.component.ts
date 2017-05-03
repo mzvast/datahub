@@ -34,16 +34,19 @@ export class MysidenavComponent implements OnInit {
       icon: 'import_export'
     }
   ];
-  prots = [
+  protocols = [
     {
-      name: '端口/地址',
-      icon: 'settings'
+      name: '地址/端口',
+      icon: 'settings',
+      url: 'proto-addr'
     }, {
       name: '发送方向',
-      icon: 'arrow_forward'
+      icon: 'arrow_forward',
+      url: 'proto-out'
     }, {
       name: '接收方向',
-      icon: 'arrow_back'
+      icon: 'arrow_back',
+      url: 'proto-in'
     }
   ];
   insts = [
