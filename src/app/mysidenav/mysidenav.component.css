@@ -1,0 +1,29 @@
+.container {
+  width: 100%;
+  height: 100%;
+  /*border: 1px solid rgba(0, 0, 0, 0.5);*/
+}
+
+.container md-sidenav {
+  max-width: 200px;
+}
+
+.container .md-sidenav-content,
+.container md-sidenav {
+  display: flex;
+  overflow: visible;
+}
+
+.scrolling-content {
+  overflow: auto;
+}
+
+.fab {
+  position: absolute;
+  right: 20px;
+  bottom: 10px;
+}
+
+.scrolling-content.right-content{
+  padding: 1em;
+}

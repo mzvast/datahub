@@ -1,0 +1,49 @@
+<md-sidenav-container class="container">
+  <md-sidenav #sidenav mode="side" opened="true">
+    <div class="scrolling-content">
+      <md-nav-list dense>
+        <h3 md-subheader>设备</h3>
+        <a md-list-item href="#" *ngFor="let link of devices">
+          <md-icon md-list-icon>{{link.icon}}</md-icon>
+          <h4 md-line>{{link.name}}</h4>
+        </a>
+        <md-divider></md-divider>
+        <h3 md-subheader>偏好</h3>
+        <a md-list-item href="#" *ngFor="let link of prefs">
+          <md-icon md-list-icon>{{link.icon}}</md-icon>
+          <h4 md-line>{{link.name}}</h4>
+        </a>
+        <md-divider></md-divider>
+        <h3 md-subheader>数据</h3>
+        <a md-list-item href="#" *ngFor="let link of data">
+          <md-icon md-list-icon>{{link.icon}}</md-icon>
+          <h4 md-line>{{link.name}}</h4>
+        </a>
+        <md-divider></md-divider>
+        <h3 md-subheader>协议</h3>
+        <a md-list-item href="#" *ngFor="let link of prots">
+          <md-icon md-list-icon>{{link.icon}}</md-icon>
+          <h4 md-line>{{link.name}}</h4>
+        </a>
+        <md-divider></md-divider>
+        <h3 md-subheader>指令</h3>
+        <a md-list-item href="#" *ngFor="let link of insts">
+          <md-icon md-list-icon>{{link.icon}}</md-icon>
+          <h4 md-line>{{link.name}}</h4>
+        </a>
+      </md-nav-list>
+    </div>
+  </md-sidenav>
+  <button md-mini-fab class="fab" (click)="sidenav.toggle()">
+    <md-icon>add</md-icon>
+  </button>
+  <div class="scrolling-content right-content">
+    Lorem ipsum dolor sit amet, pede a libero aenean phasellus, lectus metus sint ut risus, fusce vel in pellentesque. Nisl rutrum
+    etiam morbi consectetuer tempor magna, aenean nullam nunc id, neque vivamus interdum sociis nulla scelerisque sem, dolor
+    id wisi turpis magna aliquam magna. Risus accumsan hac eget etiam donec sed, senectus erat mattis quam, tempor vel urna
+    occaecat cras, metus urna augue nec at. Et morbi amet dui praesent, nec eu at, ligula ipsum dui sollicitudin, quis nisl
+    massa viverra ligula, mauris fermentum orci arcu enim fringilla. Arcu erat nulla in aenean lacinia ullamcorper, urna
+    ante nam et sagittis, tristique vehicula nibh ipsum vivamus, proin proin. Porta commodo nibh quis libero amet. Taciti
+    dui, sapien consectetuer.
+  </div>
+</md-sidenav-container>
