@@ -1,0 +1,30 @@
+<!--<md-card class="example-card">
+  <md-card-content>
+    <h2>设备主页</h2>
+    <md-tab-group>
+    <md-tab label="标签包">标签包</md-tab>
+    <md-tab label="全脉冲">全脉冲</md-tab>
+    <md-tab label="辐射源">辐射源</md-tab>
+    <md-tab label="中频数据">中频数据</md-tab>
+    <md-tab label="中频频谱">中频频谱</md-tab>
+    <md-tab label="相位校正">相位校正</md-tab>
+    <md-tab label="定位">定位</md-tab>
+  </md-tab-group>
+  </md-card-content>
+</md-card>-->
+
+<md-card class="example-card">
+  <md-card-content>
+    <h2>设备主页</h2>
+    <div class="card-content">
+      <md-nav-list dense class="subnav">
+        <a md-list-item routerLink={{link.url}} *ngFor="let link of protocols">
+          <h4 md-line>{{link.name}}</h4>
+        </a>
+      </md-nav-list>
+      <div class="proto-content">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </md-card-content>
+</md-card>

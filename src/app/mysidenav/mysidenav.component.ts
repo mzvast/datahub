@@ -11,7 +11,8 @@ export class MysidenavComponent implements OnInit {
   devices = [
     {
       name: '设备主页',
-      icon: 'home'
+      icon: 'home',
+      url: 'device-main'
     }
   ];
   prefs = [
@@ -40,13 +41,13 @@ export class MysidenavComponent implements OnInit {
       icon: 'settings',
       url: 'proto-addr'
     }, {
-      name: '发送方向',
-      icon: 'arrow_forward',
-      url: 'proto-out'
-    }, {
-      name: '接收方向',
+      name: '接收',
       icon: 'arrow_back',
       url: 'proto-in'
+    }, {
+      name: '发送',
+      icon: 'arrow_forward',
+      url: 'proto-out'
     }
   ];
   insts = [

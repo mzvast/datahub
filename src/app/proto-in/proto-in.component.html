@@ -1,3 +1,19 @@
-<p>
-  proto-in works!
-</p>
+<md-card class="example-card">
+  <md-card-content>
+    <h2>接收</h2>
+    <div class="card-content">
+      <md-nav-list dense class="subnav">
+        <a md-list-item routerLink={{link.url}} *ngFor="let link of protocols">
+          <h4 md-line>{{link.name}}</h4>
+        </a>
+      </md-nav-list>
+      <div class="proto-content">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </md-card-content>
+  <md-card-actions>
+    <button md-button>保存</button>
+    <button md-button>取消</button>
+  </md-card-actions>
+</md-card>

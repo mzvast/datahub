@@ -1,13 +1,14 @@
 import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
-  selector: 'app-proto-out',
-  templateUrl: './proto-out.component.html',
-  styleUrls: ['./proto-out.component.css'],
+  selector: 'app-proto-in-phrase',
+  templateUrl: './proto-in-phrase.component.html',
+  styleUrls: ['./proto-in-phrase.component.css'],
   encapsulation: ViewEncapsulation.Emulated,
   changeDetection: ChangeDetectionStrategy.Default
 })
-export class ProtoOutComponent implements OnInit {
+export class ProtoInPhraseComponent implements OnInit {
+
   constructor() { }
 
   ngOnInit() {
