@@ -12,7 +12,7 @@ export class MysidenavComponent implements OnInit {
     {
       name: '设备主页',
       icon: 'home',
-      url: 'device-main'
+      url: 'device'
     }
   ];
   prefs = [

@@ -1,4 +1,3 @@
-import { ProtoInWidepdwComponent } from './proto-in-widepdw/proto-in-widepdw.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -15,7 +14,6 @@ import { MysidenavComponent } from './mysidenav/mysidenav.component';
 import { ProtoAddrComponent } from './proto-addr/proto-addr.component';
 import { ProtoInComponent } from './proto-in/proto-in.component';
 import { ProtoOutComponent } from './proto-out/proto-out.component';
-import { DeviceMainComponent } from './device-main/device-main.component';
 import { DevicePdwComponent } from './device-pdw/device-pdw.component';
 import { DeviceTagComponent } from './device-tag/device-tag.component';
 import { DeviceRadiationComponent } from './device-radiation/device-radiation.component';
@@ -30,6 +28,7 @@ import { ProtoInNarrowRadiationComponent } from './proto-in-narrow-radiation/pro
 import { ProtoInLocationComponent } from './proto-in-location/proto-in-location.component';
 import { ProtoInIfComponent } from './proto-in-if/proto-in-if.component';
 import { ProtoInPhraseComponent } from './proto-in-phrase/proto-in-phrase.component';
+import { DeviceComponent } from './device/device.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +37,6 @@ import { ProtoInPhraseComponent } from './proto-in-phrase/proto-in-phrase.compon
     ProtoAddrComponent,
     ProtoInComponent,
     ProtoOutComponent,
-    DeviceMainComponent,
     DevicePdwComponent,
     DeviceTagComponent,
     DeviceRadiationComponent,
@@ -52,7 +50,8 @@ import { ProtoInPhraseComponent } from './proto-in-phrase/proto-in-phrase.compon
     ProtoInNarrowRadiationComponent,
     ProtoInLocationComponent,
     ProtoInIfComponent,
-    ProtoInPhraseComponent
+    ProtoInPhraseComponent,
+    DeviceComponent
   ],
   imports: [
     BrowserModule,
@@ -62,8 +61,8 @@ import { ProtoInPhraseComponent } from './proto-in-phrase/proto-in-phrase.compon
     BrowserAnimationsModule,
     RouterModule.forRoot([
       {
-        path: 'device-main',
-        component: DeviceMainComponent,
+        path: 'device',
+        component: DeviceComponent,
         children: [
           { path: '', component: DeviceTagComponent },
           { path: 'tag', component: DeviceTagComponent },

@@ -1,13 +1,13 @@
 import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
-  selector: 'app-device-main',
-  templateUrl: './device-main.component.html',
-  styleUrls: ['./device-main.component.css'],
+  selector: 'app-device',
+  templateUrl: './device.component.html',
+  styleUrls: ['./device.component.css'],
   encapsulation: ViewEncapsulation.Emulated,
   changeDetection: ChangeDetectionStrategy.Default
 })
-export class DeviceMainComponent implements OnInit {
+export class DeviceComponent implements OnInit {
   protocols = [
     {
       name: '标签包',
@@ -29,7 +29,6 @@ export class DeviceMainComponent implements OnInit {
       url: 'location'
     }
   ];
-
   constructor() { }
 
   ngOnInit() {
