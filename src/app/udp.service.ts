@@ -5,27 +5,39 @@ declare var electron: any; // 　Typescript 定义
 @Injectable()
 export class UdpService {
   dgram = electron.remote.getGlobal('dgram');
-  server = this.dgram.createSocket('udp4');
-  LocalPORT = 6011;
-  TargetPORT = 8511;
+  server = electron.remote.getGlobal('udp').server;
+  LocalPORT = 8511;
+  RemotePORT = 6011;
   LocalHOST = '127.0.0.1';
-  TargetHOST = '127.0.0.1';
+  RemoteHOST = '127.0.0.1';
 
   constructor() {
     console.log('udp service constructor');
-    // this.startUdpServer();
-    // this.setTargetAddress('127.0.0.1', 6011);
+    /**
+     * 释放占用的udp端口
+     */
+    if (this.server) {
+      electron.remote.getGlobal('udp').server.close();
+      electron.remote.getGlobal('udp').server = null;
+    }
+
+    this.startUdpServer();
+    // this.setRemoteAddress('127.0.0.1', 8511); // Test send to local port
     // this.sendMsg('Hello World');
   }
 
   startUdpServer() {
+    electron.remote.getGlobal('udp').server = this.dgram.createSocket('udp4');
+    this.server = electron.remote.getGlobal('udp').server;
     this.server.on('listening', () => {
       const address = this.server.address();
       console.log(`server listening ${address.address}:${address.port}`);
     });
 
     this.server.on('message', (msg, rinfo) => {
+      // const buf = Buffer.from(msg);
       console.log(`server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
+      console.log(`server got: ${msg.length} bytes`);
       // this.stopUdpServer();
     });
 
@@ -49,16 +61,16 @@ export class UdpService {
     console.log(`setLocalAddress to ${this.LocalHOST}:${this.LocalPORT}`);
   }
 
-  setTargetAddress(host: string, port: number) {
-    this.TargetHOST = host;
-    this.TargetPORT = port;
-    console.log(`setTargetAddress to ${this.TargetHOST}:${this.TargetPORT}`);
+  setRemoteAddress(host: string, port: number) {
+    this.RemoteHOST = host;
+    this.RemotePORT = port;
+    console.log(`setRemoteAddress to ${this.RemoteHOST}:${this.RemotePORT}`);
   }
 
   sendMsg(message: string) {
     const client = this.dgram.createSocket('udp4');
-    client.send(message, 0, message.length, this.TargetPORT, this.TargetHOST, (err) => {
-      console.log(`UDP message sent to ${this.TargetHOST}:${this.TargetPORT} `);
+    client.send(message, 0, message.length, this.RemotePORT, this.RemoteHOST, (err) => {
+      console.log(`UDP message sent to ${this.RemoteHOST}:${this.RemotePORT} `);
       client.close();
     });
   }

@@ -19,6 +19,7 @@ global['models'] = require('./database/models')
  * UDP
  */
 global['dgram'] = require('dgram')
+global['udp'] = {server: null, client: null};
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.

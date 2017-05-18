@@ -6,7 +6,7 @@ import { MysidenavComponent } from './mysidenav/mysidenav.component';
 
 @Component({
   selector: 'app-root',
-  providers: [DatabaseService],
+  providers: [DatabaseService, UdpService],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
