@@ -1,7 +1,9 @@
 import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
+import { Router } from '@angular/router';
 import { DatabaseService } from 'app/database.service';
 import { UdpService } from 'app/udp.service';
 
+declare var electron: any; // 　Typescript 定义
 
 @Component({
   selector: 'app-device',
@@ -11,6 +13,7 @@ import { UdpService } from 'app/udp.service';
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class DeviceComponent implements OnInit {
+  server = electron.remote.getGlobal('udp').server;
   progress = false;
   protocols = [
     {
@@ -33,7 +36,8 @@ export class DeviceComponent implements OnInit {
       url: 'location'
     }
   ];
-  constructor(private databaseService: DatabaseService, private udpService: UdpService) {
+  constructor(private databaseService: DatabaseService, private udpService: UdpService, private parentRouter: Router) {
+
   }
 
   ngOnInit() {
@@ -51,6 +55,7 @@ export class DeviceComponent implements OnInit {
     this.udpService.sendStartMsg();
     console.log('停止UDP监听');
     this.udpService.stopUdpServer();
+    this.parentRouter.navigateByUrl('/device'); // 切换到空白页
   }
 
   toggle() {
@@ -58,6 +63,12 @@ export class DeviceComponent implements OnInit {
       this.startReceive();
     } else {
       this.stopReceive();
+    }
+  }
+  checkToggle() {
+    if (!this.progress) {// 启动
+      this.progress = !this.progress;
+      this.startReceive();
     }
   }
 

@@ -6,6 +6,7 @@ import { RouterModule } from '@angular/router';
 
 import { MaterialModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 import { AppComponent } from './app.component';
 import { DatabaseService } from './database.service';
@@ -29,6 +30,7 @@ import { ProtoInLocationComponent } from './proto-in-location/proto-in-location.
 import { ProtoInIfComponent } from './proto-in-if/proto-in-if.component';
 import { ProtoInPhraseComponent } from './proto-in-phrase/proto-in-phrase.component';
 import { DeviceComponent } from './device/device.component';
+import { DevicePlaceholderComponent } from './device-placeholder/device-placeholder.component';
 
 @NgModule({
   declarations: [
@@ -51,9 +53,11 @@ import { DeviceComponent } from './device/device.component';
     ProtoInLocationComponent,
     ProtoInIfComponent,
     ProtoInPhraseComponent,
-    DeviceComponent
+    DeviceComponent,
+    DevicePlaceholderComponent
   ],
   imports: [
+    NgxDatatableModule,
     BrowserModule,
     FormsModule,
     HttpModule,
@@ -64,7 +68,7 @@ import { DeviceComponent } from './device/device.component';
         path: 'device',
         component: DeviceComponent,
         children: [
-          { path: '', component: DeviceTagComponent },
+          { path: '', component: DevicePlaceholderComponent },
           { path: 'tag', component: DeviceTagComponent },
           { path: 'pdw', component: DevicePdwComponent },
           { path: 'radiation', component: DeviceRadiationComponent },

@@ -10,7 +10,7 @@ import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy } from '@
 export class MysidenavComponent implements OnInit {
   devices = [
     {
-      name: '设备主页',
+      name: '设备',
       icon: 'home',
       url: 'device'
     }

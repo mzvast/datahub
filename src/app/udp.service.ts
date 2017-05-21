@@ -14,11 +14,11 @@ export class UdpService {
   constructor() {
     console.log('udp service constructor');
     /**
-     * 释放占用的udp端口
+     * 判断udp server是否已启动，占用了端口
      */
+    console.log(this.server);
     if (this.server) {
-      electron.remote.getGlobal('udp').server.close();
-      electron.remote.getGlobal('udp').server = null;
+      this.stopUdpServer();
     }
 
     // this.startUdpServer();
@@ -51,7 +51,8 @@ export class UdpService {
   }
 
   stopUdpServer() {
-    this.server.close();
+    electron.remote.getGlobal('udp').server.close();
+    electron.remote.getGlobal('udp').server = null; // 重置null，防止内存泄露
     console.log('UDP server closed!');
   }
 
