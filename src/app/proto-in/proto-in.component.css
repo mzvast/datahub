@@ -3,10 +3,14 @@
   flex-wrap: row;
 }
 .subnav{
-  width: 30%;
+  width: 10em;
   position: relative;
 }
 .proto-content{
   width: 70%;
   position: relative;
+}
+a.active{
+  background-color: #e91e63;
+  color:white;
 }

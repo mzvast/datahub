@@ -6,13 +6,12 @@ import { MysidenavComponent } from './mysidenav/mysidenav.component';
 
 @Component({
   selector: 'app-root',
-  providers: [DatabaseService, UdpService],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
   title: string;
-  constructor(databaseService: DatabaseService, udpService: UdpService) {
+  constructor() {
     this.title = 'Hey God';
   }
 }

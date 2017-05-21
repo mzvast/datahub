@@ -3,10 +3,23 @@
   flex-wrap: row;
 }
 .subnav{
-  width: 30%;
+  width: 7em;
   position: relative;
 }
 .proto-content{
   width: 70%;
   position: relative;
+}
+.example-section {
+  display: flex;
+  align-content: center;
+  align-items: center;
+  height: 60px;
+}
+.example-margin {
+  margin: 10px;
+}
+a.active{
+  background-color: #e91e63;
+  color:white;
 }

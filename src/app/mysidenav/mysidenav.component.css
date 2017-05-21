@@ -27,3 +27,7 @@
 .scrolling-content.right-content{
   padding: 1em;
 }
+a.active{
+  background-color: #e91e63;
+  color:white;
+}

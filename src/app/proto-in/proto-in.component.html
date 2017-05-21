@@ -1,9 +1,10 @@
 <md-card class="example-card">
+  <h2>接收</h2>
+  <md-divider></md-divider>
   <md-card-content>
-    <h2>接收</h2>
     <div class="card-content">
       <md-nav-list dense class="subnav">
-        <a md-list-item routerLink={{link.url}} *ngFor="let link of protocols">
+        <a md-list-item routerLink={{link.url}} *ngFor="let link of protocols" routerLinkActive="active">
           <h4 md-line>{{link.name}}</h4>
         </a>
       </md-nav-list>
@@ -12,6 +13,7 @@
       </div>
     </div>
   </md-card-content>
+  <md-divider></md-divider>
   <md-card-actions>
     <button md-button>保存</button>
     <button md-button>取消</button>

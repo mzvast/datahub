@@ -1,4 +1,7 @@
 import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
+import { DatabaseService } from 'app/database.service';
+import { UdpService } from 'app/udp.service';
+
 
 @Component({
   selector: 'app-device',
@@ -8,6 +11,7 @@ import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy } from '@
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class DeviceComponent implements OnInit {
+  progress = false;
   protocols = [
     {
       name: '标签包',
@@ -29,9 +33,32 @@ export class DeviceComponent implements OnInit {
       url: 'location'
     }
   ];
-  constructor() { }
+  constructor(private databaseService: DatabaseService, private udpService: UdpService) {
+  }
 
   ngOnInit() {
+  }
+
+  startReceive() {
+    console.log('发送开始指令');
+    this.udpService.sendStartMsg();
+    console.log('启动UDP监听');
+    this.udpService.startUdpServer();
+  }
+
+  stopReceive() {
+    console.log('发送停止指令');
+    this.udpService.sendStartMsg();
+    console.log('停止UDP监听');
+    this.udpService.stopUdpServer();
+  }
+
+  toggle() {
+    if (!this.progress) {// 启动
+      this.startReceive();
+    } else {
+      this.stopReceive();
+    }
   }
 
 }

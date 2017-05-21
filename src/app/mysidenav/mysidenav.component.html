@@ -3,31 +3,31 @@
     <div class="scrolling-content">
       <md-nav-list dense>
         <h3 md-subheader>设备</h3>
-        <a md-list-item *ngFor="let link of devices" routerLink={{link.url}}>
+        <a md-list-item *ngFor="let link of devices" routerLink={{link.url}} routerLinkActive="active">
           <md-icon md-list-icon>{{link.icon}}</md-icon>
           <h4 md-line>{{link.name}}</h4>
         </a>
         <md-divider></md-divider>
         <h3 md-subheader>偏好</h3>
-        <a md-list-item href="#" *ngFor="let link of prefs">
+        <a md-list-item href="#" *ngFor="let link of prefs" routerLinkActive="active">
           <md-icon md-list-icon>{{link.icon}}</md-icon>
           <h4 md-line>{{link.name}}</h4>
         </a>
         <md-divider></md-divider>
         <h3 md-subheader>数据</h3>
-        <a md-list-item href="#" *ngFor="let link of data">
+        <a md-list-item href="#" *ngFor="let link of data" routerLinkActive="active">
           <md-icon md-list-icon>{{link.icon}}</md-icon>
           <h4 md-line>{{link.name}}</h4>
         </a>
         <md-divider></md-divider>
         <h3 md-subheader>协议</h3>
-        <a md-list-item *ngFor="let link of protocols" routerLink={{link.url}}>
+        <a md-list-item *ngFor="let link of protocols" routerLink={{link.url}} routerLinkActive="active">
           <md-icon md-list-icon>{{link.icon}}</md-icon>
           <h4 md-line>{{link.name}}</h4>
         </a>
         <md-divider></md-divider>
         <h3 md-subheader>指令</h3>
-        <a md-list-item href="#" *ngFor="let link of insts">
+        <a md-list-item href="#" *ngFor="let link of insts" routerLinkActive="active">
           <md-icon md-list-icon>{{link.icon}}</md-icon>
           <h4 md-line>{{link.name}}</h4>
         </a>

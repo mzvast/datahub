@@ -21,7 +21,7 @@ export class UdpService {
       electron.remote.getGlobal('udp').server = null;
     }
 
-    this.startUdpServer();
+    // this.startUdpServer();
     // this.setRemoteAddress('127.0.0.1', 8511); // Test send to local port
     // this.sendMsg('Hello World');
   }
@@ -73,6 +73,16 @@ export class UdpService {
       console.log(`UDP message sent to ${this.RemoteHOST}:${this.RemotePORT} `);
       client.close();
     });
+  }
+
+  sendStartMsg() {
+    this.sendMsg('开始接收');
+    console.log('开始接收');
+  }
+
+  sendStopMsg() {
+    this.sendMsg('停止接收');
+    console.log('停止接收');
   }
 
 

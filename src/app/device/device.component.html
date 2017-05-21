@@ -1,24 +1,10 @@
-<!--<md-card class="example-card">
-  <md-card-content>
-    <h2>设备主页</h2>
-    <md-tab-group>
-    <md-tab label="标签包">标签包</md-tab>
-    <md-tab label="全脉冲">全脉冲</md-tab>
-    <md-tab label="辐射源">辐射源</md-tab>
-    <md-tab label="中频数据">中频数据</md-tab>
-    <md-tab label="中频频谱">中频频谱</md-tab>
-    <md-tab label="相位校正">相位校正</md-tab>
-    <md-tab label="定位">定位</md-tab>
-  </md-tab-group>
-  </md-card-content>
-</md-card>-->
-
 <md-card class="example-card">
+  <h2>设备主页</h2>
+  <md-divider></md-divider>
   <md-card-content>
-    <h2>设备主页</h2>
     <div class="card-content">
       <md-nav-list dense class="subnav">
-        <a md-list-item routerLink={{link.url}} *ngFor="let link of protocols">
+        <a md-list-item routerLink={{link.url}} *ngFor="let link of protocols"  routerLinkActive="active">
           <h4 md-line>{{link.name}}</h4>
         </a>
       </md-nav-list>
@@ -27,4 +13,13 @@
       </div>
     </div>
   </md-card-content>
+  <md-divider></md-divider>
+  <md-card-actions>
+    <section class="example-section">
+      <md-slide-toggle class="example-margin" color="accent" [(ngModel)]='progress' (click)='toggle()'>
+        开始接收
+      </md-slide-toggle>
+    <md-progress-bar mode="indeterminate" color="accent" *ngIf='progress'></md-progress-bar>
+    </section>
+  </md-card-actions>
 </md-card>
