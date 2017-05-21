@@ -1,3 +1,14 @@
-<p>
-  device-pdw works!
-</p>
+<ngx-datatable
+  #mydatatable
+  class="material"
+  [headerHeight]="40"
+  [limit]="10"
+  [columnMode]="'force'"
+  [footerHeight]="50"
+  [rowHeight]="30"
+  [trackByProp]="'updated'"
+  [rows]="rows">
+  <ngx-datatable-column name="Name"></ngx-datatable-column>
+  <ngx-datatable-column name="Gender"></ngx-datatable-column>
+  <ngx-datatable-column name="Company"></ngx-datatable-column>
+</ngx-datatable>
