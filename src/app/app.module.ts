@@ -18,7 +18,6 @@ import { ProtoOutComponent } from './proto-out/proto-out.component';
 import { DevicePdwComponent } from './device-pdw/device-pdw.component';
 import { DeviceTagComponent } from './device-tag/device-tag.component';
 import { DeviceRadiationComponent } from './device-radiation/device-radiation.component';
-import { DeviceIfComponent } from './device-if/device-if.component';
 import { DevicePhaseComponent } from './device-phase/device-phase.component';
 import { DeviceLocationComponent } from './device-location/device-location.component';
 import { ProtoInTagComponent } from './proto-in-tag/proto-in-tag.component';
@@ -27,13 +26,14 @@ import { ProtoInNarrowPdwComponent } from './proto-in-narrow-pdw/proto-in-narrow
 import { ProtoInWideRadiationComponent } from './proto-in-wide-radiation/proto-in-wide-radiation.component';
 import { ProtoInNarrowRadiationComponent } from './proto-in-narrow-radiation/proto-in-narrow-radiation.component';
 import { ProtoInLocationComponent } from './proto-in-location/proto-in-location.component';
-import { ProtoInIfComponent } from './proto-in-if/proto-in-if.component';
 import { ProtoInPhraseComponent } from './proto-in-phrase/proto-in-phrase.component';
 import { DeviceComponent } from './device/device.component';
 import { SettingsComponent } from './settings/settings.component';
 import { DataShowComponent } from './data-show/data-show.component';
 import { DataComponent } from './data/data.component';
 import { PlaceholderComponent } from './placeholder/placeholder.component';
+import { ProtoInIntfComponent } from './proto-in-intf/proto-in-intf.component';
+import { DeviceIntfComponent } from './device-intf/device-intf.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +45,6 @@ import { PlaceholderComponent } from './placeholder/placeholder.component';
     DevicePdwComponent,
     DeviceTagComponent,
     DeviceRadiationComponent,
-    DeviceIfComponent,
     DevicePhaseComponent,
     DeviceLocationComponent,
     ProtoInTagComponent,
@@ -54,13 +53,14 @@ import { PlaceholderComponent } from './placeholder/placeholder.component';
     ProtoInWideRadiationComponent,
     ProtoInNarrowRadiationComponent,
     ProtoInLocationComponent,
-    ProtoInIfComponent,
     ProtoInPhraseComponent,
     DeviceComponent,
     SettingsComponent,
     DataShowComponent,
     DataComponent,
-    PlaceholderComponent
+    PlaceholderComponent,
+    ProtoInIntfComponent,
+    DeviceIntfComponent
   ],
   imports: [
     NgxDatatableModule,
@@ -78,7 +78,7 @@ import { PlaceholderComponent } from './placeholder/placeholder.component';
           { path: 'tag', component: DeviceTagComponent },
           { path: 'pdw', component: DevicePdwComponent },
           { path: 'radiation', component: DeviceRadiationComponent },
-          { path: 'if', component: DeviceIfComponent },
+          { path: 'intf', component: DeviceIntfComponent },
           { path: 'phase', component: DevicePhaseComponent },
           { path: 'location', component: DeviceLocationComponent }
         ]
@@ -114,7 +114,7 @@ import { PlaceholderComponent } from './placeholder/placeholder.component';
           { path: 'location', component: ProtoInLocationComponent },
           { path: 'narrow-pdw', component: ProtoInNarrowPdwComponent },
           { path: 'narrow-radiation', component: ProtoInNarrowRadiationComponent },
-          { path: 'if', component: ProtoInIfComponent },
+          { path: 'intf', component: ProtoInIntfComponent },
           { path: 'phrase', component: ProtoInPhraseComponent }
         ]
       }

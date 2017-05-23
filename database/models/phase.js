@@ -1,15 +1,13 @@
 'use strict';
 module.exports = function(sequelize, DataTypes) {
-  var Author = sequelize.define('Author', {
-    name: DataTypes.STRING,
-    bio: DataTypes.TEXT
+  var phase = sequelize.define('phase', {
+    raw: DataTypes.BLOB
   }, {
-    underscored: true,
     classMethods: {
       associate: function(models) {
         // associations can be defined here
       }
     }
   });
-  return Author;
+  return phase;
 };

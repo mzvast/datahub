@@ -20,7 +20,7 @@ export class DataComponent implements OnInit {
       url: 'radiation'
     }, {
       name: '中频数据',
-      url: 'if'
+      url: 'intf'
     }, {
       name: '相位校正',
       url: 'phase'

@@ -23,13 +23,33 @@ export class DatabaseService {
   }
 
   index() {
-    this.models.Author.findAll()
-      .then(function (authors) {
-        // console.log(authors);
-        console.log(authors[0].name);
+    console.log(this.models);
+    this.models.tag.findAll()
+      .then(function (tags) {
+        console.log(tags);
+        // console.log(tags[0].name);
       })
       .catch(function (error) {
         console.log('error');
+      });
+  }
+
+  getAll(table: string) {
+    this.models[table].findAll()
+      .then(function (data) {
+        console.log(data.length);
+        console.log(data[0].raw);
       })
+      .catch(function (error) {
+        console.log('error');
+      });
+  }
+
+  create(table: string, raw: any) {
+    this.models[table].create({
+      raw: raw,
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+    });
   }
 }
