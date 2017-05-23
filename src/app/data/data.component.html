@@ -1,10 +1,10 @@
 <md-card class="example-card">
-  <h2>协议设置</h2>
+  <h2>历史数据</h2>
   <md-divider></md-divider>
   <md-card-content>
     <div class="card-content">
       <md-nav-list dense class="subnav">
-        <a md-list-item routerLink={{link.url}} *ngFor="let link of protocols" routerLinkActive="active">
+        <a md-list-item *ngFor="let link of protocols" [routerLink]="['/data/show', link.url]" routerLinkActive="active">
           <h4 md-line>{{link.name}}</h4>
         </a>
       </md-nav-list>
@@ -15,7 +15,8 @@
   </md-card-content>
   <md-divider></md-divider>
   <md-card-actions>
-    <button md-button>保存</button>
-    <button md-button>取消</button>
+    <section class="example-section">
+
+    </section>
   </md-card-actions>
 </md-card>

@@ -30,7 +30,10 @@ import { ProtoInLocationComponent } from './proto-in-location/proto-in-location.
 import { ProtoInIfComponent } from './proto-in-if/proto-in-if.component';
 import { ProtoInPhraseComponent } from './proto-in-phrase/proto-in-phrase.component';
 import { DeviceComponent } from './device/device.component';
-import { DevicePlaceholderComponent } from './device-placeholder/device-placeholder.component';
+import { SettingsComponent } from './settings/settings.component';
+import { DataShowComponent } from './data-show/data-show.component';
+import { DataComponent } from './data/data.component';
+import { PlaceholderComponent } from './placeholder/placeholder.component';
 
 @NgModule({
   declarations: [
@@ -54,7 +57,10 @@ import { DevicePlaceholderComponent } from './device-placeholder/device-placehol
     ProtoInIfComponent,
     ProtoInPhraseComponent,
     DeviceComponent,
-    DevicePlaceholderComponent
+    SettingsComponent,
+    DataShowComponent,
+    DataComponent,
+    PlaceholderComponent
   ],
   imports: [
     NgxDatatableModule,
@@ -68,13 +74,25 @@ import { DevicePlaceholderComponent } from './device-placeholder/device-placehol
         path: 'device',
         component: DeviceComponent,
         children: [
-          { path: '', component: DevicePlaceholderComponent },
+          { path: '', component: PlaceholderComponent },
           { path: 'tag', component: DeviceTagComponent },
           { path: 'pdw', component: DevicePdwComponent },
           { path: 'radiation', component: DeviceRadiationComponent },
           { path: 'if', component: DeviceIfComponent },
           { path: 'phase', component: DevicePhaseComponent },
           { path: 'location', component: DeviceLocationComponent }
+        ]
+      },
+      {
+        path: 'settings',
+        component: SettingsComponent
+      },
+      {
+        path: 'data',
+        component: DataComponent,
+        children: [
+          { path: '', component: PlaceholderComponent },
+          { path: 'show/:type', component: DataShowComponent }
         ]
       },
       {

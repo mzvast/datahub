@@ -8,14 +8,14 @@
           <h4 md-line>{{link.name}}</h4>
         </a>
         <md-divider></md-divider>
-        <h3 md-subheader>偏好</h3>
-        <a md-list-item href="#" *ngFor="let link of prefs" routerLinkActive="active">
+        <h3 md-subheader>设置</h3>
+        <a md-list-item  *ngFor="let link of settings" routerLink={{link.url}} routerLinkActive="active">
           <md-icon md-list-icon>{{link.icon}}</md-icon>
           <h4 md-line>{{link.name}}</h4>
         </a>
         <md-divider></md-divider>
         <h3 md-subheader>数据</h3>
-        <a md-list-item href="#" *ngFor="let link of data" routerLinkActive="active">
+        <a md-list-item *ngFor="let link of data" routerLink={{link.url}} routerLinkActive="active">
           <md-icon md-list-icon>{{link.icon}}</md-icon>
           <h4 md-line>{{link.name}}</h4>
         </a>
@@ -25,12 +25,12 @@
           <md-icon md-list-icon>{{link.icon}}</md-icon>
           <h4 md-line>{{link.name}}</h4>
         </a>
-        <md-divider></md-divider>
+        <!--<md-divider></md-divider>
         <h3 md-subheader>指令</h3>
-        <a md-list-item href="#" *ngFor="let link of insts" routerLinkActive="active">
+        <a md-list-item *ngFor="let link of insts" routerLink={{link.url}} routerLinkActive="active">
           <md-icon md-list-icon>{{link.icon}}</md-icon>
           <h4 md-line>{{link.name}}</h4>
-        </a>
+        </a>-->
       </md-nav-list>
     </div>
   </md-sidenav>

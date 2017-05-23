@@ -10,29 +10,22 @@ import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy } from '@
 export class MysidenavComponent implements OnInit {
   devices = [
     {
-      name: '设备',
+      name: '接收数据',
       icon: 'home',
       url: 'device'
     }
   ];
-  prefs = [
+  settings = [
     {
       name: '软件设置',
-      icon: 'settings'
-    }, {
-      name: '导入/导出',
-      icon: 'import_export'
+      icon: 'settings',
+      url: 'settings'
     }]
   data = [
     {
-      name: '数据设置',
-      icon: 'settings'
-    }, {
       name: '历史数据',
-      icon: 'history'
-    }, {
-      name: '导入/导出',
-      icon: 'import_export'
+      icon: 'history',
+      url: 'data'
     }
   ];
   protocols = [
@@ -41,21 +34,17 @@ export class MysidenavComponent implements OnInit {
       icon: 'settings',
       url: 'proto-addr'
     }, {
-      name: '接收',
+      name: '协议设置',
       icon: 'arrow_back',
       url: 'proto-in'
-    }, {
-      name: '发送',
-      icon: 'arrow_forward',
-      url: 'proto-out'
     }
   ];
-  insts = [
-    {
-      name: '内部指令',
-      icon: 'send'
-    }
-  ]
+  // insts = [
+  //   {
+  //     name: '内部指令',
+  //     icon: 'send'
+  //   }
+  // ]
   constructor() { }
 
   ngOnInit() {
