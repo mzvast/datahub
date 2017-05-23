@@ -75,17 +75,4 @@ export class UdpService {
       client.close();
     });
   }
-
-  sendStartMsg() {
-    this.sendMsg('开始接收');
-    console.log('开始接收');
-  }
-
-  sendStopMsg() {
-    this.sendMsg('停止接收');
-    console.log('停止接收');
-  }
-
-
-
 }

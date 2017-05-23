@@ -44,15 +44,11 @@ export class DeviceComponent implements OnInit {
   }
 
   startReceive() {
-    console.log('发送开始指令');
-    this.udpService.sendStartMsg();
     console.log('启动UDP监听');
     this.udpService.startUdpServer();
   }
 
   stopReceive() {
-    console.log('发送停止指令');
-    this.udpService.sendStartMsg();
     console.log('停止UDP监听');
     this.udpService.stopUdpServer();
     this.parentRouter.navigateByUrl('/device'); // 切换到空白页
