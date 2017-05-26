@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import {Buffer} from 'buffer';
 import { ProtocolPack } from 'app/protocol/protocol-pack';
 
 declare var electron: any; // 　Typescript 定义
@@ -59,6 +60,11 @@ export class UdpService {
   }
 
   parserProtocolPack(msg: Buffer) {
+    // TODO 先确定msg长度要超过某个值
+    const header: number  = msg.readUInt16BE(0, false);
+    const len: number = msg.readUInt16BE(2, false);
+    console.log(`read pack header: ${header.toString(16)}, length: ${len.toString(16)}`);
+    console.log();
     // TODO need parser msg, and notify client
     const protocolPack  = new ProtocolPack();
   }
