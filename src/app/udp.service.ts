@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ProtocolPack } from 'app/protocol/protocolpack';
+import { ProtocolPack } from 'app/protocol/protocol-pack';
 
 declare var electron: any; // 　Typescript 定义
 
