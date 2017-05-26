@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ProtocolPack } from 'app/protocol/protocolpack';
 
 declare var electron: any; // 　Typescript 定义
 
@@ -37,6 +38,7 @@ export class UdpService {
     this.server.on('message', (msg, rinfo) => {
       // const buf = Buffer.from(msg);
       console.log(`server got: ${msg.toString('hex')} from ${rinfo.address}:${rinfo.port}`);
+      this.parserProtocolPack(msg);
       console.log(`server got: ${msg.length} bytes`);
       // this.stopUdpServer();
     });
@@ -54,6 +56,11 @@ export class UdpService {
     electron.remote.getGlobal('udp').server.close();
     electron.remote.getGlobal('udp').server = null; // 重置null，防止内存泄露
     console.log('UDP server closed!');
+  }
+
+  parserProtocolPack(msg: Buffer) {
+    // TODO need parser msg, and notify client
+    const protocolPack  = new ProtocolPack();
   }
 
   setLocalAddress(host: string, port: number) {
