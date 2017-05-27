@@ -1,5 +1,4 @@
 import {Buffer} from "buffer";
-import {serialize} from "@angular/compiler/src/i18n/serializers/xml_helper";
 /**
  * Created by Terry on 2017-5-26.
  */
