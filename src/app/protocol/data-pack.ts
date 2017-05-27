@@ -5,24 +5,24 @@
 /**
  * 数据基类
  */
-abstract class BaseDataPack {
+export abstract class BaseDataPack {
   private type;
 }
 
 /**
  * 标签包
  */
-class TagDataPack extends BaseDataPack {
+export class TagDataPack extends BaseDataPack {
 }
 
 /**
  * 啥？
  */
-class PdwDataPack extends BaseDataPack {
+export class PdwDataPack extends BaseDataPack {
 }
 
 /**
  * 啥？
  */
-class RadiationDataPack extends BaseDataPack {
+export class RadiationDataPack extends BaseDataPack {
 }

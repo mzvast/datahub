@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Buffer} from 'buffer';
 import {ProtocolPack} from 'app/protocol/protocol-pack';
+import {BaseDataPack, TagDataPack, PdwDataPack, RadiationDataPack} from 'app/protocol/data-pack';
 
 declare var electron: any; // 　Typescript 定义
 
@@ -98,6 +99,7 @@ export class UdpService {
 
           const protocolPack = new ProtocolPack(source, dest, idcodePrimary, idcodeSecondly, serial, frameCount, data);
           if (frameCount === 1) {
+            const dataPack = this.parserDataPack(protocolPack);
             // TODO parser and notify the UI and save to sqlite
           } else {
             let workingProtocolPack = this.workingProtocolPacks.get(key);
@@ -110,9 +112,10 @@ export class UdpService {
                 if (workingProtocolPack.isTheSamePack(protocolPack)) {
                   workingProtocolPack.appendData(protocolPack.data);
                   if (workingProtocolPack.isComplete()) {
-                    // TODO parser and notify the UI and save to sqlite
-                    workingProtocolPack = null;
                     this.workingProtocolPacks.delete(key);
+                    const dataPack = this.parserDataPack(workingProtocolPack);
+                    workingProtocolPack = null;
+                    // TODO parser and notify the UI and save to sqlite
                   }
                 }
               }
@@ -130,6 +133,16 @@ export class UdpService {
       }
     }
     this.workingBuffers.set(key, workingBuffer);
+  }
+
+  parserDataPack(protocolPack: ProtocolPack) {
+    const data = protocolPack.data;
+    const header = data.readUInt16BE(0, false);
+    const type = data.readUInt16BE(2, false);
+    const len = data.readUInt32BE(4, false);
+    // 接下来64个系统控制信息
+    // 接下来64个GPS数据
+    // 接下来是数据信息
   }
 
   setLocalAddress(host: string, port: number) {
