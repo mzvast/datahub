@@ -99,7 +99,7 @@ export class UdpService {
 
           const protocolPack = new ProtocolPack(source, dest, idcodePrimary, idcodeSecondly, serial, frameCount, data);
           if (frameCount === 1) {
-            const dataPack = this.parserDataPack(protocolPack);
+            const dataPack: BaseDataPack = this.parserDataPack(protocolPack);
             // TODO parser and notify the UI and save to sqlite
           } else {
             let workingProtocolPack = this.workingProtocolPacks.get(key);
@@ -113,7 +113,7 @@ export class UdpService {
                   workingProtocolPack.appendData(protocolPack.data);
                   if (workingProtocolPack.isComplete()) {
                     this.workingProtocolPacks.delete(key);
-                    const dataPack = this.parserDataPack(workingProtocolPack);
+                    const dataPack: BaseDataPack = this.parserDataPack(workingProtocolPack);
                     workingProtocolPack = null;
                     // TODO parser and notify the UI and save to sqlite
                   }
@@ -135,14 +135,53 @@ export class UdpService {
     this.workingBuffers.set(key, workingBuffer);
   }
 
-  parserDataPack(protocolPack: ProtocolPack) {
+  parserDataPack(protocolPack: ProtocolPack): BaseDataPack {
     const data = protocolPack.data;
+    if (data.length < 8) {
+      console.error(`parser data pack error, data length: ${data.length}`);
+      return null;
+    }
     const header = data.readUInt16BE(0, false);
+    if (header !== 0x1ACF) {
+      console.error(`parser data pack error, header is not 0x1ACF, it is: ${header.toString(16)}`);
+      return null;
+    }
     const type = data.readUInt16BE(2, false);
     const len = data.readUInt32BE(4, false);
+    if (data.length !== len) {
+      console.error(`parser data pack error, data length: ${data.length}, expected: ${len}`);
+      return null;
+    }
     // 接下来64个系统控制信息
     // 接下来64个GPS数据
     // 接下来是数据信息
+    const dataPack: BaseDataPack = new BaseDataPack();
+    dataPack.control = data.slice(8, 8 + 64).toString('hex');
+    dataPack.gps = data.slice(72, 72 + 64).toString('hex');
+
+    switch (type) {
+      case 1:
+        const pack = <TagDataPack> dataPack;
+        pack.sourceNodeNo = data.readUInt8(136, false);
+        pack.destNodeNo = data.readUInt8(137, false);
+        pack.feedbackCommandNo = data.readUInt16BE(138, false);
+        pack.commandReceiveStatus0 = data.readUInt8(140, false);
+        pack.commandReceiveStatus1 = data.readUInt8(141, false);
+        pack.taskNo = data.readUInt16BE(142, false);
+        pack.frontWorkTemp = data.readUInt16BE(144, false);
+        pack.extWorkTemp = data.readUInt16BE(146, false);
+        pack.extWorkStatus0 = data.readUInt8(148, false);
+        pack.extWorkStatus1 = data.readUInt8(149, false);
+        pack.fullPulseCount = data.readUInt32BE(150, false);
+        pack.radiationSourceCount = data.readUInt32BE(154, false);
+        pack.ifDataLen = data.readUInt32BE(158, false);
+        // 接下来16字节备份
+        // TODO 这里有点问题不是312字节了，明天查下
+        pack.frontStatusFeedback = data.slice(174, 174 + 128).toString('hex');
+        // 剩下包尾 4
+        return pack;
+    }
+    return null;
   }
 
   setLocalAddress(host: string, port: number) {

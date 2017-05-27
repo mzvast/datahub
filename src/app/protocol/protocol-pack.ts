@@ -7,7 +7,7 @@ import {Buffer} from "buffer";
  * 通信报文
  */
 export class ProtocolPack {
-  // private header = 0x5555; // 数据头 2
+  // private head = 0x5555; // 数据头 2
   // private end  = 0xAAAA; // 帧结束符 2
   // private len: number; // 数据长度 2
   private source: number; // 源地址 2
@@ -16,7 +16,7 @@ export class ProtocolPack {
   private idcodeSecondly: number; // 子识别码 2
   private serial: number; // 序号 4
   private frameCount: number; // 帧包数 4
-  public data; // 数据 Buffer
+  public data: Buffer; // 数据 Buffer
   // private checkSum: number; // 和校验 2
 
   constructor(source: number, dest: number, idcodePrimary: number, idcodeSecondly: number, serial: number, frameCount: number, data) {
