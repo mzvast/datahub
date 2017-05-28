@@ -23,7 +23,22 @@ export class BaseDataPack {
 }
 
 /**
- * 标签包 312字节
+ * 数据信息是: 第一个是个数，后面是多少个数据
+ */
+export class BaseDescriptionDataPack extends BaseDataPack {
+
+  // dataCount: number; // 全脉冲个数统计4
+  // 先存成string，取出用的时候再解析里面具体的东西吧
+  datas: Array<string> = new Array();
+
+  constructor(control: string, gps: string) {
+    super(control, gps);
+  }
+
+}
+
+/**
+ * 标签包0 312字节
  */
 export class TagDataPack extends BaseDataPack {
   sourceNodeNo: number; // 发方节点号1
@@ -59,13 +74,110 @@ export class TagDataPack extends BaseDataPack {
 }
 
 /**
- * 啥？
+ * 窄带全脉冲数据包1
  */
-export class PdwDataPack extends BaseDataPack {
+export class NarrowBandFullPulseDataPack extends BaseDescriptionDataPack {
+
+  constructor(control: string, gps: string) {
+    super(control, gps);
+  }
+
+  description() {
+    return `[narrow band data pack] control: ${this.control}, gps: ${this.gps}, ` +
+      `fullPulseDescriptions length: ${this.datas.length}`;
+  }
 }
 
 /**
- * 啥？
+ * 宽带全脉冲数据包2
  */
-export class RadiationDataPack extends BaseDataPack {
+export class BroadBandFullPulseDataPack extends BaseDescriptionDataPack {
+
+  constructor(control: string, gps: string) {
+    super(control, gps);
+  }
+
+  description() {
+    return `[broad band data pack] control: ${this.control}, gps: ${this.gps}, ` +
+      `fullPulseDescriptions length: ${this.datas.length}`;
+  }
+}
+
+/**
+ * 宽带辐射源数据包3
+ */
+export class BroadBandSourceDataPack extends BaseDescriptionDataPack {
+  constructor(control: string, gps: string) {
+    super(control, gps);
+  }
+
+  description() {
+    return `[broad band source data pack] control: ${this.control}, gps: ${this.gps}, ` +
+      `fullPulseDescriptions length: ${this.datas.length}`;
+  }
+}
+
+/**
+ * 窄带辐射源数据包5
+ */
+export class NarrowBandSourceDataPack extends BaseDescriptionDataPack {
+  constructor(control: string, gps: string) {
+    super(control, gps);
+  }
+
+  description() {
+    return `[narrow band source data pack] control: ${this.control}, gps: ${this.gps}, ` +
+      `fullPulseDescriptions length: ${this.datas.length}`;
+  }
+}
+
+/**
+ * 相位校正数据包11 or 13?
+ */
+export class PhaseCorrectionDataPack extends BaseDescriptionDataPack {
+  constructor(control: string, gps: string) {
+    super(control, gps);
+  }
+
+  description() {
+    return `[narrow band source data pack] control: ${this.control}, gps: ${this.gps}, ` +
+      `fullPulseDescriptions length: ${this.datas.length}`;
+  }
+}
+
+/**
+ * 中频数据包4
+ */
+export class IntermediateFrequencyDataPack extends BaseDataPack {
+  data: string; // 中频数据描述字 8192
+  pulseArriveTime: number; // 脉冲到达时间4
+  serial: number; // 中频包序号2
+  backup: string; // 备份304
+
+  constructor(control: string, gps: string) {
+    super(control, gps);
+  }
+
+  description() {
+    return `[intermediate frequency data pack] control: ${this.control}, gps: ${this.gps}, ` +
+      `pulseArriveTime: ${this.pulseArriveTime}, serial: ${this.serial}, ` +
+      `data: ${this.data}, backup: ${this.backup}`;
+  }
+
+}
+
+/**
+ * 定位数据6
+ */
+export class PositioningDataPack extends BaseDataPack {
+  backup: string; // 备份128
+
+  constructor(control: string, gps: string) {
+    super(control, gps);
+  }
+
+  description() {
+    return `[positioning data pack] control: ${this.control}, gps: ${this.gps}, ` +
+      `backup: ${this.backup}`;
+  }
 }

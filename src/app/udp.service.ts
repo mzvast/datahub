@@ -1,7 +1,16 @@
-import {Injectable} from '@angular/core';
-import {Buffer} from 'buffer';
-import {ProtocolPack} from 'app/protocol/protocol-pack';
-import {BaseDataPack, TagDataPack, PdwDataPack, RadiationDataPack} from 'app/protocol/data-pack';
+import {Injectable} from "@angular/core";
+import {Buffer} from "buffer";
+import {ProtocolPack} from "app/protocol/protocol-pack";
+import {
+  BaseDataPack,
+  BroadBandFullPulseDataPack,
+  BroadBandSourceDataPack,
+  IntermediateFrequencyDataPack,
+  NarrowBandFullPulseDataPack,
+  NarrowBandSourceDataPack, PhaseCorrectionDataPack,
+  PositioningDataPack,
+  TagDataPack
+} from "app/protocol/data-pack";
 
 declare var electron: any; // 　Typescript 定义
 
@@ -172,7 +181,7 @@ export class UdpService {
     const gps = data.slice(72, 72 + 64).toString('hex');
 
     switch (type) {
-      case 0:
+      case 0: // 标签包
         if (len !== 312) {
           console.error(`parser tag data pack error, length is not 312.`);
           return null;
@@ -199,6 +208,128 @@ export class UdpService {
         // debug it
         console.log(pack.description());
         return pack;
+      case 1: // 窄带全脉冲数据包
+        if (len < 140) {
+          console.error(`parser narrow band data pack error, length less than 140.`);
+          return null;
+        }
+        const count1 = data.readUInt32BE(136, false);
+        const bytesPerData1 = 80;
+        if (len < 140 + count1 * 80) { // 窄带全脉冲描述字（80字节）
+          console.error(`parser narrow band data pack error, length less than ${140 + count1 * bytesPerData1}.`);
+          return null;
+        }
+        const pack1 = new NarrowBandFullPulseDataPack(control, gps);
+        for (let i = 0; i < count1; i++) {
+          pack1.datas.push(data.slice(140 + bytesPerData1 * i, 140 + bytesPerData1 * i + bytesPerData1).toString('hex'));
+        }
+        console.log(`parser narrow band data pack success.`);
+        // debug it
+        console.log(pack1.description());
+        return pack1;
+      case 2: // 宽带全脉冲数据包
+        if (len < 140) {
+          console.error(`parser broad band data pack error, length less than 140.`);
+          return null;
+        }
+        const count2 = data.readUInt32BE(136, false);
+        const bytesPerData2 = 64;
+        if (len < 140 + count2 * bytesPerData2) { // 宽带全脉冲描述字（64字节）
+          console.error(`parser broad band data pack error, length less than ${140 + count2 * bytesPerData2}.`);
+          return null;
+        }
+        const pack2 = new BroadBandFullPulseDataPack(control, gps);
+        for (let i = 0; i < count2; i++) {
+          pack2.datas.push(data.slice(140 + bytesPerData2 * i, 140 + bytesPerData2 * i + bytesPerData2).toString('hex'));
+        }
+        console.log(`parser broad band data pack success.`);
+        // debug it
+        console.log(pack2.description());
+        return pack2;
+      case 3: // 宽带辐射源数据包
+        if (len < 140) {
+          console.error(`parser broad band source data pack error, length less than 140.`);
+          return null;
+        }
+        const count3 = data.readUInt32BE(136, false);
+        const bytesPerData3 = 276;
+        if (len < 140 + count3 * bytesPerData3) { // 辐射源描述字数据结构（276）
+          console.error(`parser broad band source data pack error, length less than ${140 + count3 * bytesPerData3}.`);
+          return null;
+        }
+        const pack3 = new BroadBandSourceDataPack(control, gps);
+        for (let i = 0; i < count3; i++) {
+          pack3.datas.push(data.slice(140 + bytesPerData3 * i, 140 + bytesPerData3 * i + bytesPerData3).toString('hex'));
+        }
+        console.log(`parser broad band source data pack success.`);
+        // debug it
+        console.log(pack3.description());
+        return pack3;
+      case 4: // 中频数据包
+        if (len !== 8640) { // TODO 表里说总长是4544不对
+          console.error(`parser intermediate frequency data pack error, length is not 8640.`);
+          return null;
+        }
+        const gps4 = data.slice(78, 78 + 62).toString('hex'); // 中频数据包的gps有点不一样
+        const pack4 = new IntermediateFrequencyDataPack(control, gps4);
+        pack4.pulseArriveTime = data.readUInt32BE(72, false);
+        pack4.serial = data.readUInt16BE(76, false);
+        pack4.data = data.slice(140, 140 + 8192).toString('hex');
+        pack4.backup = data.slice(8332, 8332 + 304).toString('hex');
+        console.log(`parser intermediate frequency data pack success.`);
+        // debug it
+        console.log(pack4.description());
+        return pack4;
+      case 5: // 窄带辐射源数据包
+        if (len < 140) {
+          console.error(`parser narrow band source data pack error, length less than 140.`);
+          return null;
+        }
+        const count5 = data.readUInt32BE(136, false);
+        const bytesPerData5 = 276;
+        if (len < 140 + count5 * bytesPerData5) { // 辐射源描述字数据结构（276）
+          console.error(`parser narrow band source data pack error, length less than ${140 + count5 * bytesPerData5}.`);
+          return null;
+        }
+        const pack5 = new NarrowBandSourceDataPack(control, gps);
+        for (let i = 0; i < count5; i++) {
+          pack5.datas.push(data.slice(140 + bytesPerData5 * i, 140 + bytesPerData5 * i + bytesPerData5).toString('hex'));
+        }
+        console.log(`parser narrow band source data pack success.`);
+        // debug it
+        console.log(pack5.description());
+        return pack5;
+      case 6:
+        if (len !== 268) {
+          console.error(`positioning data pack error, length is not 268.`);
+          return null;
+        }
+        const pack6 = new PositioningDataPack(control, gps);
+        pack6.backup = data.slice(136, 136 + 128).toString('hex');
+        console.log(`parser positioning data pack success.`);
+        // debug it
+        console.log(pack6.description());
+        return pack6;
+      case 11: // 相位校正数据
+      case 13:
+        if (len < 140) {
+          console.error(`parser phase correction data pack error, length less than 140.`);
+          return null;
+        }
+        const count11 = data.readUInt32BE(136, false);
+        const bytesPerData11 = 96;
+        if (len < 140 + count11 * bytesPerData11) { // 辐射源描述字数据结构（276）
+          console.error(`parser phase correction data pack error, length less than ${140 + count5 * bytesPerData11}.`);
+          return null;
+        }
+        const pack11 = new PhaseCorrectionDataPack(control, gps);
+        for (let i = 0; i < count11; i++) {
+          pack11.datas.push(data.slice(140 + bytesPerData11 * i, 140 + bytesPerData11 * i + bytesPerData11).toString('hex'));
+        }
+        console.log(`parser phase correction data pack success.`);
+        // debug it
+        console.log(pack11.description());
+        return pack11;
     }
     return null;
   }
