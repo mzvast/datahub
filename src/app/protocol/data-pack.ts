@@ -47,8 +47,14 @@ export class TagDataPack extends BaseDataPack {
   }
 
   description() {
-    return `[tag data pack] sourceNodeNo: ${this.sourceNodeNo}, destNodeNo: ${this.destNodeNo}, ' +
-      'feedbackCommandNo: ${this.feedbackCommandNo}`;
+    return `[tag data pack] control: ${this.control}, gps: ${this.gps}, sourceNodeNo: ${this.sourceNodeNo}, ` +
+      `destNodeNo: ${this.destNodeNo}, feedbackCommandNo: ${this.feedbackCommandNo}, ` +
+      `commandReceiveStatus0: ${this.commandReceiveStatus0}, ` +
+      `commandReceiveStatus1: ${this.commandReceiveStatus1}, fullPulseCount: ${this.fullPulseCount}, ` +
+      `taskNo: ${this.taskNo}, frontWorkTemp: ${this.frontWorkTemp}, extWorkTemp: ${this.extWorkTemp}, ` +
+      `extWorkStatus0: ${this.extWorkStatus0}, extWorkStatus1: ${this.extWorkStatus1}, ` +
+      `fullPulseCount: ${this.fullPulseCount}, radiationSourceCount: ${this.radiationSourceCount}, ` +
+      `ifDataLen: ${this.ifDataLen}, backup: ${this.backup}, frontStatusFeedback: ${this.frontStatusFeedback}`;
   }
 }
 
