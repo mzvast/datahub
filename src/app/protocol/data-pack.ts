@@ -15,6 +15,11 @@ export class BaseDataPack {
   // 接下来数据信息
   // 固定信息
   // private end: number; // 包尾4, 0x0000FC1D
+
+  constructor(control: string, gps: string) {
+    this.control = control;
+    this.gps = gps;
+  }
 }
 
 /**
@@ -37,8 +42,13 @@ export class TagDataPack extends BaseDataPack {
   backup: string; // 备份16
   frontStatusFeedback: string; // 前端状态反馈128,没说具体是什么，方便存储，用string
 
+  constructor(control: string, gps: string) {
+    super(control, gps);
+  }
+
   description() {
-    return '[tag data pack] sourceNodeNo: ${sourceNodeNo}, destNodeNo: ${destNodeNo}, feedbackCommandNo: ${feedbackCommandNo}';
+    return `[tag data pack] sourceNodeNo: ${this.sourceNodeNo}, destNodeNo: ${this.destNodeNo}, ' +
+      'feedbackCommandNo: ${this.feedbackCommandNo}`;
   }
 }
 

@@ -168,9 +168,8 @@ export class UdpService {
     // 接下来64个系统控制信息
     // 接下来64个GPS数据
     // 接下来是数据信息
-    const dataPack: BaseDataPack = new BaseDataPack();
-    dataPack.control = data.slice(8, 8 + 64).toString('hex');
-    dataPack.gps = data.slice(72, 72 + 64).toString('hex');
+    const control = data.slice(8, 8 + 64).toString('hex');
+    const gps = data.slice(72, 72 + 64).toString('hex');
 
     switch (type) {
       case 0:
@@ -178,7 +177,7 @@ export class UdpService {
           console.error(`parser tag data pack error, length is not 312.`);
           return null;
         }
-        const pack = <TagDataPack> dataPack;
+        const pack = new TagDataPack(control, gps);
         pack.sourceNodeNo = data.readUInt8(136, false);
         pack.destNodeNo = data.readUInt8(137, false);
         pack.feedbackCommandNo = data.readUInt16BE(138, false);
@@ -197,7 +196,8 @@ export class UdpService {
         pack.frontStatusFeedback = data.slice(180, 180 + 128).toString('hex');
         // 剩下包尾 4 就是308开始
         console.log(`parser tag data pack success.`);
-        console.log(`${pack.description()}`);
+        // debug it
+        console.log(pack.description());
         return pack;
     }
     return null;
