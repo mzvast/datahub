@@ -9,8 +9,8 @@ export class BaseDataPack {
   // private head = 0x1ACF; // 帧有效标记2
   // private type; // 数据类型 2
   // private len: number; // 数据长度 4
-  control: string; // 系统控制信息64，方便存储，转成string hex
-  gps: string; // GPS数据4，方便存储，转成string hex
+  control: string; // 系统控制信息64，没说具体是什么，方便存储，用string，转成string hex
+  gps: string; // GPS数据4，没说具体是什么，方便存储，用string，转成string hex
 
   // 接下来数据信息
   // 固定信息
@@ -18,7 +18,7 @@ export class BaseDataPack {
 }
 
 /**
- * 标签包
+ * 标签包 312字节
  */
 export class TagDataPack extends BaseDataPack {
   sourceNodeNo: number; // 发方节点号1
@@ -34,8 +34,12 @@ export class TagDataPack extends BaseDataPack {
   fullPulseCount: number; // 全脉冲个数统计4
   radiationSourceCount: number; // 辐射源数据包统计4
   ifDataLen: number; // 中频数据统计4
-  // 备份16
-  frontStatusFeedback: string; // 前端状态反馈128
+  backup: string; // 备份16
+  frontStatusFeedback: string; // 前端状态反馈128,没说具体是什么，方便存储，用string
+
+  description() {
+    return '[tag data pack] sourceNodeNo: ${sourceNodeNo}, destNodeNo: ${destNodeNo}, feedbackCommandNo: ${feedbackCommandNo}';
+  }
 }
 
 /**

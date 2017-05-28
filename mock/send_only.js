@@ -2,7 +2,7 @@ var PORT = 8511;
 var HOST = '127.0.0.1';
 
 var dgram = require('dgram');
-var tag = 
+var tag =
             /**
              * 固定信息
              */
@@ -30,11 +30,11 @@ var tag =
             /**
              * 固定信息
              */
-            +'0000fc1d'//包尾            
+            +'0000fc1d'//包尾
             ;
 // console.log(tag.length/2);
 
-var pdw = 
+var pdw =
             /**
              * 固定信息
              */
@@ -57,7 +57,7 @@ var pdw =
             +'0100'//数字幅度 单位：1dB
             +'22'//DLVA幅度 单位：1dB
             +'00'//备份
-            +'00002233'//精测中频          
+            +'00002233'//精测中频
             +'00'.repeat(4)//备份
             +'00'.repeat(32)//备份
             /**
@@ -65,10 +65,10 @@ var pdw =
              */
             +'0000fc1d'//包尾
             ;
-            
+
 // console.log(pdw.length/2);
 
-var radiation = 
+var radiation =
             /**
              * 固定信息
              */
@@ -89,7 +89,7 @@ var radiation =
              */
             +'00'//脉间类型
             +'00'//脉内类型
-            +'0001'//个数n 
+            +'0001'//个数n
             +'0000'//脉组内脉冲数
             +'0000'//备份
             +'00'.repeat(4)//RF1
@@ -104,7 +104,7 @@ var radiation =
              * 重频
              */
             +'0000'//类型
-            +'0001'//个数m 
+            +'0001'//个数m
             +'00000001'//脉组内脉冲数
             +'00'.repeat(4)//周期PRI1
             +'00'.repeat(4)//周期PRI2
@@ -128,7 +128,7 @@ var radiation =
             +'00'.repeat(4)//PW6
             +'00'.repeat(4)//PW7
             +'00'.repeat(4)//PW8,单位????
-            +'00'.repeat(4)//脉幅(平均) 
+            +'00'.repeat(4)//脉幅(平均)
             /**
              * 位置信息
              */
@@ -153,16 +153,36 @@ var radiation =
             +'aa55'//终止码
 
             ;
-            
+
 // console.log(radiation.length/2);
 
-var message = Buffer.from(tag, 'hex')
+var message = Buffer.from(tag, 'hex');
+
+function packageMessage(msg) {
+  var paddingData = Buffer.from('00'.repeat(1000-msg.length), 'hex');
+
+  var header = Buffer.from([0x55, 0x55]);
+  var len = Buffer.from([0x01, 0x38]); //TODO 这里要用msg的length
+  var source = Buffer.from([0x00, 0x00]);
+  var dest = Buffer.from([0x00, 0x00]);
+  var idcodePrimary = Buffer.from([0x00, 0x00]);
+  var idcodeSecondly = Buffer.from([0x00, 0x00]);
+  var serial = Buffer.from([0x00, 0x00, 0x00, 0x00]);
+  var frameCount = Buffer.from([0x00, 0x00, 0x00, 0x01]);
+  var checkSum = Buffer.from([0x00, 0x00]); // 和检验暂时没搞
+  var end = Buffer.from([0xAA, 0xAA]);
+
+  return Buffer.concat([header, len,source,dest,idcodePrimary, idcodeSecondly, serial, frameCount, msg, paddingData, checkSum, end]);
+}
 
 /**
  * Client
  */
 var client = dgram.createSocket('udp4');
-client.send(message, 0, message.length, PORT, HOST, function(err, bytes) {
+
+var msgToSend = packageMessage(message);
+
+client.send(msgToSend, 0, msgToSend.length, PORT, HOST, function(err, bytes) {
     if (err) throw err;
     console.log('UDP message sent to ' + HOST +':'+ PORT);
     client.close();

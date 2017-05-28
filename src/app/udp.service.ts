@@ -14,8 +14,8 @@ export class UdpService {
   LocalHOST = '127.0.0.1';
   RemoteHOST = '127.0.0.1';
 
-  workingBuffers: Map<string, Buffer>;
-  workingProtocolPacks: Map<string, ProtocolPack>;
+  workingBuffers: Map<string, Buffer> = new Map();
+  workingProtocolPacks: Map<string, ProtocolPack> = new Map();
 
   constructor() {
     console.log('udp service constructor');
@@ -79,7 +79,7 @@ export class UdpService {
       } else {
         // 如果header不是0x5555,就说明不正常，把这个从数据包里删掉，看接下来的2个字节
         workingBuffer = workingBuffer.slice(2);
-        console.error(`read pack header not 0x5555, drop it: ${header.toString(16)}`);
+        console.error(`read pack header not 0x5555, drop it: 0x${header.toString(16)}`);
       }
 
       if (headerFounded) {
@@ -95,7 +95,13 @@ export class UdpService {
           const data = workingBuffer.slice(20, 20 + len);
           const checkSum = workingBuffer.readUInt16BE(1020, false);
           const end = workingBuffer.readUInt16BE(1022, false);
-          // TODO 要根据checkSum和end来判断这条数据是否正确
+          // TODO 要根据checkSum来判断这条数据是否正确
+          if (end !== 0xAAAA) {
+            console.error(`pack end is not 0xAAAA, it is 0x${end.toString(16)}, drop this pack.`);
+            workingBuffer.slice(1024);
+            headerFounded = false;
+            continue;
+          }
 
           const protocolPack = new ProtocolPack(source, dest, idcodePrimary, idcodeSecondly, serial, frameCount, data);
           if (frameCount === 1) {
@@ -107,7 +113,7 @@ export class UdpService {
               workingProtocolPack = protocolPack;
             } else {
               if (!workingProtocolPack) {
-                console.error(`no last working protocol pack stored, drop this pack`);
+                console.error(`no last working protocol pack stored, drop this pack.`);
               } else {
                 if (workingProtocolPack.isTheSamePack(protocolPack)) {
                   workingProtocolPack.appendData(protocolPack.data);
@@ -128,6 +134,8 @@ export class UdpService {
           // 数据1024都用完了,把headerFounded变成false，再次进入循环解析
           workingBuffer = workingBuffer.slice(1024);
           headerFounded = false;
+        } else {
+          console.warn(`read pack not 1024, wait for another pack to append.`);
         }
 
       }
@@ -143,13 +151,18 @@ export class UdpService {
     }
     const header = data.readUInt16BE(0, false);
     if (header !== 0x1ACF) {
-      console.error(`parser data pack error, header is not 0x1ACF, it is: ${header.toString(16)}`);
+      console.error(`parser data pack error, header is not 0x1ACF, it is: 0x${header.toString(16)}`);
       return null;
     }
     const type = data.readUInt16BE(2, false);
     const len = data.readUInt32BE(4, false);
     if (data.length !== len) {
       console.error(`parser data pack error, data length: ${data.length}, expected: ${len}`);
+      return null;
+    }
+    const end = data.readUInt32BE(len - 4, false);
+    if (end !== 0x0000FC1D) {
+      console.error(`parser data pack error, end is not 0x0000FC1D, it is: 0x${end.toString(16)}`);
       return null;
     }
     // 接下来64个系统控制信息
@@ -160,7 +173,11 @@ export class UdpService {
     dataPack.gps = data.slice(72, 72 + 64).toString('hex');
 
     switch (type) {
-      case 1:
+      case 0:
+        if (len !== 312) {
+          console.error(`parser tag data pack error, length is not 312.`);
+          return null;
+        }
         const pack = <TagDataPack> dataPack;
         pack.sourceNodeNo = data.readUInt8(136, false);
         pack.destNodeNo = data.readUInt8(137, false);
@@ -172,13 +189,15 @@ export class UdpService {
         pack.extWorkTemp = data.readUInt16BE(146, false);
         pack.extWorkStatus0 = data.readUInt8(148, false);
         pack.extWorkStatus1 = data.readUInt8(149, false);
-        pack.fullPulseCount = data.readUInt32BE(150, false);
-        pack.radiationSourceCount = data.readUInt32BE(154, false);
-        pack.ifDataLen = data.readUInt32BE(158, false);
-        // 接下来16字节备份
-        // TODO 这里有点问题不是312字节了，明天查下
-        pack.frontStatusFeedback = data.slice(174, 174 + 128).toString('hex');
-        // 剩下包尾 4
+        // 文档写上面的status用4字节，那就跳过2个字节
+        pack.fullPulseCount = data.readUInt32BE(152, false);
+        pack.radiationSourceCount = data.readUInt32BE(156, false);
+        pack.ifDataLen = data.readUInt32BE(160, false);
+        pack.backup = data.slice(164, 164 + 16).toString('hex');
+        pack.frontStatusFeedback = data.slice(180, 180 + 128).toString('hex');
+        // 剩下包尾 4 就是308开始
+        console.log(`parser tag data pack success.`);
+        console.log(`${pack.description()}`);
         return pack;
     }
     return null;
