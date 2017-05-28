@@ -162,7 +162,10 @@ function packageMessage(msg) {
   var paddingData = Buffer.from('00'.repeat(1000-msg.length), 'hex');
 
   var header = Buffer.from([0x55, 0x55]);
-  var len = Buffer.from([0x01, 0x38]); //TODO 这里要用msg的length
+  var len = Buffer.from(numberTo2Bytes(msg.length));
+  // console.log("msg length(2): "+len.toString('hex'));
+  // var len2 = Buffer.from(numberTo4Bytes(msg.length));
+  // console.log("msg length(4): "+len2.toString('hex'));
   var source = Buffer.from([0x00, 0x00]);
   var dest = Buffer.from([0x00, 0x00]);
   var idcodePrimary = Buffer.from([0x00, 0x00]);
@@ -173,6 +176,34 @@ function packageMessage(msg) {
   var end = Buffer.from([0xAA, 0xAA]);
 
   return Buffer.concat([header, len,source,dest,idcodePrimary, idcodeSecondly, serial, frameCount, msg, paddingData, checkSum, end]);
+}
+
+/**
+ * 把number转成2个字节
+ * @param num
+ * @returns {[number,number]}
+ */
+function numberTo2Bytes(num) {
+  var b = [0,0];
+
+  for (var i=0; i<2; i++) {
+    b[i] =  num >> 8 * (1 - i) & 0xFF;
+  }
+  return b;
+}
+
+/**
+ * 把number转成4个字节
+ * @param num
+ * @returns {[number,number,number,number]}
+ */
+function numberTo4Bytes(num) {
+  var b = [0,0,0,0];
+  b[0] = num >>> 24;
+  b[1] = num >>> 16;
+  b[2] = num >>> 8;
+  b[3] = num;
+  return b;
 }
 
 /**
