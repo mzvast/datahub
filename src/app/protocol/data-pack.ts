@@ -86,6 +86,20 @@ export class NarrowBandFullPulseDataPack extends BaseDescriptionDataPack {
     return `[narrow band data pack] control: ${this.control}, gps: ${this.gps}, ` +
       `fullPulseDescriptions length: ${this.datas.length}`;
   }
+
+  /**
+   * 把data传进入，解析成 窄带全脉冲描述字
+   * @param data
+   * @returns {NarrowBandFullPulseDescription}
+   */
+  parserDescription(data: string): NarrowBandFullPulseDescription {
+    const desc = new NarrowBandFullPulseDescription();
+    const dataHex = Buffer.from(data, 'hex');
+    desc.pdwToaTod = dataHex.readUInt32BE(0, false);
+    desc.pdwPw = dataHex.readUInt32BE(4, false);
+    desc.pdwWorkBand = dataHex.readUInt16BE(8, false);
+    return desc;
+  }
 }
 
 /**
@@ -100,6 +114,52 @@ export class BroadBandFullPulseDataPack extends BaseDescriptionDataPack {
   description() {
     return `[broad band data pack] control: ${this.control}, gps: ${this.gps}, ` +
       `fullPulseDescriptions length: ${this.datas.length}`;
+  }
+
+  /**
+   * 把data传进入，解析成 宽带全脉冲描述字
+   * @param data
+   * @returns {BroadBandFullPulseDescription}
+   */
+  parserDescription(data: string): BroadBandFullPulseDescription {
+    const desc = new BroadBandFullPulseDescription();
+    const dataHex = Buffer.from(data, 'hex');
+    desc.pdwToaTod = dataHex.readUInt32BE(0, false);
+    desc.pdwPw = dataHex.readUInt32BE(4, false);
+    desc.pdwVpcnt = dataHex.readUInt16BE(8, false);
+    desc.pdwWorkBand = dataHex.readUInt16BE(10, false);
+    desc.trackerFreRise = dataHex.readUInt16BE(12, false);
+    desc.trackerFreMinOv = dataHex.readUInt16BE(14, false);
+    desc.trackerFreMaxOv = dataHex.readUInt16BE(16, false);
+    desc.trackerFre3 = dataHex.readUInt16BE(18, false);
+    desc.trackerFre4 = dataHex.readUInt16BE(20, false);
+    desc.pdwType = dataHex.readUInt8(22, false);
+    desc.trackerOrien = dataHex.readUInt8(23, false);
+    desc.phase1 = dataHex.readUInt16BE(24, false);
+    desc.phase2 = dataHex.readUInt16BE(26, false);
+    desc.phase3 = dataHex.readUInt16BE(28, false);
+    desc.phase4 = dataHex.readUInt16BE(30, false);
+    desc.phase5 = dataHex.readUInt16BE(32, false);
+    desc.phase6 = dataHex.readUInt16BE(34, false);
+    desc.phase7 = dataHex.readUInt16BE(36, false);
+    desc.phase8 = dataHex.readUInt16BE(38, false);
+    desc.phase9 = dataHex.readUInt16BE(40, false);
+    desc.phase10 = dataHex.readUInt16BE(42, false);
+    desc.phase11 = dataHex.readUInt16BE(44, false);
+    desc.phase12 = dataHex.readUInt16BE(46, false);
+    desc.phase13 = dataHex.readUInt16BE(48, false);
+    desc.phase14 = dataHex.readUInt16BE(50, false);
+    desc.phase15 = dataHex.readUInt16BE(52, false);
+    desc.phase16 = dataHex.readUInt16BE(54, false);
+    desc.amplitude1 = dataHex.readUInt8(56, false);
+    desc.amplitude2 = dataHex.readUInt8(57, false);
+    desc.amplitude3 = dataHex.readUInt8(58, false);
+    desc.amplitude4 = dataHex.readUInt8(59, false);
+    desc.amplitude5 = dataHex.readUInt8(60, false);
+    desc.amplitude6 = dataHex.readUInt8(61, false);
+    desc.amplitude7 = dataHex.readUInt8(62, false);
+    desc.amplitude8 = dataHex.readUInt8(63, false);
+    return desc;
   }
 }
 
@@ -180,4 +240,55 @@ export class PositioningDataPack extends BaseDataPack {
     return `[positioning data pack] control: ${this.control}, gps: ${this.gps}, ` +
       `backup: ${this.backup}`;
   }
+}
+
+/**
+ * 宽带全脉冲描述字
+ */
+export class BroadBandFullPulseDescription {
+  pdwToaTod: number; // 1-4bytes 到达时间(单位 4.46ns)
+  pdwPw: number; // 5-8bytes 脉宽(单位 4.46ns)
+  pdwVpcnt: number; // 9-10bytes 脉冲计数
+  pdwWorkBand: number; // 11-12bytes 波段码(单位 MHz)
+  trackerFreRise: number; // 13-14bytes 前沿频率(单位 0.01MHz)
+  trackerFreMinOv: number; // 15-16bytes 最小频率，当分集信号时，为频率1(单位 0.01MHz)
+  trackerFreMaxOv: number; // 17-18bytes 最大频率，当分集信号时，为频率2(单位 0.01MHz)
+  trackerFre3: number; // 19-20bytes 当分集信号时，为频率3(单位 0.01MHz)
+  trackerFre4: number; // 21-22bytes 当分集信号时，为频率4(单位 0.01MHz)
+  pdwType: number; // 23 脉冲类型;  Bit0-1： Bit2-3：0-脉冲Pdw，1-连续波Pdw,3-分集信号 Bit4-7：分集个数
+  trackerOrien: number; // 24 线调标记； 0表示递增， 1表示递减， 2表示混合， 3 表示不是线调
+  phase1: number; // 25-26 相位1 （单位 0.007度，范围-180~180度）
+  phase2: number; // 27-28 相位2 （单位 0.007度，范围-180~180度）
+  phase3: number; // 29-30 相位3 （单位 0.007度，范围-180~180度）
+  phase4: number; // 31-32 相位4 （单位 0.007度，范围-180~180度）
+  phase5: number; // 33-34 相位5 （单位 0.007度，范围-180~180度）
+  phase6: number; // 35-36 相位6 （单位 0.007度，范围-180~180度）
+  phase7: number; // 37-38 相位7 （单位 0.007度，范围-180~180度）
+  phase8: number; // 39-40 相位8 （单位 0.007度，范围-180~180度）
+  phase9: number; // 41-42 相位9 （单位 0.007度，范围-180~180度）
+  phase10: number; // 43-44 相位10 （单位 0.007度，范围-180~180度）
+  phase11: number; // 45-46 相位11 （单位 0.007度，范围-180~180度）
+  phase12: number; // 47-48 相位12 （单位 0.007度，范围-180~180度）
+  phase13: number; // 49-50 相位13 （单位 0.007度，范围-180~180度）
+  phase14: number; // 51-52 相位14 （单位 0.007度，范围-180~180度）
+  phase15: number; // 53-54 相位15 （单位 0.007度，范围-180~180度）
+  phase16: number; // 55-56 相位16 （单位 0.007度，范围-180~180度）
+  amplitude1: number; // 57 数字幅度1（单位1dB）
+  amplitude2: number; // 58 数字幅度1（单位1dB）
+  amplitude3: number; // 59 数字幅度1（单位1dB）
+  amplitude4: number; // 60 数字幅度1（单位1dB）
+  amplitude5: number; // 61 数字幅度1（单位1dB）
+  amplitude6: number; // 62 数字幅度1（单位1dB）
+  amplitude7: number; // 63 数字幅度1（单位1dB）
+  amplitude8: number; // 64 数字幅度1（单位1dB）
+}
+
+/**
+ * 窄带全脉冲描述字
+ */
+export class NarrowBandFullPulseDescription {
+  pdwToaTod: number; // 1-4bytes 单位：8ns
+  pdwPw: number; // 5-8bytes 脉宽(单位：8ns)
+  pdwWorkBand: number; // 波段码(单位 MHz)
+  // 下面都没有英文 后面再说
 }
