@@ -1,3 +1,4 @@
+import {Buffer} from "buffer";
 /**
  * Created by Terry on 2017-5-26.
  */

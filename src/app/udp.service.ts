@@ -36,7 +36,7 @@ export class UdpService {
       this.stopUdpServer();
     }
 
-    this.startUdpServer();
+    // this.startUdpServer();
     // this.setRemoteAddress('127.0.0.1', 8511); // Test send to local port
     // this.sendMsg('Hello World');
   }
