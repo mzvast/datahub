@@ -1,4 +1,6 @@
-import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
+import { UdpService } from 'app/udp.service';
+import { Subscription } from "rxjs/Subscription";
 
 @Component({
   selector: 'app-device-tag',
@@ -7,15 +9,16 @@ import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy } from '@
   encapsulation: ViewEncapsulation.Emulated,
   changeDetection: ChangeDetectionStrategy.Default
 })
-export class DeviceTagComponent implements OnInit {
-  tiles = [
-    { text: '指令接收状态', cols: 2, rows: 1, color: 'lightgreen', icon: 'check_circle' },
-    { text: '分机工作状态', cols: 2, rows: 1, color: 'lightgreen', icon: 'check_circle' },
-    { text: '前端工作温度', cols: 2, rows: 1, color: 'lightgreen', icon: 'check_circle' },
-    { text: '分机工作温度', cols: 2, rows: 1, color: 'lightgreen', icon: 'check_circle' },
-  ];
-  constructor() { }
+export class DeviceTagComponent implements OnInit, OnDestroy {
+  message: any;
+  subscription: Subscription;
+
+  constructor(private udpService: UdpService) { }
   ngOnInit() {
+    this.subscription = this.udpService.getMessage().subscribe(message => this.message = message);
+  }
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
 }

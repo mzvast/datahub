@@ -1,6 +1,6 @@
-import {Injectable} from "@angular/core";
-import {Buffer} from "buffer";
-import {ProtocolPack} from "app/protocol/protocol-pack";
+import { Injectable } from '@angular/core';
+import { Buffer } from 'buffer';
+import { ProtocolPack } from 'app/protocol/protocol-pack';
 import {
   BaseDataPack,
   BroadBandFullPulseDataPack,
@@ -10,7 +10,9 @@ import {
   NarrowBandSourceDataPack, PhaseCorrectionDataPack,
   PositioningDataPack,
   TagDataPack
-} from "app/protocol/data-pack";
+} from 'app/protocol/data-pack';
+import { Subject } from "rxjs/Subject";
+import { Observable } from "rxjs/Observable";
 
 declare var electron: any; // 　Typescript 定义
 
@@ -25,6 +27,7 @@ export class UdpService {
 
   workingBuffers: Map<string, Buffer> = new Map();
   workingProtocolPacks: Map<string, ProtocolPack> = new Map();
+  subject = new Subject<any>();
 
   constructor() {
     console.log('udp service constructor');
@@ -39,6 +42,18 @@ export class UdpService {
     // this.startUdpServer();
     // this.setRemoteAddress('127.0.0.1', 8511); // Test send to local port
     // this.sendMsg('Hello World');
+  }
+
+  sendMessage(message: any) {
+    this.subject.next(message);
+  }
+
+  clearMessage() {
+    this.subject.next();
+  }
+
+  getMessage(): Observable<any> {
+    return this.subject.asObservable();
   }
 
   startUdpServer() {
@@ -115,7 +130,9 @@ export class UdpService {
           const protocolPack = new ProtocolPack(source, dest, idcodePrimary, idcodeSecondly, serial, frameCount, data);
           if (frameCount === 1) {
             const dataPack: BaseDataPack = this.parserDataPack(protocolPack);
-            // TODO parser and notify the UI and save to sqlite
+            //  TODO save to sqlite
+            console.log('dataPack:', dataPack);
+            this.sendMessage(dataPack); // save msg
           } else {
             let workingProtocolPack = this.workingProtocolPacks.get(key);
             if (serial === 0) {
