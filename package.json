@@ -16,7 +16,8 @@
     "build-package": "npm run build && npm run package",
     "dist": "npm run build-package && npm run installer",
     "rebuild": "electron-rebuild -f -w sqlite3",
-    "postinstall": "npm run rebuild"
+    "postinstall": "npm run rebuild",
+    "mock":"node ./mock/mock_client.js"
   },
   "private": true,
   "dependencies": {

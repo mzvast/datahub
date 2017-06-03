@@ -9,6 +9,7 @@
 主要命令如下，更多参见package.json
 - `npm start` 启动开发服务器（Angular2）
 - `npm run electron` 启动Electron
+- `npm run mock` 启动mock服务
 
 ---以下为Angular CLI自动生成---
 
