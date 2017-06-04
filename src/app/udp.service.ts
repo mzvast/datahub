@@ -11,7 +11,7 @@ import {
   PositioningDataPack,
   TagDataPack
 } from 'app/protocol/data-pack';
-import { Subject } from "rxjs/Subject";
+import { BehaviorSubject } from "rxjs/BehaviorSubject";
 import { Observable } from "rxjs/Observable";
 
 declare var electron: any; // 　Typescript 定义
@@ -27,7 +27,7 @@ export class UdpService {
 
   workingBuffers: Map<string, Buffer> = new Map();
   workingProtocolPacks: Map<string, ProtocolPack> = new Map();
-  subject = new Subject<any>();
+  subject = new BehaviorSubject<any>({});
 
   constructor() {
     console.log('udp service constructor');
@@ -49,7 +49,7 @@ export class UdpService {
   }
 
   clearMessage() {
-    this.subject.next();
+    this.subject.next({});
   }
 
   getMessage(): Observable<any> {

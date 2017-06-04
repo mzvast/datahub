@@ -228,4 +228,4 @@ const doSend = () => {
 
 setInterval(function () {
   doSend();
-}, 1500)
+}, 1000)

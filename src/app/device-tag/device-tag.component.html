@@ -1,6 +1,6 @@
 <md-grid-list cols="4" rowHeight="100px" >
-  <md-grid-tile colspan=2 rowspan=1>指令接收状态:<span *ngIf='message'>{{message.commandReceiveStatus0}}</span></md-grid-tile>
-  <md-grid-tile colspan=2 rowspan=1>分机工作状态:<span *ngIf='message'>{{message.extWorkStatus0}}</span></md-grid-tile>
-  <md-grid-tile colspan=2 rowspan=1>前端工作温度:<span *ngIf='message'>{{message.frontWorkTemp}}</span></md-grid-tile>
-  <md-grid-tile colspan=2 rowspan=1>分机工作温度:<span *ngIf='message'>{{message.extWorkTemp}}</span></md-grid-tile>
+  <md-grid-tile colspan=2 rowspan=1>指令接收状态:<span>{{message?.commandReceiveStatus0}}</span></md-grid-tile>
+  <md-grid-tile colspan=2 rowspan=1>分机工作状态:<span>{{message?.extWorkStatus0}}</span></md-grid-tile>
+  <md-grid-tile colspan=2 rowspan=1>前端工作温度:<span>{{message?.frontWorkTemp}}</span></md-grid-tile>
+  <md-grid-tile colspan=2 rowspan=1>分机工作温度:<span>{{message?.extWorkTemp}}</span></md-grid-tile>
 </md-grid-list>
