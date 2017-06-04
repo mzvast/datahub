@@ -97,13 +97,14 @@ const makePDW = () => {
 
 // console.log(pdw.length/2);
 
-let radiation =
-  /**
+const makeRadiation = ()=>{
+  return (
+ /**
    * 固定信息
    */
   '1acf'//起始码：0x1ACF
   + '0003'//网络接口数据类型
-  + '00000138'//从帧有限标记到包尾的字节数
+  + '000001a4'//从帧有限标记到包尾的字节数
   + '00'.repeat(64)//系统控制信息
   + '00'.repeat(64)//GPS数据
   /**
@@ -111,6 +112,7 @@ let radiation =
    */
   + '00000001'//辐射源个数
   //辐射源描述字1
+  + '55aa'//起始码
   + '0001'//辐射源序号
   + '00000001'//辐射源首脉冲到达时间
   /**
@@ -180,10 +182,12 @@ let radiation =
   + '12'.repeat(116)//脉内特征信息
   + '00'.repeat(2)//备份码
   + 'aa55'//终止码
-
-  ;
-
-// console.log(radiation.length/2);
+  /**
+     * 固定信息
+     */
+    + '0000fc1d'//包尾
+  )
+}
 
 
 
@@ -248,7 +252,7 @@ const doSendTag = () => {
   let client = dgram.createSocket('udp4');
   client.send(msgToSend, 0, msgToSend.length, PORT, HOST, function (err, bytes) {
     if (err) throw err;
-    console.log('UDP message sent to ' + HOST + ':' + PORT);
+    console.log('Tag message sent to ' + HOST + ':' + PORT);
     client.close();
   });
 }
@@ -260,7 +264,19 @@ const doSendPDW = () => {
   let client = dgram.createSocket('udp4');
   client.send(msgToSend, 0, msgToSend.length, PORT, HOST, function (err, bytes) {
     if (err) throw err;
-    console.log('UDP message sent to ' + HOST + ':' + PORT);
+    console.log('PDW message sent to ' + HOST + ':' + PORT);
+    client.close();
+  });
+}
+
+const doSendRadiation = () => {
+  let hexMsg = makeRadiation();
+  let message = Buffer.from(hexMsg, 'hex');
+  let msgToSend = packageMessage(message);
+  let client = dgram.createSocket('udp4');
+  client.send(msgToSend, 0, msgToSend.length, PORT, HOST, function (err, bytes) {
+    if (err) throw err;
+    console.log('Radiation message sent to ' + HOST + ':' + PORT);
     client.close();
   });
 }
@@ -268,6 +284,7 @@ const doSendPDW = () => {
 setInterval(function () {
   doSendTag();
   doSendPDW();
+  doSendRadiation();
 }, 1500)
 
 

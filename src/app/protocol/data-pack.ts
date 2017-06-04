@@ -1,4 +1,4 @@
-import {Buffer} from "buffer";
+import { Buffer } from "buffer";
 /**
  * Created by Terry on 2017-5-26.
  */
@@ -180,6 +180,62 @@ export class BroadBandSourceDataPack extends BaseDescriptionDataPack {
     return `[broad band source data pack] control: ${this.control}, gps: ${this.gps}, ` +
       `fullPulseDescriptions length: ${this.datas.length}`;
   }
+
+  parserDescription(data: string): BroadBandRadiationDescription {
+    const des = new BroadBandRadiationDescription();
+    const dataHex = Buffer.from(data, 'hex');
+    des.radiationSourceNum = dataHex.readUInt16BE(3, false);
+    des.firstArriveTime = dataHex.readUInt32BE(5, false);
+    des.rfExtType = dataHex.readUInt8(9, false);
+    des.rfIntType = dataHex.readUInt8(10, false);
+    des.rfNum = dataHex.readUInt16BE(11, false);
+    des.rfNumInGrp = dataHex.readUInt16BE(13, false);
+    des.rf1 = dataHex.readUInt32BE(17, false);
+    des.rf2 = dataHex.readUInt32BE(21, false);
+    des.rf3 = dataHex.readUInt32BE(25, false);
+    des.rf4 = dataHex.readUInt32BE(29, false);
+    des.rf5 = dataHex.readUInt32BE(33, false);
+    des.rf6 = dataHex.readUInt32BE(37, false);
+    des.rf7 = dataHex.readUInt32BE(41, false);
+    des.rf8 = dataHex.readUInt32BE(45, false);
+    des.rf9 = dataHex.readUInt32BE(49, false);
+    des.rpiType = dataHex.readUInt16BE(53, false);
+    des.rpiNum = dataHex.readUInt16BE(55, false);
+    des.rpiNumInGrp = dataHex.readUInt32BE(57, false);
+    des.rpi1 = dataHex.readInt32BE(61, false);
+    des.rpi2 = dataHex.readInt32BE(65, false);
+    des.rpi3 = dataHex.readInt32BE(69, false);
+    des.rpi4 = dataHex.readInt32BE(73, false);
+    des.rpi5 = dataHex.readInt32BE(77, false);
+    des.rpi6 = dataHex.readInt32BE(81, false);
+    des.rpi7 = dataHex.readInt32BE(85, false);
+    des.rpi8 = dataHex.readInt32BE(89, false);
+    des.rpi9 = dataHex.readInt32BE(93, false);
+    des.pwType = dataHex.readInt16BE(97, false);
+    des.pwNum = dataHex.readInt16BE(99, false);
+    des.pwNumInGrp = dataHex.readInt32BE(101, false);
+    des.pw1 = dataHex.readInt32BE(105, false);
+    des.pw2 = dataHex.readInt32BE(109, false);
+    des.pw3 = dataHex.readInt32BE(113, false);
+    des.pw4 = dataHex.readInt32BE(117, false);
+    des.pw5 = dataHex.readInt32BE(121, false);
+    des.pw6 = dataHex.readInt32BE(125, false);
+    des.pw7 = dataHex.readInt32BE(129, false);
+    des.pw8 = dataHex.readInt32BE(133, false);
+    des.pw9 = dataHex.readInt32BE(137, false);
+    des.pa = dataHex.readInt32BE(141, false);
+    des.azimuth1 = dataHex.readInt16BE(145, false);
+    des.elevationAngle1 = dataHex.readInt16BE(147, false);
+    des.azimuth2 = dataHex.readInt16BE(149, false);
+    des.elevationAngle2 = dataHex.readInt16BE(151, false);
+    des.azimuth3 = dataHex.readInt16BE(153, false);
+    des.elevationAngle3 = dataHex.readInt16BE(155, false);
+    des.azimuth4 = dataHex.readInt16BE(157, false);
+    des.elevationAngle4 = dataHex.readInt16BE(159, false);
+    des.locationInfo = dataHex.readInt32BE(161, false);
+    des.validFlag = dataHex.readInt32BE(165, false);
+    return des;
+  }
 }
 
 /**
@@ -300,4 +356,77 @@ export class NarrowBandFullPulseDescription {
   pdwPw: number; // 5-8bytes 脉宽(单位：8ns)
   pdwWorkBand: number; // 波段码(单位 MHz)
   // 下面都没有英文 后面再说
+}
+
+export class BroadBandRadiationDescription {
+  radiationSourceNum: number; // 3-4 辐射源序号
+  firstArriveTime: number; // 5-8 到达时间
+  /**
+   * 载频
+   */
+  rfExtType: number; // 9 脉间类型
+  rfIntType: number; // 10  脉内类型
+  rfNum: number; // 11-12  个数
+  rfNumInGrp: number; // 13-14  脉组内脉冲数
+  // backup: number; // 15-16  备份
+  rf1: number; // 17-20 RF1
+  rf2: number; // 21-24 RF2
+  rf3: number; // 25-28 RF3
+  rf4: number; // 29-32 RF4
+  rf5: number; // 33-36 RF5
+  rf6: number; // 37-40 RF6
+  rf7: number; // 41-44 RF7
+  rf8: number; // 45-48 RF8
+  rf9: number; // 49-52 RF9
+  /**
+   * 重频repete frequency
+   */
+  rpiType: number; // 53-54 类型
+  rpiNum: number; // 55-56  个数
+  rpiNumInGrp: number; // 57-60  脉组内脉冲数
+  rpi1: number; // 61-64 rpi1
+  rpi2: number; // 65-68 rpi2
+  rpi3: number; // 69-72 rpi3
+  rpi4: number; // 73-76 rpi4
+  rpi5: number; // 77-80 rpi5
+  rpi6: number; // 81-84 rpi6
+  rpi7: number; // 85-88 rpi7
+  rpi8: number; // 89-92 rpi8
+  rpi9: number; // 93-96 rpi9
+  /**
+   * 脉宽
+   */
+  pwType: number; // 97-98 类型
+  pwNum: number; // 99-100 个数
+  pwNumInGrp: number; // 101-104 脉组内脉冲数
+  pw1: number; // 105-108 pw1
+  pw2: number; // 109-112 pw2
+  pw3: number; // 113-116 pw3
+  pw4: number; // 117-120 pw4
+  pw5: number; // 121-124 pw5
+  pw6: number; // 125-128 pw6
+  pw7: number; // 129-132 pw7
+  pw8: number; // 133-136 pw8
+  pw9: number; // 137-140 pw9
+  pa: number; // 141-144 PA 脉幅(平均)
+  /**
+   * 位置信息（可调）
+   */
+  azimuth1: number; // 145-146 方位角 单位：0.1度
+  elevationAngle1: number; // 147-148 仰角 单位：0.1度
+  azimuth2: number; // 149-150 方位角 单位：0.1度
+  elevationAngle2: number; // 151-152仰角 单位：0.1度
+  azimuth3: number; // 153-154 方位角 单位：0.1度
+  elevationAngle3: number; // 155-156 仰角 单位：0.1度
+  azimuth4: number; // 157-158 方位角 单位：0.1度
+  elevationAngle4: number; // 159-160 仰角 单位：0.1度
+  /**
+   * 定位结果（可调）
+   */
+  locationInfo: number; // 161-164 位置信息
+  /**
+   * 脉内调制信息（可调）
+   */
+  validFlag: number; // 165-168 脉内有效标志
+  // idInfo: number; // 169-284 脉内特征信息
 }
