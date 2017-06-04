@@ -123,43 +123,43 @@ const makeRadiation = ()=>{
   + '0001'//个数n
   + '0000'//脉组内脉冲数
   + '0000'//备份
-  + '00'.repeat(4)//RF1
-  + '00'.repeat(4)//RF2
-  + '00'.repeat(4)//RF3
-  + '00'.repeat(4)//RF4
-  + '00'.repeat(4)//RF5
-  + '00'.repeat(4)//RF6
-  + '00'.repeat(4)//RF7
-  + '00'.repeat(4)//RF8,单位0.1MHz
+  + randomBytes(4)//RF1
+  + randomBytes(4)//RF2
+  + randomBytes(4)//RF3
+  + randomBytes(4)//RF4
+  + randomBytes(4)//RF5
+  + randomBytes(4)//RF6
+  + randomBytes(4)//RF7
+  + randomBytes(4)//RF8,单位0.1MHz
   /**
    * 重频
    */
   + '0000'//类型
   + '0001'//个数m
   + '00000001'//脉组内脉冲数
-  + '00'.repeat(4)//周期PRI1
-  + '00'.repeat(4)//周期PRI2
-  + '00'.repeat(4)//周期PRI3
-  + '00'.repeat(4)//周期PRI4
-  + '00'.repeat(4)//周期PRI5
-  + '00'.repeat(4)//周期PRI6
-  + '00'.repeat(4)//周期PRI7
-  + '00'.repeat(4)//周期PRI8,单位0.1MHz
+  + randomBytes(4)//周期PRI1
+  + randomBytes(4)//周期PRI2
+  + randomBytes(4)//周期PRI3
+  + randomBytes(4)//周期PRI4
+  + randomBytes(4)//周期PRI5
+  + randomBytes(4)//周期PRI6
+  + randomBytes(4)//周期PRI7
+  + randomBytes(4)//周期PRI8,单位0.1MHz
   /**
    * 脉宽
    */
   + '0000'//类型
   + '0001'//个数l
   + '00000001'//脉组内脉冲数
-  + '00'.repeat(4)//PW1
-  + '00'.repeat(4)//PW2
-  + '00'.repeat(4)//PW3
-  + '00'.repeat(4)//PW4
-  + '00'.repeat(4)//PW5
-  + '00'.repeat(4)//PW6
-  + '00'.repeat(4)//PW7
-  + '00'.repeat(4)//PW8,单位????
-  + '00'.repeat(4)//脉幅(平均)
+  + randomBytes(4)//PW1
+  + randomBytes(4)//PW2
+  + randomBytes(4)//PW3
+  + randomBytes(4)//PW4
+  + randomBytes(4)//PW5
+  + randomBytes(4)//PW6
+  + randomBytes(4)//PW7
+  + randomBytes(4)//PW8,单位????
+  + randomBytes(4)//脉幅(平均)
   /**
    * 位置信息
    */
@@ -178,7 +178,7 @@ const makeRadiation = ()=>{
   /**
    * 脉内调制信息
    */
-  + '23'.repeat(4)//脉内有效标志
+  + randomBytes(4)//脉内有效标志
   + '12'.repeat(116)//脉内特征信息
   + '00'.repeat(2)//备份码
   + 'aa55'//终止码

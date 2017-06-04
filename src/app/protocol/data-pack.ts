@@ -198,42 +198,43 @@ export class BroadBandSourceDataPack extends BaseDescriptionDataPack {
     des.rf6 = dataHex.readUInt32BE(37, false);
     des.rf7 = dataHex.readUInt32BE(41, false);
     des.rf8 = dataHex.readUInt32BE(45, false);
-    des.rf9 = dataHex.readUInt32BE(49, false);
-    des.rpiType = dataHex.readUInt16BE(53, false);
-    des.rpiNum = dataHex.readUInt16BE(55, false);
-    des.rpiNumInGrp = dataHex.readUInt32BE(57, false);
-    des.rpi1 = dataHex.readInt32BE(61, false);
-    des.rpi2 = dataHex.readInt32BE(65, false);
-    des.rpi3 = dataHex.readInt32BE(69, false);
-    des.rpi4 = dataHex.readInt32BE(73, false);
-    des.rpi5 = dataHex.readInt32BE(77, false);
-    des.rpi6 = dataHex.readInt32BE(81, false);
-    des.rpi7 = dataHex.readInt32BE(85, false);
-    des.rpi8 = dataHex.readInt32BE(89, false);
-    des.rpi9 = dataHex.readInt32BE(93, false);
-    des.pwType = dataHex.readInt16BE(97, false);
-    des.pwNum = dataHex.readInt16BE(99, false);
-    des.pwNumInGrp = dataHex.readInt32BE(101, false);
-    des.pw1 = dataHex.readInt32BE(105, false);
-    des.pw2 = dataHex.readInt32BE(109, false);
-    des.pw3 = dataHex.readInt32BE(113, false);
-    des.pw4 = dataHex.readInt32BE(117, false);
-    des.pw5 = dataHex.readInt32BE(121, false);
-    des.pw6 = dataHex.readInt32BE(125, false);
-    des.pw7 = dataHex.readInt32BE(129, false);
-    des.pw8 = dataHex.readInt32BE(133, false);
-    des.pw9 = dataHex.readInt32BE(137, false);
-    des.pa = dataHex.readInt32BE(141, false);
-    des.azimuth1 = dataHex.readInt16BE(145, false);
-    des.elevationAngle1 = dataHex.readInt16BE(147, false);
-    des.azimuth2 = dataHex.readInt16BE(149, false);
-    des.elevationAngle2 = dataHex.readInt16BE(151, false);
-    des.azimuth3 = dataHex.readInt16BE(153, false);
-    des.elevationAngle3 = dataHex.readInt16BE(155, false);
-    des.azimuth4 = dataHex.readInt16BE(157, false);
-    des.elevationAngle4 = dataHex.readInt16BE(159, false);
-    des.locationInfo = dataHex.readInt32BE(161, false);
-    des.validFlag = dataHex.readInt32BE(165, false);
+
+    des.rpiType = dataHex.readUInt16BE(49, false);
+    des.rpiNum = dataHex.readUInt16BE(51, false);
+    des.rpiNumInGrp = dataHex.readUInt32BE(53, false);
+    des.rpi1 = dataHex.readInt32BE(57, false);
+    des.rpi2 = dataHex.readInt32BE(61, false);
+    des.rpi3 = dataHex.readInt32BE(65, false);
+    des.rpi4 = dataHex.readInt32BE(69, false);
+    des.rpi5 = dataHex.readInt32BE(73, false);
+    des.rpi6 = dataHex.readInt32BE(77, false);
+    des.rpi7 = dataHex.readInt32BE(81, false);
+    des.rpi8 = dataHex.readInt32BE(85, false);
+
+    des.pwType = dataHex.readInt16BE(89, false);
+    des.pwNum = dataHex.readInt16BE(91, false);
+    des.pwNumInGrp = dataHex.readInt32BE(93, false);
+    des.pw1 = dataHex.readInt32BE(97, false);
+    des.pw2 = dataHex.readInt32BE(101, false);
+    des.pw3 = dataHex.readInt32BE(105, false);
+    des.pw4 = dataHex.readInt32BE(109, false);
+    des.pw5 = dataHex.readInt32BE(113, false);
+    des.pw6 = dataHex.readInt32BE(117, false);
+    des.pw7 = dataHex.readInt32BE(121, false);
+    des.pw8 = dataHex.readInt32BE(125, false);
+    des.pa = dataHex.readInt32BE(129, false);
+
+    des.azimuth1 = dataHex.readInt16BE(133, false);
+    des.elevationAngle1 = dataHex.readInt16BE(135, false);
+    des.azimuth2 = dataHex.readInt16BE(137, false);
+    des.elevationAngle2 = dataHex.readInt16BE(139, false);
+    des.azimuth3 = dataHex.readInt16BE(141, false);
+    des.elevationAngle3 = dataHex.readInt16BE(143, false);
+    des.azimuth4 = dataHex.readInt16BE(145, false);
+    des.elevationAngle4 = dataHex.readInt16BE(147, false);
+
+    des.locationInfo = dataHex.readInt32BE(149, false);
+    des.validFlag = dataHex.readInt32BE(153, false);
     return des;
   }
 }
@@ -377,56 +378,53 @@ export class BroadBandRadiationDescription {
   rf6: number; // 37-40 RF6
   rf7: number; // 41-44 RF7
   rf8: number; // 45-48 RF8
-  rf9: number; // 49-52 RF9
   /**
    * 重频repete frequency
    */
-  rpiType: number; // 53-54 类型
-  rpiNum: number; // 55-56  个数
-  rpiNumInGrp: number; // 57-60  脉组内脉冲数
-  rpi1: number; // 61-64 rpi1
-  rpi2: number; // 65-68 rpi2
-  rpi3: number; // 69-72 rpi3
-  rpi4: number; // 73-76 rpi4
-  rpi5: number; // 77-80 rpi5
-  rpi6: number; // 81-84 rpi6
-  rpi7: number; // 85-88 rpi7
-  rpi8: number; // 89-92 rpi8
-  rpi9: number; // 93-96 rpi9
+  rpiType: number; // 49-50 类型
+  rpiNum: number; // 51-52  个数
+  rpiNumInGrp: number; // 53-56  脉组内脉冲数
+  rpi1: number; // 57-60 rpi1
+  rpi2: number; // 61-64 rpi2
+  rpi3: number; // 65-68 rpi3
+  rpi4: number; // 69-72 rpi4
+  rpi5: number; // 73-76 rpi5
+  rpi6: number; // 77-80 rpi6
+  rpi7: number; // 81-84 rpi7
+  rpi8: number; // 85-88 rpi8
   /**
    * 脉宽
    */
-  pwType: number; // 97-98 类型
-  pwNum: number; // 99-100 个数
-  pwNumInGrp: number; // 101-104 脉组内脉冲数
-  pw1: number; // 105-108 pw1
-  pw2: number; // 109-112 pw2
-  pw3: number; // 113-116 pw3
-  pw4: number; // 117-120 pw4
-  pw5: number; // 121-124 pw5
-  pw6: number; // 125-128 pw6
-  pw7: number; // 129-132 pw7
-  pw8: number; // 133-136 pw8
-  pw9: number; // 137-140 pw9
-  pa: number; // 141-144 PA 脉幅(平均)
+  pwType: number; // 89-90 类型
+  pwNum: number; // 91-92 个数
+  pwNumInGrp: number; // 93-96 脉组内脉冲数
+  pw1: number; // 97-100 pw1
+  pw2: number; // 101-104 pw2
+  pw3: number; // 105-108 pw3
+  pw4: number; // 109-112 pw4
+  pw5: number; // 113-116 pw5
+  pw6: number; // 117-120 pw6
+  pw7: number; // 121-124 pw7
+  pw8: number; // 125-128 pw8
+  pa: number; // 129-132 PA 脉幅(平均)
   /**
    * 位置信息（可调）
    */
-  azimuth1: number; // 145-146 方位角 单位：0.1度
-  elevationAngle1: number; // 147-148 仰角 单位：0.1度
-  azimuth2: number; // 149-150 方位角 单位：0.1度
-  elevationAngle2: number; // 151-152仰角 单位：0.1度
-  azimuth3: number; // 153-154 方位角 单位：0.1度
-  elevationAngle3: number; // 155-156 仰角 单位：0.1度
-  azimuth4: number; // 157-158 方位角 单位：0.1度
-  elevationAngle4: number; // 159-160 仰角 单位：0.1度
+  azimuth1: number; // 133-134 方位角 单位：0.1度
+  elevationAngle1: number; // 135-136 仰角 单位：0.1度
+  azimuth2: number; // 137-138 方位角 单位：0.1度
+  elevationAngle2: number; // 139-140 单位：0.1度
+  azimuth3: number; // 141-142 方位角 单位：0.1度
+  elevationAngle3: number; // 143-144 仰角 单位：0.1度
+  azimuth4: number; // 145-146 方位角 单位：0.1度
+  elevationAngle4: number; // 147-148 仰角 单位：0.1度
   /**
    * 定位结果（可调）
    */
-  locationInfo: number; // 161-164 位置信息
+  locationInfo: number; // 149-152 位置信息
   /**
    * 脉内调制信息（可调）
    */
-  validFlag: number; // 165-168 脉内有效标志
-  // idInfo: number; // 169-284 脉内特征信息
+  validFlag: number; // 153-156 脉内有效标志
+  // idInfo: number; // 157-272 脉内特征信息
 }
