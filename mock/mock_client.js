@@ -3,6 +3,9 @@ let HOST = '127.0.0.1';
 
 let dgram = require('dgram');
 
+const randomBytes = (dig) => {
+  return ('0000'+Math.floor(Math.random() *Math.pow(10,dig*2))+'').slice(-2*dig)
+}
 // console.log(tag.length/2);
 const makeTag = () => {
   return (
@@ -22,8 +25,8 @@ const makeTag = () => {
     + '0000'//反馈指令序号
     + '0000'//指令接收状态
     + '0000'//任务编号
-    + Math.floor(1000 + Math.random() * 9000)//前端工作温度 2Bytes
-    + Math.floor(1000 + Math.random() * 9000)//分机工作温度 2Bytes
+    + randomBytes(2)//前端工作温度
+    + randomBytes(2)//分机工作温度
     + '00000000'//分机工作状态
     + '00000001'//全脉冲个数统计
     + '00000001'//辐射源数据包统计
@@ -34,16 +37,16 @@ const makeTag = () => {
      * 固定信息
      */
     + '0000fc1d'//包尾
-  );
+  )}
 
-}
-let pdw =
+const makePDW = () => {
+  return (
   /**
    * 固定信息
    */
   '1acf'//起始码：0x1ACF
   + '0002'//网络接口数据类型
-  + '00000138'//从帧有限标记到包尾的字节数
+  + '000000d0'//从帧有限标记到包尾的字节数
   + '00'.repeat(64)//系统控制信息
   + '00'.repeat(64)//GPS数据
   /**
@@ -51,23 +54,46 @@ let pdw =
    */
   + '00000001'//全脉冲个数
   //全脉冲描述字1
-  + '00000001'//到达时间 单位：32ns
-  + '00000001'//脉宽 单位：32ns
-  + '0901'//引导中心频率 单位：MHz
-  + '00'//备份
-  + '00'//粗测频个数/  粗测频类型 BIT0-3：≤3 BIT4-7：0-常规；1-分集；2-调频
-  + '00'.repeat(4)//粗测中频1-4 单位:15.625MHz,当类型为2时，第一个字节表示中心频率，第二个字节表示带宽
-  + '0100'//数字幅度 单位：1dB
-  + '22'//DLVA幅度 单位：1dB
-  + '00'//备份
-  + '00002233'//精测中频
-  + '00'.repeat(4)//备份
-  + '00'.repeat(32)//备份
+  + randomBytes(4)//到达时间 单位：4.46ns
+  + randomBytes(4)//脉宽 单位：4.46ns
+  + randomBytes(2)//脉冲计数
+  + randomBytes(2)//波段码 Mhz
+  + randomBytes(2)//前沿频率 0.01Mhz
+  + randomBytes(2)//最小频率，当分集信号时，为频率1(单位 0.01MHz)
+  + randomBytes(2)//最大频率，当分集信号时，为频率2(单位 0.01MHz)
+  + randomBytes(2)//当分集信号时，为频率3(单位 0.01MHz)
+  + randomBytes(2)//当分集信号时，为频率4(单位 0.01MHz)
+  + '00'//脉冲类型; 【Bit0-1：Bit2-3】：0-脉冲Pdw，1-连续波Pdw,3-分集信号 【Bit4-7】：分集个数
+  + '00'//线调标记；0表示递增，1表示递减，2表示混合，3 表示不是线调
+  + randomBytes(2)//相位1 （单位 0.007度，范围-180~180度）
+  + randomBytes(2)//相位2 （单位 0.007度，范围-180~180度）
+  + randomBytes(2)//相位3 （单位 0.007度，范围-180~180度）
+  + randomBytes(2)//相位4 （单位 0.007度，范围-180~180度）
+  + randomBytes(2)//相位5 （单位 0.007度，范围-180~180度）
+  + randomBytes(2)//相位6 （单位 0.007度，范围-180~180度）
+  + randomBytes(2)//相位7 （单位 0.007度，范围-180~180度）
+  + randomBytes(2)//相位8 （单位 0.007度，范围-180~180度）
+  + randomBytes(2)//相位9 （单位 0.007度，范围-180~180度）
+  + randomBytes(2)//相位10 （单位 0.007度，范围-180~180度）
+  + randomBytes(2)//相位11 （单位 0.007度，范围-180~180度）
+  + randomBytes(2)//相位12 （单位 0.007度，范围-180~180度）
+  + randomBytes(2)//相位13 （单位 0.007度，范围-180~180度）
+  + randomBytes(2)//相位14 （单位 0.007度，范围-180~180度）
+  + randomBytes(2)//相位15 （单位 0.007度，范围-180~180度）
+  + randomBytes(2)//相位16 （单位 0.007度，范围-180~180度）
+  + randomBytes(1)//数字幅度1（单位1dB）
+  + randomBytes(1)//数字幅度2（单位1dB）
+  + randomBytes(1)//数字幅度3（单位1dB）
+  + randomBytes(1)//数字幅度4（单位1dB）
+  + randomBytes(1)//数字幅度5（单位1dB）
+  + randomBytes(1)//数字幅度6（单位1dB）
+  + randomBytes(1)//数字幅度7（单位1dB）
+  + randomBytes(1)//数字幅度8（单位1dB）
   /**
    * 固定信息
    */
   + '0000fc1d'//包尾
-  ;
+  )}
 
 // console.log(pdw.length/2);
 
@@ -215,8 +241,21 @@ const numberTo4Bytes = (num)=> {
 
 
 
-const doSend = () => {
-  let message = Buffer.from(makeTag(), 'hex');
+const doSendTag = () => {
+  let hexMsg = makeTag();
+  let message = Buffer.from(hexMsg, 'hex');
+  let msgToSend = packageMessage(message);
+  let client = dgram.createSocket('udp4');
+  client.send(msgToSend, 0, msgToSend.length, PORT, HOST, function (err, bytes) {
+    if (err) throw err;
+    console.log('UDP message sent to ' + HOST + ':' + PORT);
+    client.close();
+  });
+}
+
+const doSendPDW = () => {
+  let hexMsg = makePDW();
+  let message = Buffer.from(hexMsg, 'hex');
   let msgToSend = packageMessage(message);
   let client = dgram.createSocket('udp4');
   client.send(msgToSend, 0, msgToSend.length, PORT, HOST, function (err, bytes) {
@@ -227,5 +266,8 @@ const doSend = () => {
 }
 
 setInterval(function () {
-  doSend();
-}, 1000)
+  doSendTag();
+  doSendPDW();
+}, 1500)
+
+

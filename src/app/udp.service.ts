@@ -262,6 +262,7 @@ export class UdpService {
         console.log(`parser broad band data pack success.`);
         // debug it
         console.log(pack2.description());
+        console.log(pack2.parserDescription(pack2.datas[0]));
         return pack2;
       case 3: // 宽带辐射源数据包
         if (len < 140) {

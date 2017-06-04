@@ -18,8 +18,10 @@ export class DeviceTagComponent implements OnInit, OnDestroy {
   constructor(private udpService: UdpService, private cd: ChangeDetectorRef) { }
   ngOnInit() {
     this.subscription = this.udpService.getMessage().subscribe((msg: TagDataPack) => {
-      this.message = msg;
-      this.cd.detectChanges(); // 检测更改，更新UI。
+      if (msg.type === 0) {// 判断是标签包
+        this.message = msg;
+        this.cd.detectChanges(); // 检测更改，更新UI。
+      }
     });
   }
   ngOnDestroy(): void {

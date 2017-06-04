@@ -8,7 +8,7 @@ import {Buffer} from "buffer";
  */
 export class BaseDataPack {
   // private head = 0x1ACF; // 帧有效标记2
-  // private type; // 数据类型 2
+  type: number; // 数据类型 2
   // private len: number; // 数据长度 4
   control: string; // 系统控制信息64，没说具体是什么，方便存储，用string，转成string hex
   gps: string; // GPS数据4，没说具体是什么，方便存储，用string，转成string hex
@@ -60,6 +60,7 @@ export class TagDataPack extends BaseDataPack {
 
   constructor(control: string, gps: string) {
     super(control, gps);
+    this.type = 0;
   }
 
   description() {
@@ -81,6 +82,7 @@ export class NarrowBandFullPulseDataPack extends BaseDescriptionDataPack {
 
   constructor(control: string, gps: string) {
     super(control, gps);
+    this.type = 1;
   }
 
   description() {
@@ -110,6 +112,7 @@ export class BroadBandFullPulseDataPack extends BaseDescriptionDataPack {
 
   constructor(control: string, gps: string) {
     super(control, gps);
+    this.type = 2;
   }
 
   description() {
@@ -170,6 +173,7 @@ export class BroadBandFullPulseDataPack extends BaseDescriptionDataPack {
 export class BroadBandSourceDataPack extends BaseDescriptionDataPack {
   constructor(control: string, gps: string) {
     super(control, gps);
+    this.type = 3;
   }
 
   description() {
@@ -184,6 +188,7 @@ export class BroadBandSourceDataPack extends BaseDescriptionDataPack {
 export class NarrowBandSourceDataPack extends BaseDescriptionDataPack {
   constructor(control: string, gps: string) {
     super(control, gps);
+    this.type = 5;
   }
 
   description() {
@@ -198,6 +203,7 @@ export class NarrowBandSourceDataPack extends BaseDescriptionDataPack {
 export class PhaseCorrectionDataPack extends BaseDescriptionDataPack {
   constructor(control: string, gps: string) {
     super(control, gps);
+    this.type = 11; // TODO 11 or 13
   }
 
   description() {
@@ -217,6 +223,7 @@ export class IntermediateFrequencyDataPack extends BaseDataPack {
 
   constructor(control: string, gps: string) {
     super(control, gps);
+    this.type = 4;
   }
 
   description() {
@@ -235,6 +242,7 @@ export class PositioningDataPack extends BaseDataPack {
 
   constructor(control: string, gps: string) {
     super(control, gps);
+    this.type = 6;
   }
 
   description() {
