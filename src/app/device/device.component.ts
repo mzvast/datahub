@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { DatabaseService } from 'app/database.service';
 import { UdpService } from 'app/udp.service';
@@ -12,7 +12,7 @@ declare var electron: any; // 　Typescript 定义
   encapsulation: ViewEncapsulation.Emulated,
   changeDetection: ChangeDetectionStrategy.Default
 })
-export class DeviceComponent implements OnInit {
+export class DeviceComponent implements OnInit, OnDestroy {
   server = electron.remote.getGlobal('udp').server;
   progress = false;
   protocols = [
@@ -41,6 +41,11 @@ export class DeviceComponent implements OnInit {
   }
 
   ngOnInit() {
+  }
+
+  ngOnDestroy(): void {
+    console.log('停止UDP监听');
+    this.udpService.stopUdpServer();
   }
 
   startReceive() {

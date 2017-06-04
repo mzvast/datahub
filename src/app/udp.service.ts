@@ -82,9 +82,11 @@ export class UdpService {
   }
 
   stopUdpServer() {
-    electron.remote.getGlobal('udp').server.close();
-    electron.remote.getGlobal('udp').server = null; // 重置null，防止内存泄露
-    console.log('UDP server closed!');
+    if (electron.remote.getGlobal('udp').server != null) {
+      electron.remote.getGlobal('udp').server.close();
+      electron.remote.getGlobal('udp').server = null; // 重置null，防止内存泄露
+      console.log('UDP server closed!');
+    }
   }
 
   parserProtocolPack(msg: Buffer, key: string) {
