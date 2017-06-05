@@ -1,3 +1,4 @@
+import { DatabaseService } from './database.service';
 import { Injectable } from '@angular/core';
 import { Buffer } from 'buffer';
 import { ProtocolPack } from 'app/protocol/protocol-pack';
@@ -25,17 +26,21 @@ export class UdpService {
   LocalHOST = '127.0.0.1';
   RemoteHOST = '127.0.0.1';
   debug = false;
+  record = false;
 
   workingBuffers: Map<string, Buffer> = new Map();
   workingProtocolPacks: Map<string, ProtocolPack> = new Map();
   subject = new BehaviorSubject<any>({});
 
-  constructor() {
+  constructor(private databaseService: DatabaseService) {
     console.log('udp service constructor');
+    this.databaseService.authenticate();
+    // this.databaseService.create('tag', '123445');
+    // this.databaseService.index();
     /**
      * 判断udp server是否已启动，占用了端口
      */
-    console.log(this.server);
+    // console.log(this.server);
     if (this.server) {
       this.stopUdpServer();
     }
@@ -43,6 +48,16 @@ export class UdpService {
     // this.startUdpServer();
     // this.setRemoteAddress('127.0.0.1', 8511); // Test send to local port
     // this.sendMsg('Hello World');
+  }
+
+  toggleDebug() {
+    this.debug = !this.debug;
+    console.log('debug=', this.debug);
+  }
+
+  toggleRecord() {
+    this.record = !this.record;
+    console.log('record=', this.record);
   }
 
   sendMessage(message: any) {
@@ -69,6 +84,9 @@ export class UdpService {
       // const buf = Buffer.from(msg);
       if (this.debug) {
         console.log(`server got ${msg.length} bytes: ${msg.toString('hex')} from ${rinfo.address}:${rinfo.port}`);
+      }
+      if (this.record) {
+        this.databaseService.create('pkg', `${msg.toString('hex')}`);
       }
       this.parserProtocolPack(Buffer.from(msg), `${rinfo.address}:${rinfo.port}`);
       // this.stopUdpServer();

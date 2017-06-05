@@ -10,6 +10,7 @@ import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy } from '@
 })
 export class MysidenavComponent implements OnInit {
   debug: boolean;
+  record: boolean;
   devices = [
     {
       name: '接收数据',
@@ -51,12 +52,14 @@ export class MysidenavComponent implements OnInit {
 
   ngOnInit() {
     this.debug = this.udpService.debug;
+    this.record = this.udpService.record;
   }
 
   toggleDebug() {
-    this.debug = !this.debug;
-    this.udpService.debug = this.debug;
-    console.log('debug=', this.udpService.debug);
+    this.udpService.toggleDebug();
+  }
+  toggleRecord() {
+    this.udpService.toggleRecord()
   }
 
 }

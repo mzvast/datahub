@@ -30,7 +30,7 @@ export class DatabaseService {
         // console.log(tags[0].name);
       })
       .catch(function (error) {
-        console.log('error');
+        console.log('error:', error);
       });
   }
 
@@ -41,15 +41,13 @@ export class DatabaseService {
         console.log(data[0].raw);
       })
       .catch(function (error) {
-        console.log('error');
+        console.log('error:', error);
       });
   }
 
   create(table: string, raw: any) {
     this.models[table].create({
-      raw: raw,
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
+      raw: raw
     });
   }
 }

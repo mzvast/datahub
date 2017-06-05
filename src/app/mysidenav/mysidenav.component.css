@@ -31,6 +31,7 @@ a.active{
   background-color: #e91e63;
   color:white;
 }
-.debug{
+.toolbar{
   margin-left:1em;
+  margin-top: 1em;
 }

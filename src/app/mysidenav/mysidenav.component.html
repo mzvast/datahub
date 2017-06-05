@@ -33,8 +33,11 @@
         </a>-->
         <md-divider></md-divider>
         <h3 md-subheader>工具</h3>
-        <md-slide-toggle mdTooltip="点击切换" class="debug" color="accent" (click)="toggleDebug()">
+        <md-slide-toggle mdTooltip="点击切换" class="toolbar" color="accent" [(ngModel)]="debug" (click)="toggleDebug()">
           <span>调试模式</span>
+        </md-slide-toggle>
+        <md-slide-toggle mdTooltip="点击切换" class="toolbar" color="accent" [(ngModel)]="record" (click)="toggleRecord()">
+          <span>数据记录</span>
         </md-slide-toggle>
       </md-nav-list>
     </div>
