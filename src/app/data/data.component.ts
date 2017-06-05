@@ -27,6 +27,9 @@ export class DataComponent implements OnInit {
     }, {
       name: '定位',
       url: 'location'
+    }, {
+      name: '原始数据',
+      url: 'pkg'
     }
   ];
   constructor() { }

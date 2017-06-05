@@ -38,7 +38,7 @@ export class DatabaseService {
     this.models[table].findAll()
       .then(function (data) {
         console.log(data.length);
-        console.log(data[0].raw);
+        console.log(data);
       })
       .catch(function (error) {
         console.log('error:', error);

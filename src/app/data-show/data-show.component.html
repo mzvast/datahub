@@ -1,3 +1,19 @@
-<p>
-  param:{{type}}
-</p>
+<!--<div *ngIf="data">
+ <ul *ngFor="let item of data">
+   <li>{{item}}</li>
+ </ul>
+</div>-->
+<ngx-datatable
+  class="material"
+  [rows]="rows"
+  [columnMode]="'force'"
+  [columns]="columns"
+  [headerHeight]="50"
+  [footerHeight]="50"
+  [rowHeight]="'auto'"
+  [limit]="5"
+  [selected]="selected"
+  [selectionType]="'single'"
+  (activate)="onActivate($event)"
+  (select)='onSelect($event)'>
+</ngx-datatable>
