@@ -1,3 +1,4 @@
+import { UdpService } from './../udp.service';
 import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
@@ -8,6 +9,7 @@ import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy } from '@
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class MysidenavComponent implements OnInit {
+  debug: boolean;
   devices = [
     {
       name: '接收数据',
@@ -45,9 +47,16 @@ export class MysidenavComponent implements OnInit {
   //     icon: 'send'
   //   }
   // ]
-  constructor() { }
+  constructor(private udpService: UdpService) { }
 
   ngOnInit() {
+    this.debug = this.udpService.debug;
+  }
+
+  toggleDebug() {
+    this.debug = !this.debug;
+    this.udpService.debug = this.debug;
+    console.log('debug=', this.udpService.debug);
   }
 
 }

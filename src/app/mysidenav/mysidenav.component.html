@@ -9,7 +9,7 @@
         </a>
         <md-divider></md-divider>
         <h3 md-subheader>设置</h3>
-        <a md-list-item  *ngFor="let link of settings" routerLink={{link.url}} routerLinkActive="active">
+        <a md-list-item *ngFor="let link of settings" routerLink={{link.url}} routerLinkActive="active">
           <md-icon md-list-icon>{{link.icon}}</md-icon>
           <h4 md-line>{{link.name}}</h4>
         </a>
@@ -31,6 +31,11 @@
           <md-icon md-list-icon>{{link.icon}}</md-icon>
           <h4 md-line>{{link.name}}</h4>
         </a>-->
+        <md-divider></md-divider>
+        <h3 md-subheader>工具</h3>
+        <md-slide-toggle mdTooltip="点击切换" class="debug" color="accent" (click)="toggleDebug()">
+          <span>调试模式</span>
+        </md-slide-toggle>
       </md-nav-list>
     </div>
   </md-sidenav>

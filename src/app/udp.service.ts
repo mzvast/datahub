@@ -24,6 +24,7 @@ export class UdpService {
   RemotePORT = 6011;
   LocalHOST = '127.0.0.1';
   RemoteHOST = '127.0.0.1';
+  debug = false;
 
   workingBuffers: Map<string, Buffer> = new Map();
   workingProtocolPacks: Map<string, ProtocolPack> = new Map();
@@ -66,9 +67,10 @@ export class UdpService {
 
     this.server.on('message', (msg, rinfo) => {
       // const buf = Buffer.from(msg);
-      console.log(`server got: ${msg.toString('hex')} from ${rinfo.address}:${rinfo.port}`);
+      if (this.debug) {
+        console.log(`server got ${msg.length} bytes: ${msg.toString('hex')} from ${rinfo.address}:${rinfo.port}`);
+      }
       this.parserProtocolPack(Buffer.from(msg), `${rinfo.address}:${rinfo.port}`);
-      console.log(`server got: ${msg.length} bytes`);
       // this.stopUdpServer();
     });
 
@@ -133,7 +135,9 @@ export class UdpService {
           if (frameCount === 1) {
             const dataPack: BaseDataPack = this.parserDataPack(protocolPack);
             //  TODO save to sqlite
-            console.log('dataPack:', dataPack);
+            if (this.debug) {
+              console.log('dataPack:', dataPack);
+            }
             this.sendMessage(dataPack); // save msg
           } else {
             let workingProtocolPack = this.workingProtocolPacks.get(key);
@@ -200,53 +204,40 @@ export class UdpService {
     const gps = data.slice(72, 72 + 64).toString('hex');
 
     switch (type) {
-      case 0: // 标签包
+      case 0: // 【标签包】
         if (len !== 312) {
           console.error(`parser tag data pack error, length is not 312.`);
           return null;
         }
         const pack = new TagDataPack(control, gps);
-        pack.sourceNodeNo = data.readUInt8(136, false);
-        pack.destNodeNo = data.readUInt8(137, false);
-        pack.feedbackCommandNo = data.readUInt16BE(138, false);
-        pack.commandReceiveStatus0 = data.readUInt8(140, false);
-        pack.commandReceiveStatus1 = data.readUInt8(141, false);
-        pack.taskNo = data.readUInt16BE(142, false);
-        pack.frontWorkTemp = data.readUInt16BE(144, false);
-        pack.extWorkTemp = data.readUInt16BE(146, false);
-        pack.extWorkStatus0 = data.readUInt8(148, false);
-        pack.extWorkStatus1 = data.readUInt8(149, false);
-        // 文档写上面的status用4字节，那就跳过2个字节
-        pack.fullPulseCount = data.readUInt32BE(152, false);
-        pack.radiationSourceCount = data.readUInt32BE(156, false);
-        pack.ifDataLen = data.readUInt32BE(160, false);
-        pack.backup = data.slice(164, 164 + 16).toString('hex');
-        pack.frontStatusFeedback = data.slice(180, 180 + 128).toString('hex');
-        // 剩下包尾 4 就是308开始
-        console.log(`parser tag data pack success.`);
+        pack.datas.push(data.slice(0).toString('hex'));
         // debug it
-        console.log(pack.description());
+        if (this.debug) {
+          console.log(`parser tag data pack success.`);
+          console.log(pack.description());
+          console.log(pack.parserDescription(data.slice(0).toString('hex')));
+        }
         return pack;
-      case 1: // 窄带全脉冲数据包
-        if (len < 140) {
-          console.error(`parser narrow band data pack error, length less than 140.`);
-          return null;
-        }
-        const count1 = data.readUInt32BE(136, false);
-        const bytesPerData1 = 80;
-        if (len < 140 + count1 * 80) { // 窄带全脉冲描述字（80字节）
-          console.error(`parser narrow band data pack error, length less than ${140 + count1 * bytesPerData1}.`);
-          return null;
-        }
-        const pack1 = new NarrowBandFullPulseDataPack(control, gps);
-        for (let i = 0; i < count1; i++) {
-          pack1.datas.push(data.slice(140 + bytesPerData1 * i, 140 + bytesPerData1 * i + bytesPerData1).toString('hex'));
-        }
-        console.log(`parser narrow band data pack success.`);
-        // debug it
-        console.log(pack1.description());
-        return pack1;
-      case 2: // 宽带全脉冲数据包
+      // case 1: // 窄带全脉冲数据包
+      //   if (len < 140) {
+      //     console.error(`parser narrow band data pack error, length less than 140.`);
+      //     return null;
+      //   }
+      //   const count1 = data.readUInt32BE(136, false);
+      //   const bytesPerData1 = 80;
+      //   if (len < 140 + count1 * 80) { // 窄带全脉冲描述字（80字节）
+      //     console.error(`parser narrow band data pack error, length less than ${140 + count1 * bytesPerData1}.`);
+      //     return null;
+      //   }
+      //   const pack1 = new NarrowBandFullPulseDataPack(control, gps);
+      //   for (let i = 0; i < count1; i++) {
+      //     pack1.datas.push(data.slice(140 + bytesPerData1 * i, 140 + bytesPerData1 * i + bytesPerData1).toString('hex'));
+      //   }
+      //   console.log(`parser narrow band data pack success.`);
+      //   // debug it
+      //   console.log(pack1.description());
+      //   return pack1;
+      case 2: // 宽带【全脉冲】数据包
         if (len < 140) {
           console.error(`parser broad band data pack error, length less than 140.`);
           return null;
@@ -261,12 +252,14 @@ export class UdpService {
         for (let i = 0; i < count2; i++) {
           pack2.datas.push(data.slice(140 + bytesPerData2 * i, 140 + bytesPerData2 * i + bytesPerData2).toString('hex'));
         }
-        console.log(`parser broad band data pack success.`);
         // debug it
-        console.log(pack2.description());
-        console.log(pack2.parserDescription(pack2.datas[0]));
+        if (this.debug) {
+          console.log(`parser broad band data pack success.`);
+          console.log(pack2.description());
+          console.log(pack2.parserDescription(pack2.datas[0]));
+        }
         return pack2;
-      case 3: // 宽带辐射源数据包
+      case 3: // 宽带【辐射源】数据包
         if (len < 140) {
           console.error(`parser broad band source data pack error, length less than 140.`);
           return null;
@@ -281,10 +274,12 @@ export class UdpService {
         for (let i = 0; i < count3; i++) {
           pack3.datas.push(data.slice(140 + bytesPerData3 * i, 140 + bytesPerData3 * i + bytesPerData3).toString('hex'));
         }
-        console.log(`parser broad band source data pack success.`);
         // debug it
-        console.log(pack3.description());
-        console.log(pack3.parserDescription(pack3.datas[0]));
+        if (this.debug) {
+          console.log(`parser broad band source data pack success.`);
+          console.log(pack3.description());
+          console.log(pack3.parserDescription(pack3.datas[0]));
+        }
         return pack3;
       case 4: // 中频数据包
         if (len !== 8640) { // TODO 表里说总长是4544不对

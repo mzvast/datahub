@@ -32,7 +32,7 @@ export class DevicePdwComponent implements OnInit, OnDestroy {
   }
 
     setItems(message: Object): void {
-    const keys = Object.keys(message);
+    const keys = Object.keys(this.dictionary); // 控制显示的字段
     this.items = keys.map((curVal, index, arr) => {
       const obj = {};
       obj['name'] = this.dictionary[curVal];
