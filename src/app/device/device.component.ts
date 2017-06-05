@@ -56,7 +56,7 @@ export class DeviceComponent implements OnInit, OnDestroy {
   stopReceive() {
     console.log('停止UDP监听');
     this.udpService.stopUdpServer();
-    this.parentRouter.navigateByUrl('/device'); // 切换到空白页
+    // this.parentRouter.navigateByUrl('/device'); // 切换到空白页
   }
 
   toggle() {

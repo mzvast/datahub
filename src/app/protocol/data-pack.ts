@@ -181,6 +181,10 @@ export class BroadBandSourceDataPack extends BaseDescriptionDataPack {
       `fullPulseDescriptions length: ${this.datas.length}`;
   }
 
+  // getDictionary(): BroadBandRadiationDictionary {
+  //   return new BroadBandRadiationDictionary();
+  // }
+
   parserDescription(data: string): BroadBandRadiationDescription {
     const des = new BroadBandRadiationDescription();
     const dataHex = Buffer.from(data, 'hex');
@@ -348,7 +352,46 @@ export class BroadBandFullPulseDescription {
   amplitude7: number; // 63 数字幅度1（单位1dB）
   amplitude8: number; // 64 数字幅度1（单位1dB）
 }
-
+/**
+ * 全脉冲字典
+ */
+export class BroadBandFullPulseDictionary {
+  pdwToaTod = '到达时间'; // 1-4bytes 到达时间(单位 4.46ns)
+  pdwPw = '脉宽'; // 5-8bytes 脉宽(单位 4.46ns)
+  pdwVpcnt = '脉冲计数'; // 9-10bytes 脉冲计数
+  pdwWorkBand = '波段码'; // 11-12bytes 波段码(单位 MHz)
+  trackerFreRise = '前沿频率'; // 13-14bytes 前沿频率(单位 0.01MHz)
+  trackerFreMinOv = '最小频率/频率1'; // 15-16bytes 最小频率，当分集信号时，为频率1(单位 0.01MHz)
+  trackerFreMaxOv = '最大频率/频率2'; // 17-18bytes 最大频率，当分集信号时，为频率2(单位 0.01MHz)
+  trackerFre3 = '频率3'; // 19-20bytes 当分集信号时，为频率3(单位 0.01MHz)
+  trackerFre4 = '频率4'; // 21-22bytes 当分集信号时，为频率4(单位 0.01MHz)
+  pdwType = '脉冲类型'; // 23 脉冲类型;  Bit0-1： Bit2-3：0-脉冲Pdw，1-连续波Pdw,3-分集信号 Bit4-7：分集个数
+  trackerOrien = '线调标记'; // 24 线调标记； 0表示递增， 1表示递减， 2表示混合， 3 表示不是线调
+  phase1 = '相位1'; // 25-26 相位1 （单位 0.007度，范围-180~180度）
+  phase2 = '相位2'; // 27-28 相位2 （单位 0.007度，范围-180~180度）
+  phase3 = '相位3'; // 29-30 相位3 （单位 0.007度，范围-180~180度）
+  phase4 = '相位4'; // 31-32 相位4 （单位 0.007度，范围-180~180度）
+  phase5 = '相位5'; // 33-34 相位5 （单位 0.007度，范围-180~180度）
+  phase6 = '相位6'; // 35-36 相位6 （单位 0.007度，范围-180~180度）
+  phase7 = '相位7'; // 37-38 相位7 （单位 0.007度，范围-180~180度）
+  phase8 = '相位8'; // 39-40 相位8 （单位 0.007度，范围-180~180度）
+  phase9 = '相位9'; // 41-42 相位9 （单位 0.007度，范围-180~180度）
+  phase10 = '相位10'; // 43-44 相位10 （单位 0.007度，范围-180~180度）
+  phase11 = '相位11'; // 45-46 相位11 （单位 0.007度，范围-180~180度）
+  phase12 = '相位12'; // 47-48 相位12 （单位 0.007度，范围-180~180度）
+  phase13 = '相位13'; // 49-50 相位13 （单位 0.007度，范围-180~180度）
+  phase14 = '相位14'; // 51-52 相位14 （单位 0.007度，范围-180~180度）
+  phase15 = '相位15'; // 53-54 相位15 （单位 0.007度，范围-180~180度）
+  phase16 = '相位16'; // 55-56 相位16 （单位 0.007度，范围-180~180度）
+  amplitude1 = '数字幅度1'; // 57 数字幅度1（单位1dB）
+  amplitude2 = '数字幅度2'; // 58 数字幅度2（单位1dB）
+  amplitude3 = '数字幅度3'; // 59 数字幅度3（单位1dB）
+  amplitude4 = '数字幅度4'; // 60 数字幅度4（单位1dB）
+  amplitude5 = '数字幅度5'; // 61 数字幅度5（单位1dB）
+  amplitude6 = '数字幅度6'; // 62 数字幅度6（单位1dB）
+  amplitude7 = '数字幅度7'; // 63 数字幅度7（单位1dB）
+  amplitude8 = '数字幅度8'; // 64 数字幅度8（单位1dB）
+}
 /**
  * 窄带全脉冲描述字
  */
@@ -426,5 +469,77 @@ export class BroadBandRadiationDescription {
    * 脉内调制信息（可调）
    */
   validFlag: number; // 153-156 脉内有效标志
+  // idInfo: number; // 157-272 脉内特征信息
+}
+/**
+ * 辐射源字典
+ */
+export class BroadBandRadiationDictionary {
+  radiationSourceNum = '辐射源序号'; // 3-4 辐射源序号
+  firstArriveTime = '到达时间'; // 5-8 到达时间
+  /**
+   * 载频
+   */
+  rfExtType = '载频|脉间类型'; // 9 脉间类型
+  rfIntType = '载频|脉内类型'; // 10  脉内类型
+  rfNum = '载频|'; // 11-12  个数
+  rfNumInGrp = '载频|脉组内脉冲数'; // 13-14  脉组内脉冲数
+  // backup = '载频|'; // 15-16  备份
+  rf1 = '载频|RF1'; // 17-20 RF1
+  rf2 = '载频|RF2'; // 21-24 RF2
+  rf3 = '载频|RF3'; // 25-28 RF3
+  rf4 = '载频|RF4'; // 29-32 RF4
+  rf5 = '载频|RF5'; // 33-36 RF5
+  rf6 = '载频|RF6'; // 37-40 RF6
+  rf7 = '载频|RF7'; // 41-44 RF7
+  rf8 = '载频|RF8'; // 45-48 RF8
+  /**
+   * 重频repete frequency
+   */
+  rpiType = '重频|类型'; // 49-50 类型
+  rpiNum = '重频|个数'; // 51-52  个数
+  rpiNumInGrp = '重频|脉组内脉冲数'; // 53-56  脉组内脉冲数
+  rpi1 = '重频|rpi1'; // 57-60 rpi1
+  rpi2 = '重频|rpi2'; // 61-64 rpi2
+  rpi3 = '重频|rpi3'; // 65-68 rpi3
+  rpi4 = '重频|rpi4'; // 69-72 rpi4
+  rpi5 = '重频|rpi5'; // 73-76 rpi5
+  rpi6 = '重频|rpi6'; // 77-80 rpi6
+  rpi7 = '重频|rpi7'; // 81-84 rpi7
+  rpi8 = '重频|rpi8'; // 85-88 rpi8
+  /**
+   * 脉宽
+   */
+  pwType = '脉宽|类型'; // 89-90 类型
+  pwNum = '脉宽|个数'; // 91-92 个数
+  pwNumInGrp = '脉宽|脉组内脉冲数'; // 93-96 脉组内脉冲数
+  pw1 = '脉宽|pw1'; // 97-100 pw1
+  pw2 = '脉宽|pw2'; // 101-104 pw2
+  pw3 = '脉宽|pw3'; // 105-108 pw3
+  pw4 = '脉宽|pw4'; // 109-112 pw4
+  pw5 = '脉宽|pw5'; // 113-116 pw5
+  pw6 = '脉宽|pw6'; // 117-120 pw6
+  pw7 = '脉宽|pw7'; // 121-124 pw7
+  pw8 = '脉宽|pw8'; // 125-128 pw8
+  pa = '脉宽|PA脉幅(平均)'; // 129-132 PA脉幅(平均)
+  /**
+   * 位置信息（可调）
+   */
+  azimuth1 = '位置信息|方位角1'; // 133-134 方位角 单位：0.1度
+  elevationAngle1 = '位置信息|仰角1'; // 135-136 仰角 单位：0.1度
+  azimuth2 = '位置信息|方位角2'; // 137-138 方位角 单位：0.1度
+  elevationAngle2 = '位置信息|仰角2'; // 139-140 仰角 单位：0.1度
+  azimuth3 = '位置信息|方位角3'; // 141-142 方位角 单位：0.1度
+  elevationAngle3 = '位置信息|仰角3'; // 143-144 仰角 单位：0.1度
+  azimuth4 = '位置信息|方位角4'; // 145-146 方位角 单位：0.1度
+  elevationAngle4 = '位置信息|仰角4'; // 147-148 仰角 单位：0.1度
+  /**
+   * 定位结果（可调）
+   */
+  locationInfo = '定位结果'; // 149-152 位置信息
+  /**
+   * 脉内调制信息（可调）
+   */
+  validFlag = '脉内调制信息|有效标志'; // 153-156 脉内有效标志
   // idInfo: number; // 157-272 脉内特征信息
 }

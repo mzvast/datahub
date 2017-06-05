@@ -284,6 +284,7 @@ export class UdpService {
         console.log(`parser broad band source data pack success.`);
         // debug it
         console.log(pack3.description());
+        console.log(pack3.parserDescription(pack3.datas[0]));
         return pack3;
       case 4: // 中频数据包
         if (len !== 8640) { // TODO 表里说总长是4544不对

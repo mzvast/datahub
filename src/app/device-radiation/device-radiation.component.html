@@ -1,3 +1,3 @@
-<p>
-  device-radiation works!
-</p>
+<md-grid-list cols="4" rowHeight="100px" rowHeight="2em">
+  <md-grid-tile *ngFor="let item of items" colspan=2 rowspan=1 >{{item?.name}}:<span>{{item?.value}}</span></md-grid-tile>
+</md-grid-list>
