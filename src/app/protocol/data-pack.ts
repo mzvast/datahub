@@ -540,8 +540,8 @@ export class BroadBandRadiationDictionary {
    */
   rfExtType = '载频|脉间类型'; // 9 脉间类型
   rfIntType = '载频|脉内类型'; // 10  脉内类型
-  rfNum = '载频|'; // 11-12  个数
-  rfNumInGrp = '载频|脉组内脉冲数'; // 13-14  脉组内脉冲数
+  rfNum = '载频|个数'; // 11-12  个数
+  rfNumInGrp = '载频|脉冲数'; // 13-14  脉组内脉冲数
   // backup = '载频|'; // 15-16  备份
   rf1 = '载频|RF1'; // 17-20 RF1
   rf2 = '载频|RF2'; // 21-24 RF2
@@ -556,7 +556,7 @@ export class BroadBandRadiationDictionary {
    */
   rpiType = '重频|类型'; // 49-50 类型
   rpiNum = '重频|个数'; // 51-52  个数
-  rpiNumInGrp = '重频|脉组内脉冲数'; // 53-56  脉组内脉冲数
+  rpiNumInGrp = '重频|脉冲数'; // 53-56  脉组内脉冲数
   rpi1 = '重频|rpi1'; // 57-60 rpi1
   rpi2 = '重频|rpi2'; // 61-64 rpi2
   rpi3 = '重频|rpi3'; // 65-68 rpi3
@@ -570,7 +570,7 @@ export class BroadBandRadiationDictionary {
    */
   pwType = '脉宽|类型'; // 89-90 类型
   pwNum = '脉宽|个数'; // 91-92 个数
-  pwNumInGrp = '脉宽|脉组内脉冲数'; // 93-96 脉组内脉冲数
+  pwNumInGrp = '脉宽|脉冲数'; // 93-96 脉组内脉冲数
   pw1 = '脉宽|pw1'; // 97-100 pw1
   pw2 = '脉宽|pw2'; // 101-104 pw2
   pw3 = '脉宽|pw3'; // 105-108 pw3
@@ -579,25 +579,25 @@ export class BroadBandRadiationDictionary {
   pw6 = '脉宽|pw6'; // 117-120 pw6
   pw7 = '脉宽|pw7'; // 121-124 pw7
   pw8 = '脉宽|pw8'; // 125-128 pw8
-  pa = '脉宽|PA脉幅(平均)'; // 129-132 PA脉幅(平均)
+  pa = '脉宽|PA脉幅'; // 129-132 PA脉幅(平均)
   /**
    * 位置信息（可调）
    */
-  azimuth1 = '位置信息|方位角1'; // 133-134 方位角 单位：0.1度
-  elevationAngle1 = '位置信息|仰角1'; // 135-136 仰角 单位：0.1度
-  azimuth2 = '位置信息|方位角2'; // 137-138 方位角 单位：0.1度
-  elevationAngle2 = '位置信息|仰角2'; // 139-140 仰角 单位：0.1度
-  azimuth3 = '位置信息|方位角3'; // 141-142 方位角 单位：0.1度
-  elevationAngle3 = '位置信息|仰角3'; // 143-144 仰角 单位：0.1度
-  azimuth4 = '位置信息|方位角4'; // 145-146 方位角 单位：0.1度
-  elevationAngle4 = '位置信息|仰角4'; // 147-148 仰角 单位：0.1度
+  azimuth1 = '位置|方位角1'; // 133-134 方位角 单位：0.1度
+  elevationAngle1 = '位置|仰角1'; // 135-136 仰角 单位：0.1度
+  azimuth2 = '位置|方位角2'; // 137-138 方位角 单位：0.1度
+  elevationAngle2 = '位置|仰角2'; // 139-140 仰角 单位：0.1度
+  azimuth3 = '位置|方位角3'; // 141-142 方位角 单位：0.1度
+  elevationAngle3 = '位置|仰角3'; // 143-144 仰角 单位：0.1度
+  azimuth4 = '位置|方位角4'; // 145-146 方位角 单位：0.1度
+  elevationAngle4 = '位置|仰角4'; // 147-148 仰角 单位：0.1度
   /**
    * 定位结果（可调）
    */
-  locationInfo = '定位结果'; // 149-152 位置信息
+  locationInfo = '定位'; // 149-152 位置信息
   /**
    * 脉内调制信息（可调）
    */
-  validFlag = '脉内调制信息|有效标志'; // 153-156 脉内有效标志
+  validFlag = '脉内调制|有效'; // 153-156 脉内有效标志
   // idInfo: number; // 157-272 脉内特征信息
 }

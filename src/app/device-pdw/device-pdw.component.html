@@ -1,3 +1,6 @@
 <md-grid-list cols="4" rowHeight="100px" rowHeight="2em">
-  <md-grid-tile *ngFor="let item of items" colspan=2 rowspan=1 ><span>{{item?.name}}:{{item?.value}}</span></md-grid-tile>
+  <div *ngFor="let item of items">
+    <md-grid-tile colspan=1 rowspan=1 class="title"><span>{{item?.name}}</span></md-grid-tile>
+    <md-grid-tile colspan=1 rowspan=1><span>{{item?.value}}</span></md-grid-tile>
+  </div>
 </md-grid-list>
