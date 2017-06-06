@@ -1,4 +1,4 @@
-import { UdpService } from './../udp.service';
+import { SettingService } from './../setting.service';
 import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
@@ -11,11 +11,22 @@ import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy } from '@
 export class SettingsComponent implements OnInit {
   localPort: number;
 
-  constructor(private udpService: UdpService) {
-    this.localPort = this.udpService.LocalPORT;
+  constructor(private _settingService: SettingService) {
+    setTimeout(() => {
+      this.localPort = this._settingService.local_port;
+      console.log(this.localPort);
+    }, 500);
   }
 
   ngOnInit() {
+  }
+
+  save() {
+    console.log(this._settingService.local_port);
+  }
+
+  initSetting() {
+    this._settingService.initSetting();
   }
 
 }

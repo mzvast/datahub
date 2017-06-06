@@ -1,3 +1,5 @@
+import { SettingService } from './setting.service';
+import { MySettings } from './settings/my-settings';
 import { DatabaseService } from './database.service';
 import { Injectable } from '@angular/core';
 import { Buffer } from 'buffer';
@@ -21,22 +23,16 @@ declare var electron: any; // 　Typescript 定义
 export class UdpService {
   dgram = electron.remote.getGlobal('dgram');
   server = electron.remote.getGlobal('udp').server;
-  LocalPORT = 8512;
-  RemotePORT = 6011;
-  LocalHOST = '0.0.0.0';
-  RemoteHOST = '127.0.0.1';
-  debug = true;
-  record = false;
 
   workingBuffers: Map<string, Buffer> = new Map();
   workingProtocolPacks: Map<string, ProtocolPack> = new Map();
   subject = new BehaviorSubject<any>({});
 
-  constructor(private databaseService: DatabaseService) {
+  constructor(private _dbService: DatabaseService, private _settingService: SettingService) {
     console.log('udp service constructor');
-    this.databaseService.authenticate();
-    // this.databaseService.create('tag', '123445');
-    // this.databaseService.index();
+    this._dbService.authenticate();
+    // this._dbService.create('tag', '123445');
+    // this._dbService.index();
     /**
      * 判断udp server是否已启动，占用了端口
      */
@@ -48,16 +44,6 @@ export class UdpService {
     // this.startUdpServer();
     // this.setRemoteAddress('127.0.0.1', 8511); // Test send to local port
     // this.sendMsg('Hello World');
-  }
-
-  toggleDebug() {
-    this.debug = !this.debug;
-    console.log('debug=', this.debug);
-  }
-
-  toggleRecord() {
-    this.record = !this.record;
-    console.log('record=', this.record);
   }
 
   sendMessage(message: any) {
@@ -82,13 +68,13 @@ export class UdpService {
 
     this.server.on('message', (msg, rinfo) => {
       // const buf = Buffer.from(msg);
-      if (this.debug) {
+      if (this._settingService.debug) {
         console.log(msg);
         const str = msg.toString('hex');
         console.log(`server got ${msg.length} bytes: ${str} from ${rinfo.address}:${rinfo.port}`);
       }
-      if (this.record) {
-        this.databaseService.create('pkg', `${msg.toString('hex')}`);
+      if (this._settingService.record) {
+        this._dbService.create('pkg', `${msg.toString('hex')}`);
       }
       this.parserProtocolPack(Buffer.from(msg), `${rinfo.address}:${rinfo.port}`);
       // this.stopUdpServer();
@@ -100,7 +86,7 @@ export class UdpService {
       console.log('UDP server closed!');
     });
 
-    this.server.bind(this.LocalPORT, this.LocalHOST);
+    this.server.bind(this._settingService.local_port, this._settingService.local_host);
   }
 
   stopUdpServer() {
@@ -154,7 +140,7 @@ export class UdpService {
           const protocolPack = new ProtocolPack(source, dest, idcodePrimary, idcodeSecondly, serial, frameCount, data);
           if (frameCount === 1) {
             const dataPack: BaseDataPack = this.parserDataPack(protocolPack);
-            if (this.debug) {
+            if (this._settingService.debug) {
               console.log('dataPack:', dataPack);
             }
             this.sendMessage(dataPack); // save msg
@@ -172,7 +158,7 @@ export class UdpService {
                     this.workingProtocolPacks.delete(key);
                     const dataPack: BaseDataPack = this.parserDataPack(workingProtocolPack);
                     workingProtocolPack = null;
-                    if (this.debug) {
+                    if (this._settingService.debug) {
                       console.log('dataPackV2:', dataPack);
                     }
                     this.sendMessage(dataPack); // save msg
@@ -234,7 +220,7 @@ export class UdpService {
         const pack = new TagDataPack(control, gps);
         pack.datas.push(data.slice(0).toString('hex'));
         // debug it
-        if (this.debug) {
+        if (this._settingService.debug) {
           console.log(`parser tag data pack success.`);
           console.log(pack.description());
           console.log(pack.parserDescription(data.slice(0).toString('hex')));
@@ -275,7 +261,7 @@ export class UdpService {
           pack2.datas.push(data.slice(140 + bytesPerData2 * i, 140 + bytesPerData2 * i + bytesPerData2).toString('hex'));
         }
         // debug it
-        if (this.debug) {
+        if (this._settingService.debug) {
           console.log(`parser broad band data pack success.`);
           console.log(pack2.description());
           console.log(pack2.parserDescription(pack2.datas[0]));
@@ -297,7 +283,7 @@ export class UdpService {
           pack3.datas.push(data.slice(140 + bytesPerData3 * i, 140 + bytesPerData3 * i + bytesPerData3).toString('hex'));
         }
         // debug it
-        if (this.debug) {
+        if (this._settingService.debug) {
           console.log(`parser broad band source data pack success.`);
           console.log(pack3.description());
           console.log(pack3.parserDescription(pack3.datas[0]));
@@ -372,22 +358,12 @@ export class UdpService {
     return null;
   }
 
-  setLocalAddress(host: string, port: number) {
-    this.LocalHOST = host;
-    this.LocalPORT = port;
-    console.log(`setLocalAddress to ${this.LocalHOST}:${this.LocalPORT}`);
-  }
 
-  setRemoteAddress(host: string, port: number) {
-    this.RemoteHOST = host;
-    this.RemotePORT = port;
-    console.log(`setRemoteAddress to ${this.RemoteHOST}:${this.RemotePORT}`);
-  }
 
   sendMsg(message: string) {
     const client = this.dgram.createSocket('udp4');
-    client.send(message, 0, message.length, this.RemotePORT, this.RemoteHOST, (err) => {
-      console.log(`UDP message sent to ${this.RemoteHOST}:${this.RemotePORT} `);
+    client.send(message, 0, message.length, this._settingService.remote_port, this._settingService.remote_host, (err) => {
+      console.log(`UDP message sent to ${this._settingService.remote_host}:${this._settingService.remote_port} `);
       client.close();
     });
   }

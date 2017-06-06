@@ -11,6 +11,7 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { AppComponent } from './app.component';
 import { DatabaseService } from './database.service';
 import { UdpService } from './udp.service';
+import { SettingService } from './setting.service';
 import { MysidenavComponent } from './mysidenav/mysidenav.component';
 import { ProtoInComponent } from './proto-in/proto-in.component';
 import { ProtoOutComponent } from './proto-out/proto-out.component';
@@ -114,7 +115,7 @@ import { DeviceIntfComponent } from './device-intf/device-intf.component';
       }
     ])
   ],
-  providers: [DatabaseService, UdpService],
+  providers: [DatabaseService, UdpService, SettingService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

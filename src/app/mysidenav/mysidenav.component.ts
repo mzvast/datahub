@@ -1,3 +1,4 @@
+import { SettingService } from './../setting.service';
 import { UdpService } from './../udp.service';
 import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
 
@@ -32,7 +33,7 @@ export class MysidenavComponent implements OnInit {
     }
   ];
   protocols = [
-     {
+    {
       name: '协议设置',
       icon: 'arrow_back',
       url: 'proto-in'
@@ -44,18 +45,20 @@ export class MysidenavComponent implements OnInit {
   //     icon: 'send'
   //   }
   // ]
-  constructor(private udpService: UdpService) { }
+  constructor(private _udpService: UdpService, private _settingService: SettingService) { }
 
   ngOnInit() {
-    this.debug = this.udpService.debug;
-    this.record = this.udpService.record;
+    setTimeout(() => {
+      this.debug = this._settingService.debug;
+      this.record = this._settingService.record;
+    }, 500);
   }
 
   toggleDebug() {
-    this.udpService.toggleDebug();
+    this._settingService.toggleDebug();
   }
   toggleRecord() {
-    this.udpService.toggleRecord()
+    this._settingService.toggleRecord();
   }
 
 }
