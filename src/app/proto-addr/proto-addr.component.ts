@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
+import { UdpService } from './../udp.service';
 
 @Component({
   selector: 'app-proto-addr',
@@ -8,8 +9,11 @@ import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy } from '@
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class ProtoAddrComponent implements OnInit {
+  localPort: number;
 
-  constructor() { }
+  constructor(private udpService: UdpService) {
+    this.localPort = this.udpService.LocalPORT;
+   }
 
   ngOnInit() {
   }

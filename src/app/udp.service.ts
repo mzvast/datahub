@@ -21,11 +21,11 @@ declare var electron: any; // 　Typescript 定义
 export class UdpService {
   dgram = electron.remote.getGlobal('dgram');
   server = electron.remote.getGlobal('udp').server;
-  LocalPORT = 8511;
+  LocalPORT = 8512;
   RemotePORT = 6011;
-  LocalHOST = '127.0.0.1';
+  LocalHOST = '0.0.0.0';
   RemoteHOST = '127.0.0.1';
-  debug = false;
+  debug = true;
   record = false;
 
   workingBuffers: Map<string, Buffer> = new Map();
@@ -83,7 +83,9 @@ export class UdpService {
     this.server.on('message', (msg, rinfo) => {
       // const buf = Buffer.from(msg);
       if (this.debug) {
-        console.log(`server got ${msg.length} bytes: ${msg.toString('hex')} from ${rinfo.address}:${rinfo.port}`);
+        console.log(msg);
+        const str = msg.toString('hex');
+        console.log(`server got ${msg.length} bytes: ${str} from ${rinfo.address}:${rinfo.port}`);
       }
       if (this.record) {
         this.databaseService.create('pkg', `${msg.toString('hex')}`);
@@ -119,7 +121,7 @@ export class UdpService {
     }
     let headerFounded = false;
     while (workingBuffer.length >= 2 && !headerFounded) {
-      const header: number = workingBuffer.readUInt16BE(0, false);
+      const header: number = workingBuffer.readUInt16LE(0, false);
       if (header === 0x5555) {
         headerFounded = true;
       } else {
@@ -131,16 +133,16 @@ export class UdpService {
       if (headerFounded) {
         // 只有超过1024才解析，否则等下一个包来的时候继续
         if (workingBuffer.length >= 1024) {
-          const len: number = workingBuffer.readUInt16BE(2, false);
-          const source: number = workingBuffer.readUInt16BE(4, false);
-          const dest: number = workingBuffer.readUInt16BE(6, false);
-          const idcodePrimary: number = workingBuffer.readUInt16BE(8, false);
-          const idcodeSecondly: number = workingBuffer.readUInt16BE(10, false);
-          const serial: number = workingBuffer.readUInt32BE(12, false);
-          const frameCount: number = workingBuffer.readUInt32BE(16, false);
+          const len: number = workingBuffer.readUInt16LE(2, false);
+          const source: number = workingBuffer.readUInt16LE(4, false);
+          const dest: number = workingBuffer.readUInt16LE(6, false);
+          const idcodePrimary: number = workingBuffer.readUInt16LE(8, false);
+          const idcodeSecondly: number = workingBuffer.readUInt16LE(10, false);
+          const serial: number = workingBuffer.readUInt32LE(12, false);
+          const frameCount: number = workingBuffer.readUInt32LE(16, false);
           const data = workingBuffer.slice(20, 20 + len);
-          const checkSum = workingBuffer.readUInt16BE(1020, false);
-          const end = workingBuffer.readUInt16BE(1022, false);
+          const checkSum = workingBuffer.readUInt16LE(1020, false);
+          const end = workingBuffer.readUInt16LE(1022, false);
           // TODO 要根据checkSum来判断这条数据是否正确
           if (end !== 0xAAAA) {
             console.error(`pack end is not 0xAAAA, it is 0x${end.toString(16)}, drop this pack.`);
@@ -201,18 +203,18 @@ export class UdpService {
       console.error(`parser data pack error, data length: ${data.length}`);
       return null;
     }
-    const header = data.readUInt16BE(0, false);
+    const header = data.readUInt16LE(0, false);
     if (header !== 0x1ACF) {
       console.error(`parser data pack error, header is not 0x1ACF, it is: 0x${header.toString(16)}`);
       return null;
     }
-    const type = data.readUInt16BE(2, false);
-    const len = data.readUInt32BE(4, false);
+    const type = data.readUInt16LE(2, false);
+    const len = data.readUInt32LE(4, false);
     if (data.length !== len) {
       console.error(`parser data pack error, data length: ${data.length}, expected: ${len}`);
       return null;
     }
-    const end = data.readUInt32BE(len - 4, false);
+    const end = data.readUInt32LE(len - 4, false);
     if (end !== 0x0000FC1D) {
       console.error(`parser data pack error, end is not 0x0000FC1D, it is: 0x${end.toString(16)}`);
       return null;
@@ -243,7 +245,7 @@ export class UdpService {
       //     console.error(`parser narrow band data pack error, length less than 140.`);
       //     return null;
       //   }
-      //   const count1 = data.readUInt32BE(136, false);
+      //   const count1 = data.readUInt32LE(136, false);
       //   const bytesPerData1 = 80;
       //   if (len < 140 + count1 * 80) { // 窄带全脉冲描述字（80字节）
       //     console.error(`parser narrow band data pack error, length less than ${140 + count1 * bytesPerData1}.`);
@@ -257,12 +259,12 @@ export class UdpService {
       //   // debug it
       //   console.log(pack1.description());
       //   return pack1;
-      case 2: // 宽带【全脉冲】数据包
+      case 1: // 【全脉冲】数据包
         if (len < 140) {
           console.error(`parser broad band data pack error, length less than 140.`);
           return null;
         }
-        const count2 = data.readUInt32BE(136, false);
+        const count2 = data.readUInt32LE(136, false);
         const bytesPerData2 = 64;
         if (len < 140 + count2 * bytesPerData2) { // 宽带全脉冲描述字（64字节）
           console.error(`parser broad band data pack error, length less than ${140 + count2 * bytesPerData2}.`);
@@ -279,12 +281,12 @@ export class UdpService {
           console.log(pack2.parserDescription(pack2.datas[0]));
         }
         return pack2;
-      case 3: // 宽带【辐射源】数据包
+      case 5: // 【辐射源】数据包
         if (len < 140) {
           console.error(`parser broad band source data pack error, length less than 140.`);
           return null;
         }
-        const count3 = data.readUInt32BE(136, false);
+        const count3 = data.readUInt32LE(136, false);
         const bytesPerData3 = 276;
         if (len < 140 + count3 * bytesPerData3) { // 辐射源描述字数据结构（276）
           console.error(`parser broad band source data pack error, length less than ${140 + count3 * bytesPerData3}.`);
@@ -308,8 +310,8 @@ export class UdpService {
         }
         const gps4 = data.slice(78, 78 + 62).toString('hex'); // 中频数据包的gps有点不一样
         const pack4 = new IntermediateFrequencyDataPack(control, gps4);
-        pack4.pulseArriveTime = data.readUInt32BE(72, false);
-        pack4.serial = data.readUInt16BE(76, false);
+        pack4.pulseArriveTime = data.readUInt32LE(72, false);
+        pack4.serial = data.readUInt16LE(76, false);
         pack4.data = data.slice(140, 140 + 8192).toString('hex');
         pack4.backup = data.slice(8332, 8332 + 304).toString('hex');
         console.log(`parser intermediate frequency data pack success.`);
@@ -321,7 +323,7 @@ export class UdpService {
           console.error(`parser narrow band source data pack error, length less than 140.`);
           return null;
         }
-        const count5 = data.readUInt32BE(136, false);
+        const count5 = data.readUInt32LE(136, false);
         const bytesPerData5 = 276;
         if (len < 140 + count5 * bytesPerData5) { // 辐射源描述字数据结构（276）
           console.error(`parser narrow band source data pack error, length less than ${140 + count5 * bytesPerData5}.`);
@@ -352,7 +354,7 @@ export class UdpService {
           console.error(`parser phase correction data pack error, length less than 140.`);
           return null;
         }
-        const count11 = data.readUInt32BE(136, false);
+        const count11 = data.readUInt32LE(136, false);
         const bytesPerData11 = 96;
         if (len < 140 + count11 * bytesPerData11) { // 辐射源描述字数据结构（276）
           console.error(`parser phase correction data pack error, length less than ${140 + count5 * bytesPerData11}.`);

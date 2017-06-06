@@ -5,7 +5,7 @@
     <div class="card-content">
       <form class="example-form">
         <table class="example-full-width" cellspacing="0">
-          <tr>
+          <!--<tr>
             <h3 for="">发送</h3>
             <td>
               <md-input-container class="example-full-width">
@@ -17,9 +17,9 @@
                 <input mdInput placeholder="端口" value="6011">
               </md-input-container>
             </td>
-          </tr>
+          </tr>-->
           <tr>
-            <h3 for="">接收</h3>
+            <h3 for="">接收端口</h3>
             <!--<td>
             <md-input-container class="example-full-width">
               <input mdInput placeholder="本机IP地址" value="192.168.0.85">
@@ -27,7 +27,7 @@
           </td>-->
             <td>
               <md-input-container class="example-full-width">
-                <input mdInput placeholder="端口" value="8511">
+                <input mdInput placeholder="端口" value="{{localPort}}">
               </md-input-container>
             </td>
           </tr>
@@ -37,7 +37,7 @@
   </md-card-content>
   <md-divider></md-divider>
   <md-card-actions>
-    <button md-button>保存</button>
+    <button md-button (click)="save()">保存</button>
     <button md-button>取消</button>
   </md-card-actions>
 </md-card>
