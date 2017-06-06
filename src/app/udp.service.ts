@@ -152,7 +152,6 @@ export class UdpService {
           const protocolPack = new ProtocolPack(source, dest, idcodePrimary, idcodeSecondly, serial, frameCount, data);
           if (frameCount === 1) {
             const dataPack: BaseDataPack = this.parserDataPack(protocolPack);
-            //  TODO save to sqlite
             if (this.debug) {
               console.log('dataPack:', dataPack);
             }
@@ -171,7 +170,10 @@ export class UdpService {
                     this.workingProtocolPacks.delete(key);
                     const dataPack: BaseDataPack = this.parserDataPack(workingProtocolPack);
                     workingProtocolPack = null;
-                    // TODO parser and notify the UI and save to sqlite
+                    if (this.debug) {
+                      console.log('dataPackV2:', dataPack);
+                    }
+                    this.sendMessage(dataPack); // save msg
                   }
                 }
               }
