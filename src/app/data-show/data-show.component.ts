@@ -17,8 +17,8 @@ export class DataShowComponent implements OnInit, OnDestroy {
   rows = [];
   selected = [];
   columns: any[] = [
-    { name: 'time' },
-    { name: 'raw' }
+    { name: '时间', prop: 'time' },
+    { name: '数据', prop: 'raw' }
   ];
 
   constructor(private route: ActivatedRoute, private db: DatabaseService) { }
