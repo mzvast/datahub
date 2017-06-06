@@ -32,11 +32,7 @@ export class MysidenavComponent implements OnInit {
     }
   ];
   protocols = [
-    {
-      name: '地址/端口',
-      icon: 'settings',
-      url: 'proto-addr'
-    }, {
+     {
       name: '协议设置',
       icon: 'arrow_back',
       url: 'proto-in'

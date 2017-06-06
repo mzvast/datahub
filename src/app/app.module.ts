@@ -12,7 +12,6 @@ import { AppComponent } from './app.component';
 import { DatabaseService } from './database.service';
 import { UdpService } from './udp.service';
 import { MysidenavComponent } from './mysidenav/mysidenav.component';
-import { ProtoAddrComponent } from './proto-addr/proto-addr.component';
 import { ProtoInComponent } from './proto-in/proto-in.component';
 import { ProtoOutComponent } from './proto-out/proto-out.component';
 import { DevicePdwComponent } from './device-pdw/device-pdw.component';
@@ -39,7 +38,6 @@ import { DeviceIntfComponent } from './device-intf/device-intf.component';
   declarations: [
     AppComponent,
     MysidenavComponent,
-    ProtoAddrComponent,
     ProtoInComponent,
     ProtoOutComponent,
     DevicePdwComponent,
@@ -94,10 +92,6 @@ import { DeviceIntfComponent } from './device-intf/device-intf.component';
           { path: '', component: PlaceholderComponent },
           { path: 'show/:type', component: DataShowComponent }
         ]
-      },
-      {
-        path: 'proto-addr',
-        component: ProtoAddrComponent
       },
       {
         path: 'proto-out',
