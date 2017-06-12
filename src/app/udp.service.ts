@@ -24,8 +24,8 @@ export class UdpService {
   dgram = electron.remote.getGlobal('dgram');
   server = electron.remote.getGlobal('udp').server;
 
-  workingBuffers: Map<string, Buffer> = new Map();
-  workingProtocolPacks: Map<string, ProtocolPack> = new Map();
+  workingBuffers: Map<string, Buffer>;
+  workingProtocolPacks: Map<string, ProtocolPack>;
   subject = new BehaviorSubject<any>({});
 
   constructor(private _dbService: DatabaseService, private _settingService: SettingService) {
@@ -59,6 +59,8 @@ export class UdpService {
   }
 
   startUdpServer() {
+    this.workingBuffers = new Map();
+    this.workingProtocolPacks = new Map();
     electron.remote.getGlobal('udp').server = this.dgram.createSocket('udp4');
     this.server = electron.remote.getGlobal('udp').server;
     this.server.on('listening', () => {
@@ -90,6 +92,8 @@ export class UdpService {
   }
 
   stopUdpServer() {
+    this.workingBuffers = null;
+    this.workingProtocolPacks = null;
     if (electron.remote.getGlobal('udp').server != null) {
       electron.remote.getGlobal('udp').server.close();
       electron.remote.getGlobal('udp').server = null; // 重置null，防止内存泄露
@@ -98,16 +102,16 @@ export class UdpService {
   }
 
   parserProtocolPack(msg: Buffer, key: string) {
-    let workingBuffer = this.workingBuffers.get(key);
-    if (!workingBuffer) {
+    let workingBuffer = this.workingBuffers.get(key); // 获取全局暂存包
+    if (!workingBuffer) {// 全局暂存包不存在，则创建之
       workingBuffer = Buffer.concat([Buffer.alloc(0), msg]);
       this.workingBuffers.set(key, workingBuffer);
     } else {
-      workingBuffer = Buffer.concat([workingBuffer, msg]);
+      workingBuffer = Buffer.concat([workingBuffer, msg]); // 拼接新包
     }
     let headerFounded = false;
     while (workingBuffer.length >= 2 && !headerFounded) {
-      const header: number = workingBuffer.readUInt16LE(0, false);
+      const header: number = workingBuffer.readUInt16LE(0, false); // 数据头
       if (header === 0x5555) {
         headerFounded = true;
       } else {
@@ -116,58 +120,59 @@ export class UdpService {
         console.error(`read pack header not 0x5555, drop it: 0x${header.toString(16)}`);
       }
 
-      if (headerFounded) {
+      if (headerFounded) {// 包头部找到
         // 只有超过1024才解析，否则等下一个包来的时候继续
         if (workingBuffer.length >= 1024) {
-          const len: number = workingBuffer.readUInt16LE(2, false);
-          const source: number = workingBuffer.readUInt16LE(4, false);
-          const dest: number = workingBuffer.readUInt16LE(6, false);
-          const idcodePrimary: number = workingBuffer.readUInt16LE(8, false);
-          const idcodeSecondly: number = workingBuffer.readUInt16LE(10, false);
-          const serial: number = workingBuffer.readUInt32LE(12, false);
-          const frameCount: number = workingBuffer.readUInt32LE(16, false);
-          const data = workingBuffer.slice(20, 20 + len);
-          const checkSum = workingBuffer.readUInt16LE(1020, false);
-          const end = workingBuffer.readUInt16LE(1022, false);
+          const len: number = workingBuffer.readUInt16LE(2, false); // 数据长度
+          const source: number = workingBuffer.readUInt16LE(4, false); // 源地址
+          const dest: number = workingBuffer.readUInt16LE(6, false); // 目的地址
+          const idcodePrimary: number = workingBuffer.readUInt16LE(8, false); // 主识别码
+          const idcodeSecondly: number = workingBuffer.readUInt16LE(10, false); // 子识别码
+          const serial: number = workingBuffer.readUInt32LE(12, false); // 帧序号
+          const frameCount: number = workingBuffer.readUInt32LE(16, false); // 帧包数
+          const data = workingBuffer.slice(20, 20 + len); // 数据字段
+          const checkSum = workingBuffer.readUInt16LE(1020, false); // 校验
+          const end = workingBuffer.readUInt16LE(1022, false); // 帧结束符
           // TODO 要根据checkSum来判断这条数据是否正确
           if (end !== 0xAAAA) {
             console.error(`pack end is not 0xAAAA, it is 0x${end.toString(16)}, drop this pack.`);
-            workingBuffer.slice(1024);
+            workingBuffer = workingBuffer.slice(1024); // 裁剪掉前1024个字节
             headerFounded = false;
             continue;
           }
 
           const protocolPack = new ProtocolPack(source, dest, idcodePrimary, idcodeSecondly, serial, frameCount, data);
-          if (frameCount === 1) {
-            const dataPack: BaseDataPack = this.parserDataPack(protocolPack);
+          // console.log(frameCount);
+          if (frameCount === 1) { // 帧只有1个包
+            const dataPack: BaseDataPack = this.parserDataPack(protocolPack); // 解析包数据
             if (this._settingService.debug) {
               console.log('dataPack:', dataPack);
             }
-            this.sendMessage(dataPack); // save msg
-          } else {
+            this.sendMessage(dataPack); // 发给UI
+          } else { // 帧有多个包
             let workingProtocolPack = this.workingProtocolPacks.get(key);
-            if (serial === 0) {
+            if (serial === 0) {// 帧首包
               workingProtocolPack = protocolPack;
             } else {
-              if (!workingProtocolPack) {
+              if (!workingProtocolPack) {// 没收到首包却收到后续包
                 console.error(`no last working protocol pack stored, drop this pack.`);
-              } else {
-                if (workingProtocolPack.isTheSamePack(protocolPack)) {
-                  workingProtocolPack.appendData(protocolPack.data);
-                  if (workingProtocolPack.isComplete()) {
-                    this.workingProtocolPacks.delete(key);
-                    const dataPack: BaseDataPack = this.parserDataPack(workingProtocolPack);
-                    workingProtocolPack = null;
+              } else {// 正常后续包
+                if (workingProtocolPack.isTheSamePack(protocolPack)) {// 同一帧的连续包
+                  workingProtocolPack.appendData(protocolPack.data); // 拼接包
+                  if (workingProtocolPack.isComplete()) {// 最后一包
+                    this.workingProtocolPacks.delete(key); // 删除全局暂存的包
+                    const dataPack: BaseDataPack = this.parserDataPack(workingProtocolPack); // 解析拼接成的包
+                    workingProtocolPack = null; // 删除局部变量
                     if (this._settingService.debug) {
                       console.log('dataPackV2:', dataPack);
                     }
-                    this.sendMessage(dataPack); // save msg
+                    this.sendMessage(dataPack); // 发给UI
                   }
                 }
               }
             }
-            if (workingProtocolPack) {
-              this.workingProtocolPacks.set(key, workingProtocolPack);
+            if (workingProtocolPack) {// 局部变量存在，后续还有包
+              this.workingProtocolPacks.set(key, workingProtocolPack); // 暂存局部变量到全局变量
             }
           }
 

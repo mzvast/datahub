@@ -1,4 +1,4 @@
-let PORT = 8511;
+let PORT = 8512;
 let HOST = '127.0.0.1';
 
 let dgram = require('dgram');
@@ -12,9 +12,9 @@ const makeTag = () => {
     /**
      * 固定信息
      */
-      '1acf'//起始码：0x1ACF
+      'cf1a'//起始码：0x1ACF
     + '0000'//网络接口数据类型
-    + '00000138'//从帧有限标记到包尾的字节数
+    + '38010000'//从帧有限标记到包尾的字节数
     + '00'.repeat(64)//系统控制信息
     + '00'.repeat(64)//GPS数据
     /**
@@ -36,7 +36,7 @@ const makeTag = () => {
     /**
      * 固定信息
      */
-    + '0000fc1d'//包尾
+    + '1dfc0000'//包尾
   )}
 
 const makePDW = () => {
@@ -44,15 +44,15 @@ const makePDW = () => {
   /**
    * 固定信息
    */
-  '1acf'//起始码：0x1ACF
-  + '0002'//网络接口数据类型
-  + '000000d0'//从帧有限标记到包尾的字节数
+  'cf1a'//起始码：0x1ACF
+  + '0100'//网络接口数据类型
+  + 'd0000000'//从帧有限标记到包尾的字节数
   + '00'.repeat(64)//系统控制信息
   + '00'.repeat(64)//GPS数据
   /**
    * 数据信息
    */
-  + '00000001'//全脉冲个数
+  + '01000000'//全脉冲个数
   //全脉冲描述字1
   + randomBytes(4)//到达时间 单位：4.46ns
   + randomBytes(4)//脉宽 单位：4.46ns
@@ -92,7 +92,7 @@ const makePDW = () => {
   /**
    * 固定信息
    */
-  + '0000fc1d'//包尾
+  + '1dfc0000'//包尾
   )}
 
 // console.log(pdw.length/2);
@@ -102,15 +102,15 @@ const makeRadiation = ()=>{
  /**
    * 固定信息
    */
-  '1acf'//起始码：0x1ACF
-  + '0003'//网络接口数据类型
-  + '000001a4'//从帧有限标记到包尾的字节数
+  'cf1a'//起始码：0x1ACF
+  + '0500'//网络接口数据类型
+  + 'a4010000'//从帧有限标记到包尾的字节数
   + '00'.repeat(64)//系统控制信息
   + '00'.repeat(64)//GPS数据
   /**
    * 数据信息
    */
-  + '00000001'//辐射源个数
+  + '01000000'//辐射源个数
   //辐射源描述字1
   + '55aa'//起始码
   + '0001'//辐射源序号
@@ -185,7 +185,7 @@ const makeRadiation = ()=>{
   /**
      * 固定信息
      */
-    + '0000fc1d'//包尾
+    + '1dfc0000'//包尾
   )
 }
 
@@ -195,16 +195,14 @@ const packageMessage = (msg)=> {
   let paddingData = Buffer.from('00'.repeat(1000 - msg.length), 'hex');
 
   let header = Buffer.from([0x55, 0x55]);
-  let len = Buffer.from(numberTo2Bytes(msg.length));
-  // console.log("msg length(2): "+len.toString('hex'));
-  // let len2 = Buffer.from(numberTo4Bytes(msg.length));
-  // console.log("msg length(4): "+len2.toString('hex'));
+  let len = Buffer.allocUnsafe(2);
+  len.writeIntLE(msg.length,0,2)
   let source = Buffer.from([0x00, 0x00]);
   let dest = Buffer.from([0x00, 0x00]);
   let idcodePrimary = Buffer.from([0x00, 0x00]);
   let idcodeSecondly = Buffer.from([0x00, 0x00]);
   let serial = Buffer.from([0x00, 0x00, 0x00, 0x00]);
-  let frameCount = Buffer.from([0x00, 0x00, 0x00, 0x01]);
+  let frameCount = Buffer.from([0x01, 0x00, 0x00, 0x00]);
   let checkSum = Buffer.from([0x00, 0x00]); // 和检验暂时没搞
   let end = Buffer.from([0xAA, 0xAA]);
 
