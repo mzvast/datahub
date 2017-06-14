@@ -305,9 +305,12 @@ export class UdpService {
         pack4.serial = data.readUInt16LE(76, false);
         pack4.data = data.slice(140, 140 + 8192).toString('hex');
         pack4.backup = data.slice(8332, 8332 + 304).toString('hex');
-        console.log(`parser intermediate frequency data pack success.`);
         // debug it
-        console.log(pack4.description());
+        if (this._settingService.debug) {
+          console.log(`parser intermediate frequency data pack success.`);
+          console.log(pack4.description());
+          console.log(pack4.parserDescription(pack4.data));
+        }
         return pack4;
       case 5: // 窄带辐射源数据包
         if (len < 140) {

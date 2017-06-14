@@ -351,6 +351,9 @@ export class IntermediateFrequencyDataPack extends BaseDataPack {
       `data: ${this.data}, backup: ${this.backup}`;
   }
 
+  parserDescription(data: string): string {
+    return data;
+  }
 }
 
 /**
