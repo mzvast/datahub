@@ -23,13 +23,15 @@ export class SettingService {
     })
       .then((data) => {
         if (!data) {
-          console.log("data=", data);
+          console.log(`data= ${data}`);
           this.initSetting();
           setTimeout(() => {
             this.fetchSettingFromDB();
           }, 100);
         } else {
           const st: MySettings = data;
+          this.remote_host = st.remote_host;
+          this.remote_port = st.remote_port;
           this.local_port = st.local_port;
           this.local_host = st.local_host;
           this.debug = st.debug;
