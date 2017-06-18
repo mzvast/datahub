@@ -71,9 +71,10 @@ export class UdpService {
     this.server.on('message', (msg, rinfo) => {
       // const buf = Buffer.from(msg);
       if (this._settingService.debug) {
-        console.log(msg);
+        // console.log(msg); // Buffer
         const str = msg.toString('hex');
         console.log(`server got ${msg.length} bytes: ${str} from ${rinfo.address}:${rinfo.port}`);
+        // console.log(`server got ${msg.length} bytes from ${rinfo.address}:${rinfo.port}`);
       }
       if (this._settingService.record) {
         this._dbService.create('pkg', `${msg.toString('hex')}`);
@@ -150,6 +151,7 @@ export class UdpService {
             }
             this.sendMessage(dataPack); // 发给UI
           } else { // 帧有多个包
+            console.log(`serial= ${serial}`);
             let workingProtocolPack = this.workingProtocolPacks.get(key);
             if (serial === 0) {// 帧首包
               workingProtocolPack = protocolPack;
@@ -168,6 +170,9 @@ export class UdpService {
                     }
                     this.sendMessage(dataPack); // 发给UI
                   }
+                } else {// TODO else 漏包\重复问题
+                  console.log('丢包');
+                  continue;
                 }
               }
             }
@@ -295,16 +300,18 @@ export class UdpService {
         }
         return pack3;
       case 4: // 中频数据包
-        if (len !== 8640) { // TODO 表里说总长是4544不对
-          console.error(`parser intermediate frequency data pack error, length is not 8640.`);
+        // if (len !== 8640) { // TODO 表里说总长是4544不对
+        //   console.error(`parser intermediate frequency data pack error, length is not 8640.`);
+        //   return null;
+        // }
+        if (len < 140) {
+          console.error(`parser broad band source data pack error, length less than 140.`);
           return null;
         }
-        const gps4 = data.slice(78, 78 + 62).toString('hex'); // 中频数据包的gps有点不一样
+        const gps4 = data.slice(76, 76 + 64).toString('hex'); // 中频数据包的gps有点不一样
         const pack4 = new IntermediateFrequencyDataPack(control, gps4);
-        pack4.pulseArriveTime = data.readUInt32LE(72, false);
-        pack4.serial = data.readUInt16LE(76, false);
-        pack4.data = data.slice(140, 140 + 8192).toString('hex');
-        pack4.backup = data.slice(8332, 8332 + 304).toString('hex');
+        pack4.serial = data.readUInt32LE(72, false);
+        pack4.data = data.slice(140, 140 + 524288).toString('hex');
         // debug it
         if (this._settingService.debug) {
           console.log(`parser intermediate frequency data pack success.`);
@@ -368,7 +375,7 @@ export class UdpService {
 
 
 
-  sendMsg(message: string) {
+  sendMsg(message: any) {
     const client = this.dgram.createSocket('udp4');
     client.send(message, 0, message.length, this._settingService.remote_port, this._settingService.remote_host, (err) => {
       console.log(`UDP message sent to ${this._settingService.remote_host}:${this._settingService.remote_port} `);

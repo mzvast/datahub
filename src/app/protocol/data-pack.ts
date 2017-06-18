@@ -335,10 +335,10 @@ export class PhaseCorrectionDataPack extends BaseDescriptionDataPack {
  * 中频数据包4
  */
 export class IntermediateFrequencyDataPack extends BaseDataPack {
-  data: string; // 中频数据描述字 8192
-  pulseArriveTime: number; // 脉冲到达时间4
-  serial: number; // 中频包序号2
-  backup: string; // 备份304
+  data: string; // 中频数据描述字 512K
+  // pulseArriveTime: number; // 脉冲到达时间4
+  serial: number; // 中频包序号4
+  // backup: string; // 备份304
 
   constructor(control: string, gps: string) {
     super(control, gps);
@@ -347,12 +347,16 @@ export class IntermediateFrequencyDataPack extends BaseDataPack {
 
   description() {
     return `[intermediate frequency data pack] control: ${this.control}, gps: ${this.gps}, ` +
-      `pulseArriveTime: ${this.pulseArriveTime}, serial: ${this.serial}, ` +
-      `data: ${this.data}, backup: ${this.backup}`;
+      `serial: ${this.serial}, ` +
+      `data: ${this.data}`;
   }
 
-  parserDescription(data: string): string {
-    return data;
+  parserDescription(data: string): any {
+    const dataHex = Buffer.from(data, 'hex');
+    const len = dataHex.length;
+    console.log(`len=${len}`);
+    const last = dataHex.readUInt16LE(len - 2, false);
+    return last;
   }
 }
 
