@@ -72,9 +72,9 @@ export class UdpService {
       // const buf = Buffer.from(msg);
       if (this._settingService.debug) {
         // console.log(msg); // Buffer
-        const str = msg.toString('hex');
-        console.log(`server got ${msg.length} bytes: ${str} from ${rinfo.address}:${rinfo.port}`);
-        // console.log(`server got ${msg.length} bytes from ${rinfo.address}:${rinfo.port}`);
+        // const str = msg.toString('hex');
+        // console.log(`server got ${msg.length} bytes: ${str} from ${rinfo.address}:${rinfo.port}`);
+        console.log(`server got ${msg.length} bytes from ${rinfo.address}:${rinfo.port}`);
       }
       if (this._settingService.record) {
         this._dbService.create('pkg', `${msg.toString('hex')}`);
@@ -103,7 +103,12 @@ export class UdpService {
   }
 
   parserProtocolPack(msg: Buffer, key: string) {
-    let workingBuffer = this.workingBuffers.get(key); // 获取全局暂存包
+    let workingBuffer;
+    if (this.workingBuffers) { // 确保存在
+      workingBuffer = this.workingBuffers.get(key); // 获取全局暂存包
+    }else {
+      return;
+    }
     if (!workingBuffer) {// 全局暂存包不存在，则创建之
       workingBuffer = Buffer.concat([Buffer.alloc(0), msg]);
       this.workingBuffers.set(key, workingBuffer);
@@ -311,7 +316,7 @@ export class UdpService {
         const gps4 = data.slice(76, 76 + 64).toString('hex'); // 中频数据包的gps有点不一样
         const pack4 = new IntermediateFrequencyDataPack(control, gps4);
         pack4.serial = data.readUInt32LE(72, false);
-        pack4.data = data.slice(140, 140 + 524288).toString('hex');
+        pack4.data = data.toString('hex', 140, 140 + 524288);
         // debug it
         if (this._settingService.debug) {
           console.log(`parser intermediate frequency data pack success.`);
