@@ -50,7 +50,7 @@ export class TagDataPack extends BaseDescriptionDataPack {
   taskNo: number; // 任务编号2
   frontWorkTemp: number; // 前端工作温度2
   extWorkTemp: number; // 分机工作温度2
-  extWorkStatus0: number; // 分机工作状态1 信道化组件状态 0：正常，1：不正常 TODO 我觉得应该是2字节 文档写4字节
+  extWorkStatus0: number; // 分机工作状态1 信道化组件状态 0：正常，1：不正常
   extWorkStatus1: number; // 分机工作状态1 信号分选组件状态 0：正常，1：不正常
   fullPulseCount: number; // 全脉冲个数统计4
   radiationSourceCount: number; // 辐射源数据包统计4
@@ -79,14 +79,19 @@ export class TagDataPack extends BaseDescriptionDataPack {
     desc.sourceNodeNo = dataHex.readUInt8(136, false);
     desc.destNodeNo = dataHex.readUInt8(137, false);
     desc.feedbackCommandNo = dataHex.readUInt16LE(138, false);
-    desc.commandReceiveStatus0 = dataHex.readUInt8(140, false);
-    desc.commandReceiveStatus1 = dataHex.readUInt8(141, false);
+    // 指令接收状态 2个字节，Bit0：0 指令接收正常；1指令接收出现丢帧；
+    // Bit1：0 指令解析正常；1 指令解析异常
+    const commandReceiveStatus: number = dataHex.readUInt16LE(140, false);
+    desc.commandReceiveStatus0 = commandReceiveStatus & 0b00000001;
+    desc.commandReceiveStatus1 = (commandReceiveStatus & 0b00000010) >>> 1;
     desc.taskNo = dataHex.readUInt16LE(142, false);
     desc.frontWorkTemp = dataHex.readUInt16LE(144, false);
     desc.extWorkTemp = dataHex.readUInt16LE(146, false);
-    desc.extWorkStatus0 = dataHex.readUInt8(148, false);
-    desc.extWorkStatus1 = dataHex.readUInt8(149, false);
-    // 文档写上面的status用4字节，那就跳过2个字节
+    // 分机工作状态 4个字节，Bit0：信道化组件状态 0：正常，1：不正常
+    // Bit1：信号分选组件状态 0：正常，1：不正常
+    const extWorkStatus = dataHex.readUInt32LE(148, false);
+    desc.extWorkStatus0 = extWorkStatus & 0b00000001;
+    desc.extWorkStatus1 = (extWorkStatus & 0b00000010) >>> 1;
     desc.fullPulseCount = dataHex.readUInt32LE(152, false);
     desc.radiationSourceCount = dataHex.readUInt32LE(156, false);
     desc.ifDataLen = dataHex.readUInt32LE(160, false);
