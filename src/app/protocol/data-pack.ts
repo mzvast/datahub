@@ -648,7 +648,7 @@ export class IntermediateFrequencyControlPack extends BaseControlPack {
   workType: number; // 工作方式1字节 0：实时校正模式；1：自检模式；2：搜索模式；(默认工作模式) 3：跟踪模式；
   broadband: number; // 带宽选择1字节 0：40M；1：400M
   workPeriod: number; // 工作周期数2字节 0：表示长期驻留；其它：工作周期数
-  workPeriodCount: number; // 工作周期计数4字节 按工作周期递增
+  workPeriodCount: number; // 工作周期计数4字节 按工作周期递增 工作周期就是计数了，不需要设的(那就暂时和serial一样吧)
   workPeriodLength: number; // 工作周期长度1字节 单位：20ms； 默认值为50
   attenuationCode1: number; // 衰减码1 1字节 0：不衰减，1：衰减20dB；
   attenuationCode2: number; // 衰减码2 1字节 单位：dB，取值范围：0～35，步进5dB
@@ -675,6 +675,8 @@ export class IntermediateFrequencyControlPack extends BaseControlPack {
   constructor(serial: number) {
     super();
     this.serial = serial;
+    // 陈博士回复 工作周期就是计数了，不需要设的(那就暂时和serial一样吧)
+    this.workPeriodCount = this.serial;
   }
 
   /**
