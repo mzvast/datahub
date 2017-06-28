@@ -630,28 +630,28 @@ class BaseControlPack {
 export class IntermediateFrequencyControlPack extends BaseControlPack {
   workType: number; // 工作方式1字节 0：实时校正模式；1：自检模式；2：搜索模式；(默认工作模式) 3：跟踪模式；
   broadband: number; // 带宽选择1字节 0：40M；1：400M
-  // 工作周期数2 0：表示长期驻留；其它：工作周期数
-  // 工作周期计数4 按工作周期递增
-  // 工作周期长度1 单位：20ms； 默认值为50
-  // 衰减码1 1字节 0：不衰减，1：衰减20dB；
-  // 衰减码2 1字节 单位：dB，取值范围：0～35，步进5dB
-  // 前端工作模式设置1 0：直通，1：放大
-  // 工作中心频率 2
-  // 单刀五掷1 有效位数3位，测频通道选择，通道1-7
-  // 备份6
-  // 脉宽剔除门限值1
-  // 测向处理脉冲个数1
-  // 中频采集时间1
-  // 方位角搜索起始值2
-  // 方位角搜索终止值2
-  // 仰角搜索起始值2
-  // 仰角搜索终止值2
-  // 方位角粗搜索步长1
-  // 仰角粗搜索步长1
-  // 个数估计门限1
-  // 攻击准则选择1
-  // 脉宽匹配容差4
-  // PRI匹配容差4
-  // 分机控制4
-  // 备份2
+  workPeriod: number; // 工作周期数2字节 0：表示长期驻留；其它：工作周期数
+  workPeriodCount: number; // 工作周期计数4字节 按工作周期递增
+  workPeriodLength: number; // 工作周期长度1字节 单位：20ms； 默认值为50
+  attenuationCode1: number; // 衰减码1 1字节 0：不衰减，1：衰减20dB；
+  attenuationCode2: number; // 衰减码2 1字节 单位：dB，取值范围：0～35，步进5dB
+  frontWorkModel: number; // 前端工作模式设置1字节 0：直通，1：放大
+  workCenterFreq: number; // 工作中心频率 2字节
+  singlePoleFiveRolls: number; // LOL网上翻译的！ 单刀五掷1字节 有效位数3位，测频通道选择，通道1-7
+  backup0: number; // 备份6字节
+  excludePulseThreshold: number; // 脉宽剔除门限值1字节
+  sideProcessPulseCount: number; // 测向处理脉冲个数1字节
+  intermediateFrequencyCollectTime: number; // 中频采集时间1字节
+  azimuthSearchStart: number; // 方位角搜索起始值2字节
+  azimuthSearchEnd: number; // 方位角搜索终止值2字节
+  elevationSearchStart: number; // 仰角搜索起始值2字节
+  elevationSearchEnd: number; // 仰角搜索终止值2字节
+  azimuthSearchStepLength: number; // 方位角粗搜索步长1字节
+  elevationSearchStepLength: number; // 仰角粗搜索步长1字节
+  countEstimatedThreshold: number; // 个数估计门限1字节
+  attackCriterionSelect: number; // 攻击准则选择1字节
+  pulseMatchTolerance: number; // 脉宽匹配容差4字节
+  priMatchTolerance: number; // PRI匹配容差4字节
+  extControl: number; // 分机控制4字节
+  backup1: number; // 备份2字节
 }
