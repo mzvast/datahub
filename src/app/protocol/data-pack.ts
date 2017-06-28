@@ -130,7 +130,7 @@ export class TagDataPackDictionary {
   taskNo = ' 任务编号2'; // 任务编号2
   frontWorkTemp = ' 前端工作温度2'; // 前端工作温度2
   extWorkTemp = ' 分机工作温度2'; // 分机工作温度2
-  extWorkStatus0 = ' 分机工作状态1'; // 分机工作状态1 信道化组件状态 0：正常，1：不正常 TODO 我觉得应该是2字节 文档写4字节
+  extWorkStatus0 = ' 分机工作状态1'; // 分机工作状态1 信道化组件状态 0：正常，1：不正常
   extWorkStatus1 = ' 分机工作状态1'; // 分机工作状态1 信号分选组件状态 0：正常，1：不正常
   fullPulseCount = ' 全脉冲个数统计4'; // 全脉冲个数统计4
   radiationSourceCount = ' 辐射源数据包统计4'; // 辐射源数据包统计4
@@ -340,7 +340,8 @@ export class PhaseCorrectionDataPack extends BaseDescriptionDataPack {
  * 中频数据包4
  */
 export class IntermediateFrequencyDataPack extends BaseDataPack {
-  data: string; // 中频数据描述字 512K
+  // 中频数据量很大，存Buffer 中频数据描述字 512K
+  data: Buffer;
   // pulseArriveTime: number; // 脉冲到达时间4
   serial: number; // 中频包序号4
   // backup: string; // 备份304
@@ -352,15 +353,13 @@ export class IntermediateFrequencyDataPack extends BaseDataPack {
 
   description() {
     return `[intermediate frequency data pack] control: ${this.control}, gps: ${this.gps}, ` +
-      `serial: ${this.serial}, ` +
-      `data: ${this.data}`;
+      `serial: ${this.serial}`;
   }
 
-  parserDescription(data: string): any {
-    const dataHex = Buffer.from(data, 'hex');
-    const len = dataHex.length;
+  parserDescription(data: Buffer): any {
+    const len = data.length;
     console.log(`len=${len}`);
-    const last = dataHex.readUInt16LE(len - 2, false);
+    const last = data.readUInt16LE(len - 2, false);
     return last;
   }
 }

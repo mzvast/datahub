@@ -106,7 +106,7 @@ export class UdpService {
     let workingBuffer;
     if (this.workingBuffers) { // 确保存在
       workingBuffer = this.workingBuffers.get(key); // 获取全局暂存包
-    }else {
+    } else {
       return;
     }
     if (!workingBuffer) {// 全局暂存包不存在，则创建之
@@ -156,7 +156,9 @@ export class UdpService {
             }
             this.sendMessage(dataPack); // 发给UI
           } else { // 帧有多个包
-            console.log(`serial= ${serial}`);
+            if (this._settingService.debug) {
+              console.log(`serial= ${serial}`);
+            }
             let workingProtocolPack = this.workingProtocolPacks.get(key);
             if (serial === 0) {// 帧首包
               workingProtocolPack = protocolPack;
@@ -305,18 +307,18 @@ export class UdpService {
         }
         return pack3;
       case 4: // 中频数据包
-        // if (len !== 8640) { // TODO 表里说总长是4544不对
-        //   console.error(`parser intermediate frequency data pack error, length is not 8640.`);
+        // if (len !== 524432) {
+        //   console.error(`parser intermediate frequency data pack error, length is not 524432.`);
         //   return null;
         // }
         if (len < 140) {
-          console.error(`parser broad band source data pack error, length less than 140.`);
+          console.error(`parser intermediate frequency data pack error, length less than 140.`);
           return null;
         }
         const gps4 = data.slice(76, 76 + 64).toString('hex'); // 中频数据包的gps有点不一样
         const pack4 = new IntermediateFrequencyDataPack(control, gps4);
-        pack4.serial = data.readUInt32LE(72, false);
-        pack4.data = data.toString('hex', 140, 140 + 524288);
+        pack4.serial = data.readUInt32LE(72, false); // 中频包序号 暂定：（每秒发一次）固定每次中频数据发1M，即分2次帧发送。这2次中频包序号相同，拼起来绘图。
+        pack4.data = data.slice(140, 140 + 524288);
         // debug it
         if (this._settingService.debug) {
           console.log(`parser intermediate frequency data pack success.`);
