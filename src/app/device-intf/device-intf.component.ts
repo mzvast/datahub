@@ -11,6 +11,9 @@ import { UdpService } from 'app/udp.service';
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class DeviceIntfComponent implements OnInit {
+  timeInt = 1;
+  timeMax = 25;
+  timeMin = 0.1;
   subscription: Subscription;
   message = '未收到数据';
   serial: number;
@@ -29,6 +32,20 @@ export class DeviceIntfComponent implements OnInit {
         this.cd.detectChanges(); // 检测更改，更新UI。
       }
     });
+  }
+
+  timePlus(val: number) {
+    if (this.timeInt + val <= this.timeMax) {
+      this.timeInt += val;
+    }
+  }
+  timeMinus(val: number) {
+    if (this.timeInt - val >= this.timeMin) {
+      this.timeInt -= val;
+    }
+  }
+  timeSet(val: number) {
+    this.timeInt = val;
   }
 
 }

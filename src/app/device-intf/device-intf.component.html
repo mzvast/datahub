@@ -1,17 +1,33 @@
 <md-card>
-   <md-card-header>
+  <md-card-header>
     <md-card-title>中频长度设定</md-card-title>
     <md-card-subtitle>0-25毫秒</md-card-subtitle>
   </md-card-header>
-<md-divider></md-divider>
+  <md-divider></md-divider>
   <md-card-content>
-        <md-input-container class="narrow-input bigger">
-          <input mdInput value="1" type="number" max="24" min="0">
-        </md-input-container><span class="bigger">.</span>
-        <md-input-container class="super-narrow-input bigger">
-          <input mdInput value="0" type="number" max="9" min="0">
-        </md-input-container>
+    <div class="display">
+      <md-input-container class="narrow-input">
+        <input mdInput value={{timeInt}} type="number" max="25" min="0">
+      </md-input-container>.
+      <md-input-container class="super-narrow-input">
+        <input mdInput value="0" type="number" max="9" min="0">
+      </md-input-container>
       毫秒
+    </div>
+    <div>
+      <span>调节:</span>
+      <button class="number-btn" md-button (click)="timePlus(5)">+5毫秒</button>
+      <button class="number-btn" md-button (click)="timeMinus(5)">-5毫秒</button>
+      <button class="number-btn" md-button (click)="timePlus(10)">+10毫秒</button>
+      <button class="number-btn" md-button (click)="timeMinus(10)">-10毫秒</button>
+    </div>
+    <div style="margin-top:1em;">
+      <span>数值:</span>
+      <button class="number-btn" md-button (click)="timeSet(5)">5毫秒</button>
+      <button class="number-btn" md-button (click)="timeSet(10)">10毫秒</button>
+      <button class="number-btn" md-button (click)="timeSet(15)">15毫秒</button>
+      <button class="number-btn" md-button (click)="timeSet(20)">20毫秒</button>
+    </div>
   </md-card-content>
   <md-divider></md-divider>
   <md-card-actions>

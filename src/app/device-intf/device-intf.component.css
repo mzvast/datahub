@@ -4,12 +4,16 @@ div {
   overflow-y: auto;
 }
 .narrow-input{
-  width: 1.5em;
+  width: 2em;
 }
 .super-narrow-input{
-  width: 1em;
+  width: 1.5em;
 }
-.bigger{
+.display{
   /*height: 3em;*/
-  font-size: 3em;
+  font-size: 2em;
+  margin-left: 20%;
+}
+.number-btn{
+  border: 2px solid pink;
 }
