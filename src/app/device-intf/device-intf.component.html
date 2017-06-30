@@ -1,5 +1,21 @@
-<div>
-  <p>
-    {{message}}
-  </p>
-</div>
+<md-card>
+   <md-card-header>
+    <md-card-title>中频长度设定</md-card-title>
+    <md-card-subtitle>0-25毫秒</md-card-subtitle>
+  </md-card-header>
+<md-divider></md-divider>
+  <md-card-content>
+        <md-input-container class="narrow-input bigger">
+          <input mdInput value="1" type="number" max="24" min="0">
+        </md-input-container><span class="bigger">.</span>
+        <md-input-container class="super-narrow-input bigger">
+          <input mdInput value="0" type="number" max="9" min="0">
+        </md-input-container>
+      毫秒
+  </md-card-content>
+  <md-divider></md-divider>
+  <md-card-actions>
+    <button md-button>发送请求</button>
+    <button md-button>导出数据</button>
+  </md-card-actions>
+</md-card>

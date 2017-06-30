@@ -3,3 +3,13 @@ div {
   word-wrap: break-word;
   overflow-y: auto;
 }
+.narrow-input{
+  width: 1.5em;
+}
+.super-narrow-input{
+  width: 1em;
+}
+.bigger{
+  /*height: 3em;*/
+  font-size: 3em;
+}

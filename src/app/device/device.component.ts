@@ -28,12 +28,6 @@ export class DeviceComponent implements OnInit, OnDestroy {
     }, {
       name: '中频数据',
       url: 'intf'
-    }, {
-      name: '相位校正',
-      url: 'phase'
-    }, {
-      name: '定位',
-      url: 'location'
     }
   ];
   constructor(private databaseService: DatabaseService, private udpService: UdpService, private parentRouter: Router) {
