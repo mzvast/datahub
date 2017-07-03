@@ -13,6 +13,8 @@ declare var electron: any; // 　Typescript 定义
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class DeviceIntfComponent implements OnInit {
+  directSaveFlag = true; // true直接保存, false弹出位置选择
+  folderPath: string;
   dialog = electron.remote.dialog;
   fs = electron.remote.getGlobal('fs');
   timeInt = 1;
@@ -59,26 +61,45 @@ export class DeviceIntfComponent implements OnInit {
     this.udpService.sendIntFreqRequest(this.timeInt);
   }
 
+  writeFile(fileName: string, content: any) {
+    this.fs.writeFile(fileName, content, (err) => {
+      if (err) {
+        alert('An error ocurred creating the file ' + err.message)
+      }
+
+      alert('The file has been succesfully saved');
+    });
+  }
+
   exportData() {
     console.log('export data');
     const content = 'Some text to save into the file'; // TODO 传入最终csv数据
+    const defaultFileName = new Date().toISOString().slice(0, 19).replace(/-/g, '').replace('T', '').replace(/:/g, '');
+    if (this.folderPath) {// 选定了默认位置，直接存储
+      this.writeFile(this.folderPath + '\\' + defaultFileName, content);
+    } else { // 否则选择存储位置
+      // You can obviously give a direct path without use the dialog (C:/Program Files/path/myfileexample.txt)
+      this.dialog.showErrorBox('路径错误', '请先选择保存位置')
+    }
+  }
 
-    // You can obviously give a direct path without use the dialog (C:/Program Files/path/myfileexample.txt)
-    this.dialog.showSaveDialog((fileName) => {
-      if (fileName === undefined) {
-        console.log('You didn\'t save the file');
+  selectPath() {
+    this.dialog.showOpenDialog({
+      title: '请选择保存位置',
+      properties: ['openDirectory']
+    }, (folderPaths) => {
+      // folderPaths is an array that contains all the selected paths
+      if (folderPaths === undefined) {
+        console.log('No destination folder selected');
         return;
+      } else {
+        console.log(folderPaths);
+        this.folderPath = folderPaths[0];
+        this.cd.detectChanges(); // 检测更改，更新UI。
       }
-
-      // fileName is a string that contains the path and filename created in the save file dialog.
-      this.fs.writeFile(fileName, content, (err) => {
-        if (err) {
-          alert('An error ocurred creating the file ' + err.message)
-        }
-
-        alert('The file has been succesfully saved');
-      });
     });
   }
+
+
 
 }
