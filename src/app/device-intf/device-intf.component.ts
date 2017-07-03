@@ -24,10 +24,10 @@ export class DeviceIntfComponent implements OnInit {
       if (msg.type === 4) {// 判断是中频数据
         if (this.serial === undefined) { // 首波中频，无序号
           this.serial = msg.serial;
-        } else if (msg.serial === this.serial) { // 中频序号相同，为同一幅图的数据 TODO 拼接图数据点
-          this.message += msg.data.slice(-8); // 拼接后
+        } else if (msg.serial === this.serial) { // 中频序号相同，为同一幅图
+          this.message += msg.data.slice(-8); // TODO 拼接数据
         } else {
-          this.message = msg.data.slice(-8); // 只打印最后几个，0001ffff
+           // TODO 怎样判断结束？
         }
         this.cd.detectChanges(); // 检测更改，更新UI。
       }
@@ -39,13 +39,24 @@ export class DeviceIntfComponent implements OnInit {
       this.timeInt += val;
     }
   }
+
   timeMinus(val: number) {
     if (this.timeInt - val >= this.timeMin) {
       this.timeInt -= val;
     }
   }
+
   timeSet(val: number) {
     this.timeInt = val;
+  }
+
+  sendRequest() {
+    console.log('timeInt=', this.timeInt);
+    this.udpService.sendIntFreqRequest(this.timeInt);
+  }
+
+  exportData() {
+    console.log('export data');
   }
 
 }

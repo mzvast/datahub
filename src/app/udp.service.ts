@@ -1,3 +1,4 @@
+import { IntermediateFrequencyControlPack } from './protocol/data-pack';
 import { SettingService } from './setting.service';
 import { MySettings } from './settings/my-settings';
 import { DatabaseService } from './database.service';
@@ -384,6 +385,16 @@ export class UdpService {
 
   sendMsg(message: any) {
     const client = this.dgram.createSocket('udp4');
+    client.send(message, 0, message.length, this._settingService.remote_port, this._settingService.remote_host, (err) => {
+      console.log(`UDP message sent to ${this._settingService.remote_host}:${this._settingService.remote_port} `);
+      client.close();
+    });
+  }
+
+  sendIntFreqRequest(time: number) { // TODO 参数传入到什么位置？
+    const client = this.dgram.createSocket('udp4');
+    const intFreCtlPack = new IntermediateFrequencyControlPack(0); // 随便写的，可能有误
+    const message = intFreCtlPack.packageMessage(); // TODO 部分参数没有赋初值，报错
     client.send(message, 0, message.length, this._settingService.remote_port, this._settingService.remote_host, (err) => {
       console.log(`UDP message sent to ${this._settingService.remote_host}:${this._settingService.remote_port} `);
       client.close();
