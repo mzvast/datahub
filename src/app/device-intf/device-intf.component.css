@@ -1,13 +1,8 @@
-div {
-  width: 100%;
-  word-wrap: break-word;
-  overflow-y: auto;
-}
 .narrow-input{
   width: 2em;
 }
 .medium-input{
-  width: 4em;
+  width: 2.5em;
 }
 .medium-select{
   width: 14em;
@@ -18,10 +13,12 @@ div {
 .display{
   /*height: 3em;*/
   font-size: 2em;
-  margin-left: 20%;
+  /*margin-left: 20%;*/
+  text-align: center;
 }
 .number-btn{
   border: 2px solid pink;
+  width: 1em;
 }
 
 .item-header {
@@ -29,6 +26,28 @@ div {
 }
 .item-value {
   text-align: center;
-  font-size: 18px;
-  margin-left: 10px;
+}
+.container{
+  display: flex;
+  flex-wrap: wrap;
+}
+.box {
+  width: 100%;
+  padding-top: 1em;
+}
+md-slider{
+    width: 80%;
+  }
+
+@media screen and (min-width: 960px){
+  .box {
+    width: 50%;
+  }
+  .display{
+    width: 30%;
+  }
+  .slider{
+    width: 70%;
+    margin-top: 3em;
+  }
 }

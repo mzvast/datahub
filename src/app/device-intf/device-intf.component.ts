@@ -18,7 +18,7 @@ export class DeviceIntfComponent implements OnInit {
   folderPath: string;
   dialog = electron.remote.dialog;
   fs = electron.remote.getGlobal('fs');
-  timeInt = 1;
+  timeVal = 1;
   timeMax = 25;
   timeMin = 0.1;
   subscription: Subscription;
@@ -78,30 +78,15 @@ export class DeviceIntfComponent implements OnInit {
     });
   }
 
-  timePlus(val: number) {
-    if (this.timeInt + val <= this.timeMax) {
-      this.timeInt += val;
-    }
-  }
-
-  timeMinus(val: number) {
-    if (this.timeInt - val >= this.timeMin) {
-      this.timeInt -= val;
-    }
-  }
-
-  timeSet(val: number) {
-    this.timeInt = val;
-  }
 
   sendRequest() {
-    console.log('timeInt=', this.timeInt);
+    console.log('timeVal=', this.timeVal);
     this.serial++;
     if (this.serial >= 65535) {
       this.serial = 0;
     }
     const pack = new IntermediateFrequencyControlPack(this.serial);
-    pack.intermediateFrequencyCollectTime = this.timeInt;
+    pack.intermediateFrequencyCollectTime = this.timeVal;
     pack.workType = this.workType;
     pack.broadband = this.broadband;
     pack.workPeriod = this.workPeriod;
