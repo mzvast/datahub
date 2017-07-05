@@ -647,7 +647,7 @@ class BaseControlPack {
 
   numberToBuffer(num: number, length: number) {
     const data = Buffer.allocUnsafe(length);
-    data.writeIntLE(num, 0, length);
+    data.writeIntLE(num, 0, length, true);
     return data;
   }
 }
@@ -695,6 +695,7 @@ export class IntermediateFrequencyControlPack extends BaseControlPack {
    * @returns {Buffer}
    */
   packageMessage() {
+    // this.numberToBuffer(0xFC, 1);
     return Buffer.concat([
       this.numberToBuffer(this.head, 2),
       this.numberToBuffer(this.serial, 2),

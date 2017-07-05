@@ -394,6 +394,7 @@ export class UdpService {
   sendIntFreqRequest(intFreCtlPack: IntermediateFrequencyControlPack) {
     const client = this.dgram.createSocket('udp4');
     const message = intFreCtlPack.packageMessage();
+    console.log(`intFreCtlPack: ${message.toString('hex')}`);
     client.send(message, 0, message.length, this._settingService.remote_port, this._settingService.remote_host, (err) => {
       console.log(`UDP message sent to ${this._settingService.remote_host}:${this._settingService.remote_port} `);
       client.close();
