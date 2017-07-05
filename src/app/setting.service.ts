@@ -10,12 +10,13 @@ export class SettingService {
   remote_host: string;
   debug: boolean;
   record: boolean;
+  intf: string;
 
   constructor(private _dbService: DatabaseService) {
     this.fetchSettingFromDB();
   }
 
-  fetchSettingFromDB() {
+  fetchSettingFromDB() { // 从数据库读取
     this._dbService.models.setting.findOne({
       where: {
         id: 1
@@ -36,13 +37,18 @@ export class SettingService {
           this.local_host = st.local_host;
           this.debug = st.debug;
           this.record = st.record;
+          this.intf = st.intf;
         }
       });
   }
 
-  updateSettingToDB() {
+  updateSettingToDB() { // 更新数据库
     const newData = {
       local_port: this.local_port,
+      remote_port: this.remote_port,
+      local_host: this.local_host,
+      remote_host: this.remote_host,
+      intf: this.intf,
       debug: this.debug,
       record: this.record
     };
@@ -66,7 +72,7 @@ export class SettingService {
     this.updateSettingToDB();
   }
 
-  initSetting() {
+  initSetting() { // 初始化数据库
     this._dbService.models.setting.destroy({
       where: {},
       truncate: true
@@ -79,9 +85,10 @@ export class SettingService {
         remote_host: '192.168.0.31',
         remote_port: '6011',
         debug: false,
-        record: false
+        record: false,
+        intf: ''
       });
-      // console.log('设置初始化完成');
+      console.log('设置初始化完成');
     });
   }
 
@@ -95,6 +102,11 @@ export class SettingService {
     this.remote_host = host;
     this.remote_port = port;
     console.log(`setRemoteAddress to ${this.remote_host}:${this.remote_port}`);
+  }
+
+  setIntf(data: string) {
+    this.intf = data;
+    console.log(`set intf to ${this.intf}`);
   }
 
 }
