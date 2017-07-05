@@ -25,14 +25,14 @@ export class DataShowComponent implements OnInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
-    private db: DatabaseService,
+    private _databaseService: DatabaseService,
     private dialog: MdDialog) { }
 
   ngOnInit() {
     this.sub = this.route.params.subscribe(params => {
       this.type = params['type']; //
       // In a real app: dispatch action to load the details here.
-      this.db.authenticate();
+      this._databaseService.authenticate();
       this.fetch();
 
     });
@@ -46,7 +46,7 @@ export class DataShowComponent implements OnInit, OnDestroy {
   }
 
   fetch() {
-    this.db.models[this.type].findAll()
+    this._databaseService.models[this.type].findAll()
       .then((data) => {
         console.log(data);
         // console.log(data[0].raw.toString());
@@ -88,6 +88,12 @@ export class DataShowComponent implements OnInit, OnDestroy {
 
   getSelectedIx() {
     return this.selected[0]['$$index'];
+  }
+
+  clearHistory() {
+    console.log('Clear History', this.type);
+    this._databaseService.destroyTable(this.type);
+    this.fetch();
   }
 
 }

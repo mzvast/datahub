@@ -50,4 +50,11 @@ export class DatabaseService {
       raw: raw
     });
   }
+
+  destroyTable(table: string) {
+    this.models[table].destroy({
+      where: {},
+      truncate: true
+    });
+  }
 }

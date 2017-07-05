@@ -18,6 +18,9 @@ export class DataComponent implements OnInit {
     }, {
       name: '辐射源',
       url: 'radiation'
+    }, {
+      name: '*原始数据',
+      url: 'pkg'
     }
   ];
   constructor() { }
