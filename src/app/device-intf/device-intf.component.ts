@@ -1,4 +1,4 @@
-import { IntermediateFrequencyDataPack } from './../protocol/data-pack';
+import {IntermediateFrequencyControlPack, IntermediateFrequencyDataPack} from './../protocol/data-pack';
 import { Subscription } from 'rxjs/Subscription';
 import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { UdpService } from 'app/udp.service';
@@ -29,10 +29,30 @@ export class DeviceIntfComponent implements OnInit {
   broadband = 1;
   workPeriod = 0;
   workPeriodLength = 50;
-
+  attenuationCode1 = 1;
+  attenuationCode2 = 0;
+  frontWorkModel = 1;
+  workCenterFreq = 1;
+  singlePoleFiveRolls = 0;
+  excludePulseThreshold = 0;
+  sideProcessPulseCount = 1;
+  azimuthSearchStart = 1;
+  azimuthSearchEnd = 1;
+  elevationSearchStart = 1;
+  elevationSearchEnd = 1;
+  azimuthSearchStepLength = 0;
+  elevationSearchStepLength = 0;
+  countEstimatedThreshold = 0;
+  attackCriterionSelect = 1;
+  pulseMatchTolerance = 0;
+  priMatchTolerance = 0;
+  extControl = 0;
 
   workTypeSelect = [{code: 0, name: '实时校正模式'}, {code: 1, name: '自检模式'}, {code: 2, name: '搜索模式'}, {code: 3, name: '跟踪模式'}];
   broadbandSelect = [{code: 0, name: '40M'}, {code: 1, name: '400M'}];
+  attenuationCode1Select = [{code: 0, name: '不衰减'}, {code: 1, name: '衰减20dB'}];
+  frontWorkModelSelect = [{code: 0, name: '直通'}, {code: 1, name: '放大'}];
+  attackCriterionSelectSelect = [{code: 0, name: '脉宽最大作为攻击对象'}, {code: 1, name: '重频最高作为攻击对象'}];
 
   constructor(private udpService: UdpService, private cd: ChangeDetectorRef) { }
 
@@ -69,13 +89,42 @@ export class DeviceIntfComponent implements OnInit {
 
   sendRequest() {
     console.log('timeInt=', this.timeInt);
-    this.udpService.sendIntFreqRequest(this.timeInt);
+    this.serial++;
+    if (this.serial >= 65535) {
+      this.serial = 0;
+    }
+    const pack = new IntermediateFrequencyControlPack(this.serial);
+    pack.intermediateFrequencyCollectTime = this.timeInt;
+    pack.workType = this.workType;
+    pack.broadband = this.broadband;
+    pack.workPeriod = this.workPeriod;
+    pack.workPeriodCount = this.serial; // 这个暂时和serial一样
+    pack.workPeriodLength = this.workPeriodLength;
+    pack.attenuationCode1 = this.attenuationCode1;
+    pack.attenuationCode2 = this.attenuationCode2;
+    pack.frontWorkModel = this.frontWorkModel;
+    pack.workCenterFreq = this.workCenterFreq;
+    pack.singlePoleFiveRolls = this.singlePoleFiveRolls;
+    pack.excludePulseThreshold = this.excludePulseThreshold;
+    pack.sideProcessPulseCount = this.sideProcessPulseCount;
+    pack.azimuthSearchStart = this.azimuthSearchStart;
+    pack.azimuthSearchEnd = this.azimuthSearchEnd;
+    pack.elevationSearchStart = this.elevationSearchStart;
+    pack.elevationSearchEnd = this.elevationSearchEnd;
+    pack.azimuthSearchStepLength = this.azimuthSearchStepLength;
+    pack.elevationSearchStepLength = this.elevationSearchStepLength;
+    pack.countEstimatedThreshold = this.countEstimatedThreshold;
+    pack.attackCriterionSelect = this.attackCriterionSelect;
+    pack.pulseMatchTolerance = this.pulseMatchTolerance;
+    pack.priMatchTolerance = this.priMatchTolerance;
+    pack.extControl = this.extControl;
+    this.udpService.sendIntFreqRequest(pack);
   }
 
   writeFile(fileName: string, content: any) {
     this.fs.writeFile(fileName, content, (err) => {
       if (err) {
-        alert('An error ocurred creating the file ' + err.message)
+        alert('An error ocurred creating the file ' + err.message);
       }
 
       alert('The file has been succesfully saved');
@@ -90,7 +139,7 @@ export class DeviceIntfComponent implements OnInit {
       this.writeFile(this.folderPath + '\\' + defaultFileName, content);
     } else { // 否则选择存储位置
       // You can obviously give a direct path without use the dialog (C:/Program Files/path/myfileexample.txt)
-      this.dialog.showErrorBox('路径错误', '请先选择保存位置')
+      this.dialog.showErrorBox('路径错误', '请先选择保存位置');
     }
   }
 

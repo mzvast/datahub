@@ -39,34 +39,195 @@
     <md-grid-list cols="2" rowHeight="30px">
       <md-grid-tile>
         <div>
-          <span>工作方式:</span>
-          <md-select placeholder="工作方式" [(ngModel)]="workType">
+          <span class="item-header">工作方式:</span>
+          <md-select placeholder="工作方式" [(ngModel)]="workType" class="medium-select item-value">
             <md-option *ngFor="let state of workTypeSelect" [value]="state.code">{{ state.name }}</md-option>
           </md-select>
         </div>
       </md-grid-tile>
       <md-grid-tile>
         <div>
-          <span>带宽选择:</span>
-          <md-select placeholder="带宽选择" [(ngModel)]="broadband">
-            <md-option *ngFor="let broadbandState of broadbandSelect" [value]="broadbandState.code">{{ broadbandState.name }}</md-option>
+          <span class="item-header">带宽选择:</span>
+          <md-select placeholder="带宽选择" [(ngModel)]="broadband" class="medium-select item-value">
+            <md-option *ngFor="let state of broadbandSelect" [value]="state.code">{{ state.name }}</md-option>
           </md-select>
         </div>
       </md-grid-tile>
       <md-grid-tile>
         <div>
-          <span>工作周期数:</span>
-          <md-input-container class="">
+          <span class="item-header">工作周期数:</span>
+          <md-input-container class="medium-input item-value">
             <input mdInput value={{workPeriod}} type="number" min="0">
           </md-input-container>
+          <span>(0：表示长期驻留)</span>
         </div>
       </md-grid-tile>
       <md-grid-tile>
         <div>
-          <span>工作周期长度:</span>
-          <md-input-container class="">
+          <span class="item-header">工作周期长度:</span>
+          <md-input-container class="medium-input item-value">
             <input mdInput value={{workPeriodLength}} type="number" min="0">
           </md-input-container>
+          <span>(单位：20ms)</span>
+        </div>
+      </md-grid-tile>
+      <md-grid-tile>
+        <div>
+          <span class="item-header">衰减码1:</span>
+          <md-select placeholder="带宽选择" [(ngModel)]="attenuationCode1" class="medium-select item-value">
+            <md-option *ngFor="let state of attenuationCode1Select" [value]="state.code">{{ state.name }}</md-option>
+          </md-select>
+        </div>
+      </md-grid-tile>
+      <md-grid-tile>
+        <div>
+          <span class="item-header">衰减码2:</span>
+          <md-input-container class="medium-input item-value">
+            <input mdInput value={{attenuationCode2}} type="number" min="0" max="35">
+          </md-input-container>
+          <span>(单位：dB)</span>
+        </div>
+      </md-grid-tile>
+      <md-grid-tile>
+        <div>
+          <span class="item-header">前端工作模式:</span>
+          <md-select placeholder="前端工作模式" [(ngModel)]="frontWorkModel" class="medium-select item-value">
+            <md-option *ngFor="let state of frontWorkModelSelect" [value]="state.code">{{ state.name }}</md-option>
+          </md-select>
+        </div>
+      </md-grid-tile>
+      <md-grid-tile>
+        <div>
+          <span class="item-header">工作中心频率:</span>
+          <md-input-container class="medium-input item-value">
+            <input mdInput value={{workCenterFreq}} type="number">
+          </md-input-container>
+          <span>(单位：MHz)</span>
+        </div>
+      </md-grid-tile>
+      <md-grid-tile>
+        <div>
+          <span class="item-header">单刀五掷:</span>
+          <md-input-container class="medium-input item-value">
+            <input mdInput value={{singlePoleFiveRolls}} type="number">
+          </md-input-container>
+          <span></span>
+        </div>
+      </md-grid-tile>
+      <md-grid-tile>
+        <div>
+          <span class="item-header">脉宽剔除门限值:</span>
+          <md-input-container class="medium-input item-value">
+            <input mdInput value={{excludePulseThreshold}} type="number">
+          </md-input-container>
+          <span>(单位：100ns)</span>
+        </div>
+      </md-grid-tile>
+      <md-grid-tile>
+        <div>
+          <span class="item-header">测向处理脉冲个数:</span>
+          <md-input-container class="medium-input item-value">
+            <input mdInput value={{sideProcessPulseCount}} type="number" min="1" max="255">
+          </md-input-container>
+          <span>(取值：1～255)</span>
+        </div>
+      </md-grid-tile>
+      <md-grid-tile>
+        <div>
+          <span class="item-header">方位角搜索起始值:</span>
+          <md-input-container class="medium-input item-value">
+            <input mdInput value={{azimuthSearchStart}} type="number" min="0" max="362">
+          </md-input-container>
+          <span>(单位：度；取值范围0～362)</span>
+        </div>
+      </md-grid-tile>
+      <md-grid-tile>
+        <div>
+          <span class="item-header">方位角搜索终止值:</span>
+          <md-input-container class="medium-input item-value">
+            <input mdInput value={{azimuthSearchEnd}} type="number" min="0" max="362">
+          </md-input-container>
+          <span>(单位：度；取值范围0～362)</span>
+        </div>
+      </md-grid-tile>
+      <md-grid-tile>
+        <div>
+          <span class="item-header">仰角搜索起始值:</span>
+          <md-input-container class="medium-input item-value">
+            <input mdInput value={{elevationSearchStart}} type="number" min="51" max="90">
+          </md-input-container>
+          <span>(单位：度；取值范围51～90)</span>
+        </div>
+      </md-grid-tile>
+      <md-grid-tile>
+        <div>
+          <span class="item-header">仰角搜索起始值:</span>
+          <md-input-container class="medium-input item-value">
+            <input mdInput value={{elevationSearchEnd}} type="number" min="51" max="90">
+          </md-input-container>
+          <span>(单位：度；取值范围51～90)</span>
+        </div>
+      </md-grid-tile>
+      <md-grid-tile>
+        <div>
+          <span class="item-header">方位角粗搜索步长:</span>
+          <md-input-container class="medium-input item-value">
+            <input mdInput value={{azimuthSearchStepLength}} type="number">
+          </md-input-container>
+          <span>(单位：度)</span>
+        </div>
+      </md-grid-tile>
+      <md-grid-tile>
+        <div>
+          <span class="item-header">方位角粗搜索步长:</span>
+          <md-input-container class="medium-input item-value">
+            <input mdInput value={{elevationSearchStepLength}} type="number">
+          </md-input-container>
+          <span>(单位：度)</span>
+        </div>
+      </md-grid-tile>
+      <md-grid-tile>
+        <div>
+          <span class="item-header">个数估计门限:</span>
+          <md-input-container class="medium-input item-value">
+            <input mdInput value={{countEstimatedThreshold}} type="number" min="1" max="100">
+          </md-input-container>
+          <span>(取值1～100)</span>
+        </div>
+      </md-grid-tile>
+      <md-grid-tile>
+      <div>
+        <span class="item-header">攻击准则选择:</span>
+        <md-select placeholder="攻击准则选择" [(ngModel)]="attackCriterionSelect" class="medium-select item-value">
+          <md-option *ngFor="let state of attackCriterionSelectSelect" [value]="state.code">{{ state.name }}</md-option>
+        </md-select>
+      </div>
+    </md-grid-tile>
+      <md-grid-tile>
+        <div>
+          <span class="item-header">脉宽匹配容差:</span>
+          <md-input-container class="medium-input item-value">
+            <input mdInput value={{pulseMatchTolerance}} type="number">
+          </md-input-container>
+          <span>(单位：ns)</span>
+        </div>
+      </md-grid-tile>
+      <md-grid-tile>
+        <div>
+          <span class="item-header">PRI匹配容差:</span>
+          <md-input-container class="medium-input item-value">
+            <input mdInput value={{priMatchTolerance}} type="number">
+          </md-input-container>
+          <span>(单位：ns)</span>
+        </div>
+      </md-grid-tile>
+      <md-grid-tile>
+        <div>
+          <span class="item-header">分机控制:</span>
+          <md-input-container class="medium-input item-value">
+            <input mdInput value={{extControl}} type="number">
+          </md-input-container>
+          <span></span>
         </div>
       </md-grid-tile>
     </md-grid-list>

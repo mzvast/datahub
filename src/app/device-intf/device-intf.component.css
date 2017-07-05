@@ -6,6 +6,12 @@ div {
 .narrow-input{
   width: 2em;
 }
+.medium-input{
+  width: 4em;
+}
+.medium-select{
+  width: 14em;
+}
 .super-narrow-input{
   width: 1.5em;
 }
@@ -16,4 +22,13 @@ div {
 }
 .number-btn{
   border: 2px solid pink;
+}
+
+.item-header {
+  font-weight: 600;
+}
+.item-value {
+  text-align: center;
+  font-size: 18px;
+  margin-left: 10px;
 }

@@ -391,10 +391,9 @@ export class UdpService {
     });
   }
 
-  sendIntFreqRequest(time: number) { // TODO 参数传入到什么位置？
+  sendIntFreqRequest(intFreCtlPack: IntermediateFrequencyControlPack) {
     const client = this.dgram.createSocket('udp4');
-    const intFreCtlPack = new IntermediateFrequencyControlPack(0); // 随便写的，可能有误
-    const message = intFreCtlPack.packageMessage(); // TODO 部分参数没有赋初值，报错
+    const message = intFreCtlPack.packageMessage();
     client.send(message, 0, message.length, this._settingService.remote_port, this._settingService.remote_host, (err) => {
       console.log(`UDP message sent to ${this._settingService.remote_host}:${this._settingService.remote_port} `);
       client.close();
