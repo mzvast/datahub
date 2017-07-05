@@ -359,9 +359,9 @@ export class IntermediateFrequencyDataPack extends BaseDataPack {
   /**
    * 一个通道有两组数据，分别由高位和低位表示。
    * @param data
-   * @returns {number}
+   * @returns {string}
    */
-  parserDescription(data: Buffer): any {
+  parserDescription(data: Buffer): string {
     let csv = '';
     for (let i = 0; i < data.length; i++) {
       csv = csv + data.readInt16LE(i * 2); // 有符号的，所以是Int，否则是readUInt16LE

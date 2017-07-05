@@ -2,6 +2,7 @@ import {IntermediateFrequencyControlPack, IntermediateFrequencyDataPack} from '.
 import { Subscription } from 'rxjs/Subscription';
 import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { UdpService } from 'app/udp.service';
+import { Buffer } from 'buffer';
 
 declare var electron: any; // 　Typescript 定义
 
@@ -21,8 +22,9 @@ export class DeviceIntfComponent implements OnInit {
   timeMax = 25;
   timeMin = 0.1;
   subscription: Subscription;
-  message = '未收到数据';
-  serial: number;
+
+  data: Buffer; // 中频的数据
+  serial: number = -1;
 
   // 参数
   workType = 2;
@@ -59,13 +61,18 @@ export class DeviceIntfComponent implements OnInit {
   ngOnInit() {
     this.subscription = this.udpService.getMessage().subscribe((msg: IntermediateFrequencyDataPack) => {
       if (msg.type === 4) {// 判断是中频数据
-        if (this.serial === undefined) { // 首波中频，无序号
+        if (msg.serial === this.serial) {
+          this.data = Buffer.concat([this.data, msg.data]);
+
+          // 协议说分2次发，所以只要拼接一次就算结束了,满了自动导出成csv
+          this.exportData(this.data);
+          this.data = Buffer.alloc(0);
+          this.serial = -1;
+        } else { // 首波中频
+          this.data = msg.data;
           this.serial = msg.serial;
-        } else if (msg.serial === this.serial) { // 中频序号相同，为同一幅图
-          this.message += msg.data.slice(-8); // TODO 拼接数据
-        } else {
-          // TODO 怎样判断结束？
         }
+
         this.cd.detectChanges(); // 检测更改，更新UI。
       }
     });
@@ -131,9 +138,27 @@ export class DeviceIntfComponent implements OnInit {
     });
   }
 
-  exportData() {
+  /**
+   * 一个通道有两组数据，分别由高位和低位表示。
+   * @param data
+   * @returns {string}
+   */
+  data2csv(data: Buffer): string {
+    let csv = '';
+    for (let i = 0; i < data.length; i++) {
+      csv = csv + data.readInt16LE(i * 2); // 有符号的，所以是Int，否则是readUInt16LE
+      if (i % 2 === 0) { // 如果是第一个数据，就后面加逗号，否则换行(0x0A)
+        csv += ',';
+      } else {
+        csv += '\n'; // 最后一行可能会是一个空行，应该也不要紧，如果要紧就判断是最后两个字节后去掉
+      }
+    }
+    return csv;
+  }
+
+  exportData(data: Buffer) {
     console.log('export data');
-    const content = 'Some text to save into the file'; // TODO 传入最终csv数据
+    const content = this.data2csv(data);
     const defaultFileName = new Date().toISOString().slice(0, 19).replace(/-/g, '').replace('T', '').replace(/:/g, '');
     if (this.folderPath) {// 选定了默认位置，直接存储
       this.writeFile(this.folderPath + '\\' + defaultFileName, content);
