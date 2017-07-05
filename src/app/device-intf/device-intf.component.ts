@@ -23,6 +23,17 @@ export class DeviceIntfComponent implements OnInit {
   subscription: Subscription;
   message = '未收到数据';
   serial: number;
+
+  // 参数
+  workType = 2;
+  broadband = 1;
+  workPeriod = 0;
+  workPeriodLength = 50;
+
+
+  workTypeSelect = [{code: 0, name: '实时校正模式'}, {code: 1, name: '自检模式'}, {code: 2, name: '搜索模式'}, {code: 3, name: '跟踪模式'}];
+  broadbandSelect = [{code: 0, name: '40M'}, {code: 1, name: '400M'}];
+
   constructor(private udpService: UdpService, private cd: ChangeDetectorRef) { }
 
   ngOnInit() {

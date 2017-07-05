@@ -30,6 +30,50 @@
     </div>
   </md-card-content>
   <md-divider></md-divider>
+
+  <md-card-header style="margin-top:1em;">
+    <md-card-title>其他参数设定</md-card-title>
+  </md-card-header>
+  <md-divider></md-divider>
+  <md-card-content style="margin-top:1em;">
+    <md-grid-list cols="2" rowHeight="30px">
+      <md-grid-tile>
+        <div>
+          <span>工作方式:</span>
+          <md-select placeholder="工作方式" [(ngModel)]="workType">
+            <md-option *ngFor="let state of workTypeSelect" [value]="state.code">{{ state.name }}</md-option>
+          </md-select>
+        </div>
+      </md-grid-tile>
+      <md-grid-tile>
+        <div>
+          <span>带宽选择:</span>
+          <md-select placeholder="带宽选择" [(ngModel)]="broadband">
+            <md-option *ngFor="let broadbandState of broadbandSelect" [value]="broadbandState.code">{{ broadbandState.name }}</md-option>
+          </md-select>
+        </div>
+      </md-grid-tile>
+      <md-grid-tile>
+        <div>
+          <span>工作周期数:</span>
+          <md-input-container class="">
+            <input mdInput value={{workPeriod}} type="number" min="0">
+          </md-input-container>
+        </div>
+      </md-grid-tile>
+      <md-grid-tile>
+        <div>
+          <span>工作周期长度:</span>
+          <md-input-container class="">
+            <input mdInput value={{workPeriodLength}} type="number" min="0">
+          </md-input-container>
+        </div>
+      </md-grid-tile>
+    </md-grid-list>
+
+
+  </md-card-content>
+
   <md-card-actions>
     <button md-button (click)="sendRequest()">发送请求</button>
     <button md-button (click)="exportData()" *ngIf="folderPath">导出数据</button>
