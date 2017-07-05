@@ -18,18 +18,6 @@ export class DataComponent implements OnInit {
     }, {
       name: '辐射源',
       url: 'radiation'
-    }, {
-      name: '中频数据',
-      url: 'intf'
-    }, {
-      name: '相位校正',
-      url: 'phase'
-    }, {
-      name: '定位',
-      url: 'location'
-    }, {
-      name: '原始数据',
-      url: 'pkg'
     }
   ];
   constructor() { }

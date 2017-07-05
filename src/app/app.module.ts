@@ -34,6 +34,7 @@ import { DataComponent } from './data/data.component';
 import { PlaceholderComponent } from './placeholder/placeholder.component';
 import { ProtoInIntfComponent } from './proto-in-intf/proto-in-intf.component';
 import { DeviceIntfComponent } from './device-intf/device-intf.component';
+import { DataShowDialogComponent } from './data-show-dialog/data-show-dialog.component';
 
 @NgModule({
   declarations: [
@@ -59,7 +60,8 @@ import { DeviceIntfComponent } from './device-intf/device-intf.component';
     DataComponent,
     PlaceholderComponent,
     ProtoInIntfComponent,
-    DeviceIntfComponent
+    DeviceIntfComponent,
+    DataShowDialogComponent
   ],
   imports: [
     NgxDatatableModule,
@@ -114,6 +116,9 @@ import { DeviceIntfComponent } from './device-intf/device-intf.component';
         ]
       }
     ])
+  ],
+  entryComponents: [
+    DataShowDialogComponent
   ],
   providers: [DatabaseService, UdpService, SettingService],
   bootstrap: [AppComponent]

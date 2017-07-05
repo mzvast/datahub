@@ -1,6 +1,8 @@
+import { DataShowDialogComponent } from './../data-show-dialog/data-show-dialog.component';
 import { DatabaseService } from './../database.service';
 import { Component, OnInit, OnDestroy, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { MdDialog } from '@angular/material';
 
 
 @Component({
@@ -21,7 +23,10 @@ export class DataShowComponent implements OnInit, OnDestroy {
     { name: '数据', prop: 'raw' }
   ];
 
-  constructor(private route: ActivatedRoute, private db: DatabaseService) { }
+  constructor(
+    private route: ActivatedRoute,
+    private db: DatabaseService,
+    private dialog: MdDialog) { }
 
   ngOnInit() {
     this.sub = this.route.params.subscribe(params => {
@@ -36,12 +41,16 @@ export class DataShowComponent implements OnInit, OnDestroy {
     this.sub.unsubscribe();
   }
 
+  openDialog() {
+    this.dialog.open(DataShowDialogComponent);
+  }
+
   fetch() {
     this.db.models[this.type].findAll()
       .then((data) => {
         console.log(data);
         // console.log(data[0].raw.toString());
-        console.log(data[0].createdAt);
+        // console.log(data[0].createdAt);
         this.rows = data.map((curVal, index, arr) => {
           return {
             time: curVal.createdAt.toString(),
@@ -56,11 +65,17 @@ export class DataShowComponent implements OnInit, OnDestroy {
   }
 
   onSelect({ selected }) {
+    this.dialog.open(DataShowDialogComponent, {
+      data: {
+        raw: this.selected[0]['raw'],
+        type: this.type
+      }
+    });
     console.log('Select Event', selected, this.selected);
   }
 
   onActivate(event) {
-    console.log('Activate Event', event);
+    // console.log('Activate Event', event);
   }
 
   updateRowPosition() {
