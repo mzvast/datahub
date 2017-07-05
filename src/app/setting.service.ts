@@ -13,33 +13,43 @@ export class SettingService {
   intf: string;
 
   constructor(private _dbService: DatabaseService) {
-    this.fetchSettingFromDB();
+    console.log('setting service constructor');
+    this.fetchSettingFromDB().then(() => {
+      console.log('数据库读取完成');
+    });
   }
 
   fetchSettingFromDB() { // 从数据库读取
-    this._dbService.models.setting.findOne({
-      where: {
-        id: 1
-      }
-    })
-      .then((data) => {
-        if (!data) {
-          console.log(`data= ${data}`);
-          this.initSetting();
-          setTimeout(() => {
-            this.fetchSettingFromDB();
-          }, 100);
+    return new Promise((resolve) => {
+      this._dbService.models.setting.findOne({
+        where: {
+          id: 1
+        }
+      }).then((data) => {
+        console.log(`data= ${data}`);
+        if (data) {
+          this.parseData(data);
+          resolve();
         } else {
-          const st: MySettings = data;
-          this.remote_host = st.remote_host;
-          this.remote_port = st.remote_port;
-          this.local_port = st.local_port;
-          this.local_host = st.local_host;
-          this.debug = st.debug;
-          this.record = st.record;
-          this.intf = st.intf;
+          this.initSetting().then(() => {
+            this.parseData(data);
+            resolve();
+          });
         }
       });
+    });
+
+  }
+
+  parseData(data) {
+    const st: MySettings = data;
+    this.remote_host = st.remote_host;
+    this.remote_port = st.remote_port;
+    this.local_port = st.local_port;
+    this.local_host = st.local_host;
+    this.debug = st.debug;
+    this.record = st.record;
+    this.intf = st.intf;
   }
 
   updateSettingToDB() { // 更新数据库
@@ -73,22 +83,25 @@ export class SettingService {
   }
 
   initSetting() { // 初始化数据库
-    this._dbService.models.setting.destroy({
-      where: {},
-      truncate: true
-    }).then(() => {
-      // console.log('设置已销毁');
-      this._dbService.models.setting.create({
-        id: 1,
-        local_port: 8512,
-        local_host: '0.0.0.0',
-        remote_host: '192.168.0.31',
-        remote_port: '6011',
-        debug: false,
-        record: false,
-        intf: ''
+    return new Promise((resolve) => {
+      this._dbService.models.setting.destroy({
+        where: {},
+        truncate: true
+      }).then(() => {
+        // console.log('设置已销毁');
+        this._dbService.models.setting.create({
+          id: 1,
+          local_port: 8512,
+          local_host: '0.0.0.0',
+          remote_host: '192.168.0.31',
+          remote_port: '6011',
+          debug: false,
+          record: false,
+          intf: ''
+        });
+        console.log('设置初始化完成');
+        resolve();
       });
-      console.log('设置初始化完成');
     });
   }
 
@@ -96,17 +109,20 @@ export class SettingService {
     this.local_host = host;
     this.local_port = port;
     console.log(`setLocalAddress to ${this.local_host}:${this.local_port}`);
+    return this; // 方便chain
   }
 
   setRemoteAddress(host: string, port: number) {
     this.remote_host = host;
     this.remote_port = port;
     console.log(`setRemoteAddress to ${this.remote_host}:${this.remote_port}`);
+    return this; // 方便chain
   }
 
   setIntf(data: string) {
     this.intf = data;
     console.log(`set intf to ${this.intf}`);
+    return this; // 方便chain
   }
 
 }

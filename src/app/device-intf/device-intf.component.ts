@@ -1,4 +1,5 @@
-import {IntermediateFrequencyControlPack, IntermediateFrequencyDataPack} from './../protocol/data-pack';
+import { SettingService } from './../setting.service';
+import { IntermediateFrequencyControlPack, IntermediateFrequencyDataPack } from './../protocol/data-pack';
 import { Subscription } from 'rxjs/Subscription';
 import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { UdpService } from 'app/udp.service';
@@ -22,6 +23,7 @@ export class DeviceIntfComponent implements OnInit {
   timeMax = 25;
   timeMin = 0.1;
   subscription: Subscription;
+  intf: string;
 
   data: Buffer; // 中频的数据
   serial: number = -1;
@@ -50,16 +52,20 @@ export class DeviceIntfComponent implements OnInit {
   priMatchTolerance = 0;
   extControl = 0;
 
-  workTypeSelect = [{code: 0, name: '实时校正模式'}, {code: 1, name: '自检模式'}, {code: 2, name: '搜索模式'}, {code: 3, name: '跟踪模式'}];
-  broadbandSelect = [{code: 0, name: '40M'}, {code: 1, name: '400M'}];
-  attenuationCode1Select = [{code: 0, name: '不衰减'}, {code: 1, name: '衰减20dB'}];
-  frontWorkModelSelect = [{code: 0, name: '直通'}, {code: 1, name: '放大'}];
-  attackCriterionSelectSelect = [{code: 0, name: '脉宽最大作为攻击对象'}, {code: 1, name: '重频最高作为攻击对象'}];
+  workTypeSelect = [{ code: 0, name: '实时校正模式' }, { code: 1, name: '自检模式' }, { code: 2, name: '搜索模式' }, { code: 3, name: '跟踪模式' }];
+  broadbandSelect = [{ code: 0, name: '40M' }, { code: 1, name: '400M' }];
+  attenuationCode1Select = [{ code: 0, name: '不衰减' }, { code: 1, name: '衰减20dB' }];
+  frontWorkModelSelect = [{ code: 0, name: '直通' }, { code: 1, name: '放大' }];
+  attackCriterionSelectSelect = [{ code: 0, name: '脉宽最大作为攻击对象' }, { code: 1, name: '重频最高作为攻击对象' }];
 
-  constructor(private udpService: UdpService, private cd: ChangeDetectorRef) { }
+  constructor(
+    private _udpService: UdpService,
+    private _cd: ChangeDetectorRef,
+    private _settingService: SettingService) { }
 
   ngOnInit() {
-    this.subscription = this.udpService.getMessage().subscribe((msg: IntermediateFrequencyDataPack) => {
+    this.loadConfig();
+    this.subscription = this._udpService.getMessage().subscribe((msg: IntermediateFrequencyDataPack) => {
       if (msg.type === 4) {// 判断是中频数据
         if (msg.serial === this.serial) {
           this.data = Buffer.concat([this.data, msg.data]);
@@ -73,7 +79,7 @@ export class DeviceIntfComponent implements OnInit {
           this.serial = msg.serial;
         }
 
-        this.cd.detectChanges(); // 检测更改，更新UI。
+        this._cd.detectChanges(); // 检测更改，更新UI。
       }
     });
   }
@@ -110,7 +116,7 @@ export class DeviceIntfComponent implements OnInit {
     pack.pulseMatchTolerance = this.pulseMatchTolerance;
     pack.priMatchTolerance = this.priMatchTolerance;
     pack.extControl = this.extControl;
-    this.udpService.sendIntFreqRequest(pack);
+    this._udpService.sendIntFreqRequest(pack);
   }
 
   writeFile(fileName: string, content: any) {
@@ -165,8 +171,24 @@ export class DeviceIntfComponent implements OnInit {
       } else {
         console.log(folderPaths);
         this.folderPath = folderPaths[0];
-        this.cd.detectChanges(); // 检测更改，更新UI。
+        this._cd.detectChanges(); // 检测更改，更新UI。
       }
+    });
+  }
+
+  saveConfig() { // 保存中频配置到数据库
+    this.intf = new Date().toISOString(); // TODO 修改成json字符串
+    this._settingService
+      .setIntf(this.intf)
+      .updateSettingToDB();
+    console.log('保存完成');
+  }
+
+  loadConfig() { // 读取中频配置
+    this._settingService.fetchSettingFromDB().then(() => {
+      this.intf = this._settingService.intf;
+      console.log(this.intf);
+      this._cd.detectChanges(); // 检测更改，更新UI。
     });
   }
 

@@ -48,10 +48,10 @@ export class MysidenavComponent implements OnInit {
   constructor(private _udpService: UdpService, private _settingService: SettingService) { }
 
   ngOnInit() {
-    setTimeout(() => {
+    this._settingService.fetchSettingFromDB().then(() => {
       this.debug = this._settingService.debug;
       this.record = this._settingService.record;
-    }, 500);
+    });
   }
 
   toggleDebug() {

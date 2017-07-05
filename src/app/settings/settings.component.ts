@@ -1,5 +1,5 @@
 import { SettingService } from './../setting.service';
-import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-settings',
@@ -13,13 +13,13 @@ export class SettingsComponent implements OnInit {
   remotePort: number;
   remoteHost: string;
 
-  constructor(private _settingService: SettingService) {
-    setTimeout(() => {
-      this.localPort = this._settingService.local_port;
-      this.remoteHost = this._settingService.remote_host;
-      this.remotePort = this._settingService.remote_port;
-      // console.log(this.localPort);
-    }, 500);
+  constructor(
+    private _settingService: SettingService,
+    private _cd: ChangeDetectorRef, ) {
+    this._settingService.fetchSettingFromDB().then(() => {
+      this.parseData();
+    });
+
   }
 
   ngOnInit() {
@@ -29,8 +29,17 @@ export class SettingsComponent implements OnInit {
     console.log(this._settingService.local_port);
   }
 
+  parseData() {
+    this.localPort = this._settingService.local_port;
+    this.remoteHost = this._settingService.remote_host;
+    this.remotePort = this._settingService.remote_port;
+    this._cd.detectChanges(); // 检测更改，更新UI。
+  }
+
   initSetting() {
-    this._settingService.initSetting();
+    this._settingService.initSetting().then(() => {
+      this.parseData();
+    });
   }
 
 }
