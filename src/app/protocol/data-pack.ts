@@ -21,6 +21,7 @@ export class BaseDataPack {
     this.control = control;
     this.gps = gps;
   }
+
 }
 
 /**
