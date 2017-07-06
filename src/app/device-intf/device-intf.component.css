@@ -26,6 +26,7 @@
 }
 .item-value {
   text-align: center;
+  margin-left: 16px;
 }
 .container{
   display: flex;
