@@ -19,9 +19,6 @@ export class DataShowDialogComponent implements OnInit {
 
   items = [];
 
-  keyValues: Map<string, string>;
-  error: string;
-
   constructor(@Optional() @Inject(MD_DIALOG_DATA) public data: any) {
     // console.log(data);
     this.parserRaw(data.raw);
@@ -79,8 +76,6 @@ export class DataShowDialogComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
-    this.keyValues = new Map();
-  }
+  ngOnInit() { }
 
 }

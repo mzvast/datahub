@@ -2,16 +2,6 @@
 
   <h2>{{error}}</h2>
 
-  <div class="box" *ngFor="let key of keyValues.keys()">
-    <span class="item-header">{{key}}:</span>
-    <span class="item-value">{{keyValues.get(key)}}</span>
-  </div>
-</div>
-
-<div class="container">
-
-  <h2>{{error}}</h2>
-
   <div class="box" *ngFor="let item of items">
     <span class="item-header">{{item?.name}}:</span>
     <span class="item-value">{{item?.value}}</span>
