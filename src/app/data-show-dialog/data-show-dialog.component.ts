@@ -1,7 +1,8 @@
 import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, Inject, Optional } from '@angular/core';
 import { MD_DIALOG_DATA } from '@angular/material';
 import {ProtocolPack} from '../protocol/protocol-pack';
-import {BaseDataPack} from "../protocol/data-pack";
+import {BaseDataPack} from '../protocol/data-pack';
+import {Buffer} from 'buffer';
 
 @Component({
   selector: 'app-data-show-dialog',

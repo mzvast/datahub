@@ -1,22 +1,12 @@
 import { IntermediateFrequencyControlPack } from './protocol/data-pack';
 import { SettingService } from './setting.service';
-import { MySettings } from './settings/my-settings';
 import { DatabaseService } from './database.service';
 import { Injectable } from '@angular/core';
 import { Buffer } from 'buffer';
 import { ProtocolPack } from 'app/protocol/protocol-pack';
-import {
-  BaseDataPack,
-  BroadBandFullPulseDataPack,
-  BroadBandSourceDataPack,
-  IntermediateFrequencyDataPack,
-  NarrowBandFullPulseDataPack,
-  NarrowBandSourceDataPack, PhaseCorrectionDataPack,
-  PositioningDataPack,
-  TagDataPack
-} from 'app/protocol/data-pack';
-import { BehaviorSubject } from "rxjs/BehaviorSubject";
-import { Observable } from "rxjs/Observable";
+import { BaseDataPack } from 'app/protocol/data-pack';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Observable } from 'rxjs/Observable';
 
 declare var electron: any; // 　Typescript 定义
 
@@ -156,6 +146,7 @@ export class UdpService {
               console.log('dataPack:', dataPack);
             }
             this.sendMessage(dataPack); // 发给UI
+            this.saveRawDataToDB(dataPack.type, protocolPack.data);
           } else { // 帧有多个包
             if (this._settingService.debug) {
               console.log(`serial= ${serial}`);
@@ -177,6 +168,7 @@ export class UdpService {
                       console.log('dataPackV2:', dataPack);
                     }
                     this.sendMessage(dataPack); // 发给UI
+                    this.saveRawDataToDB(dataPack.type, workingProtocolPack.data);
                   }
                 } else {// TODO else 漏包\重复问题
                   console.log('丢包');
@@ -199,6 +191,25 @@ export class UdpService {
       }
     }
     this.workingBuffers.set(key, workingBuffer);
+  }
+
+  /**
+   * 存的是protocol-pack里的data字段
+   * @param dataPack
+   */
+  saveRawDataToDB(type: number, data: Buffer) {
+    console.log(`save raw to db: ${type}`)
+    switch (type) {
+      case 0: // 标签包
+        this._dbService.create('tag', data.toString('hex'));
+        break;
+      case 1: // 窄带全脉冲数据包
+        this._dbService.create('pdw', data.toString('hex'));
+        break;
+      case 5: // 窄带辐射源数据包
+        this._dbService.create('radiation', data.toString('hex'));
+        break;
+    }
   }
 
   sendMsg(message: any) {
