@@ -127,8 +127,8 @@ export class ProtocolPack {
       //     return null;
       //   }
       //   const count2 = data.readUInt32LE(136, false);
-      //   const bytesPerData2 = 64;
-      //   if (len < 140 + count2 * bytesPerData2) { // 宽带全脉冲描述字（64字节）
+      //   const bytesPerData2 = 80;
+      //   if (len < 140 + count2 * bytesPerData2) { // 宽带全脉冲描述字（80字节）
       //     console.error(`parser broad band data pack error, length less than ${140 + count2 * bytesPerData2}.`);
       //     return null;
       //   }

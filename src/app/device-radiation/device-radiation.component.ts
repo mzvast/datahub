@@ -1,7 +1,7 @@
 import { UdpService } from 'app/udp.service';
 import { Subscription } from 'rxjs/Subscription';
 import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy } from '@angular/core';
-import { BroadBandSourceDataPack, BroadBandRadiationDictionary } from "app/protocol/data-pack";
+import { NarrowBandSourceDataPack, NarrowBandRadiationDictionary } from 'app/protocol/data-pack';
 
 @Component({
   selector: 'app-device-radiation',
@@ -14,12 +14,12 @@ export class DeviceRadiationComponent implements OnInit, OnDestroy {
   // message: any;
   subscription: Subscription;
   items = [];
-  dictionary: BroadBandRadiationDictionary = new BroadBandRadiationDictionary();
+  dictionary: NarrowBandRadiationDictionary = new NarrowBandRadiationDictionary();
 
   constructor(private udpService: UdpService, private cd: ChangeDetectorRef) { }
   ngOnInit() {
-    this.subscription = this.udpService.getMessage().subscribe((msg: BroadBandSourceDataPack) => {
-      if (msg.type === 3) {// 判断是宽带辐射源
+    this.subscription = this.udpService.getMessage().subscribe((msg: NarrowBandSourceDataPack) => {
+      if (msg.type === 5) {// 判断是窄带辐射源
         const message = msg.parserDescription(msg.datas[0]);
         // console.log(message);
         this.setItems(message);

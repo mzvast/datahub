@@ -65,12 +65,17 @@ export class DataShowComponent implements OnInit, OnDestroy {
   }
 
   onSelect({ selected }) {
-    this.dialog.open(DataShowDialogComponent, {
-      data: {
-        raw: this.selected[0]['raw'],
-        type: this.type
-      }
-    });
+    if (this.type === 'pkg') {
+      // TODO 这个原始数据不用popup了，要不然copy数据到剪贴板？
+    } else {
+      this.dialog.open(DataShowDialogComponent, {
+        data: {
+          raw: this.selected[0]['raw'],
+          type: this.type
+        }
+      });
+    }
+
     console.log('Select Event', selected, this.selected);
   }
 

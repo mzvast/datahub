@@ -3,6 +3,8 @@ import { Buffer } from 'buffer';
  * Created by Terry on 2017-5-26.
  */
 
+export class BaseDictionary { }
+
 /**
  * 数据基类
  */
@@ -122,7 +124,7 @@ export class TagDataPackDescription {
 /**
  * 标签包字典
  */
-export class TagDataPackDictionary {
+export class TagDataPackDictionary extends BaseDictionary {
   sourceNodeNo = ' 发方节点号1'; // 发方节点号1
   destNodeNo = ' 收方节点号1'; // 收方节点号1
   feedbackCommandNo = ' 反馈指令序号2'; // 反馈指令序号2
@@ -159,14 +161,47 @@ export class NarrowBandFullPulseDataPack extends BaseDescriptionDataPack {
    * @param data
    * @returns {NarrowBandFullPulseDescription}
    */
-  parserDescription(data: string): NarrowBandFullPulseDescription {
-    const desc = new NarrowBandFullPulseDescription();
+  parserDescription(data: string): BroadBandFullPulseDescription {
+    const desc = new BroadBandFullPulseDescription();
     const dataHex = Buffer.from(data, 'hex');
     desc.pdwToaTod = dataHex.readUInt32LE(0, false);
     desc.pdwPw = dataHex.readUInt32LE(4, false);
-    desc.pdwWorkBand = dataHex.readUInt16LE(8, false);
+    desc.pdwVpcnt = dataHex.readUInt16LE(8, false);
+    desc.pdwWorkBand = dataHex.readUInt16LE(10, false);
+    desc.trackerFreRise = dataHex.readUInt16LE(12, false);
+    desc.trackerFreMinOv = dataHex.readUInt16LE(14, false);
+    desc.trackerFreMaxOv = dataHex.readUInt16LE(16, false);
+    desc.trackerFre3 = dataHex.readUInt16LE(18, false);
+    desc.trackerFre4 = dataHex.readUInt16LE(20, false);
+    desc.pdwType = dataHex.readUInt8(22, false);
+    desc.trackerOrien = dataHex.readUInt8(23, false);
+    desc.phase1 = dataHex.readUInt16LE(24, false);
+    desc.phase2 = dataHex.readUInt16LE(26, false);
+    desc.phase3 = dataHex.readUInt16LE(28, false);
+    desc.phase4 = dataHex.readUInt16LE(30, false);
+    desc.phase5 = dataHex.readUInt16LE(32, false);
+    desc.phase6 = dataHex.readUInt16LE(34, false);
+    desc.phase7 = dataHex.readUInt16LE(36, false);
+    desc.phase8 = dataHex.readUInt16LE(38, false);
+    desc.phase9 = dataHex.readUInt16LE(40, false);
+    desc.phase10 = dataHex.readUInt16LE(42, false);
+    desc.phase11 = dataHex.readUInt16LE(44, false);
+    desc.phase12 = dataHex.readUInt16LE(46, false);
+    desc.phase13 = dataHex.readUInt16LE(48, false);
+    desc.phase14 = dataHex.readUInt16LE(50, false);
+    desc.phase15 = dataHex.readUInt16LE(52, false);
+    desc.phase16 = dataHex.readUInt16LE(54, false);
+    desc.amplitude1 = dataHex.readUInt8(56, false);
+    desc.amplitude2 = dataHex.readUInt8(57, false);
+    desc.amplitude3 = dataHex.readUInt8(58, false);
+    desc.amplitude4 = dataHex.readUInt8(59, false);
+    desc.amplitude5 = dataHex.readUInt8(60, false);
+    desc.amplitude6 = dataHex.readUInt8(61, false);
+    desc.amplitude7 = dataHex.readUInt8(62, false);
+    desc.amplitude8 = dataHex.readUInt8(63, false);
     return desc;
   }
+
 }
 
 /**
@@ -249,8 +284,24 @@ export class BroadBandSourceDataPack extends BaseDescriptionDataPack {
   //   return new BroadBandRadiationDictionary();
   // }
 
-  parserDescription(data: string): BroadBandRadiationDescription {
-    const des = new BroadBandRadiationDescription();
+}
+
+/**
+ * 窄带辐射源数据包5
+ */
+export class NarrowBandSourceDataPack extends BaseDescriptionDataPack {
+  constructor(control: string, gps: string) {
+    super(control, gps);
+    this.type = 5;
+  }
+
+  description() {
+    return `[narrow band source data pack] control: ${this.control}, gps: ${this.gps}, ` +
+      `fullPulseDescriptions length: ${this.datas.length}`;
+  }
+
+  parserDescription(data: string): NarrowBandRadiationDescription {
+    const des = new NarrowBandRadiationDescription();
     const dataHex = Buffer.from(data, 'hex');
     des.radiationSourceNum = dataHex.readUInt16LE(2, false);
     des.firstArriveTime = dataHex.readUInt32LE(4, false);
@@ -305,21 +356,7 @@ export class BroadBandSourceDataPack extends BaseDescriptionDataPack {
     des.validFlag = dataHex.readInt32LE(152, false);
     return des;
   }
-}
 
-/**
- * 窄带辐射源数据包5
- */
-export class NarrowBandSourceDataPack extends BaseDescriptionDataPack {
-  constructor(control: string, gps: string) {
-    super(control, gps);
-    this.type = 5;
-  }
-
-  description() {
-    return `[narrow band source data pack] control: ${this.control}, gps: ${this.gps}, ` +
-      `fullPulseDescriptions length: ${this.datas.length}`;
-  }
 }
 
 /**
@@ -436,7 +473,7 @@ export class BroadBandFullPulseDescription {
 /**
  * 全脉冲字典
  */
-export class BroadBandFullPulseDictionary {
+export class NarrowBandFullPulseDictionary extends BaseDictionary {
   pdwToaTod = '到达时间'; // 1-4bytes 到达时间(单位 4.46ns)
   pdwPw = '脉宽'; // 5-8bytes 脉宽(单位 4.46ns)
   pdwVpcnt = '脉冲计数'; // 9-10bytes 脉冲计数
@@ -483,7 +520,7 @@ export class NarrowBandFullPulseDescription {
   // 下面都没有英文 后面再说
 }
 
-export class BroadBandRadiationDescription {
+export class NarrowBandRadiationDescription {
   radiationSourceNum: number; // 3-4 辐射源序号
   firstArriveTime: number; // 5-8 到达时间
   /**
@@ -555,7 +592,7 @@ export class BroadBandRadiationDescription {
 /**
  * 辐射源字典
  */
-export class BroadBandRadiationDictionary {
+export class NarrowBandRadiationDictionary extends BaseDictionary {
   radiationSourceNum = '辐射源序号'; // 3-4 辐射源序号
   firstArriveTime = '到达时间'; // 5-8 到达时间
   /**
