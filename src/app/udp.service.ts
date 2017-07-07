@@ -145,8 +145,10 @@ export class UdpService {
             if (this._settingService.debug) {
               console.log('dataPack:', dataPack);
             }
-            this.sendMessage(dataPack); // 发给UI
-            this.saveRawDataToDB(dataPack.type, protocolPack.data);
+            if (dataPack) {
+              this.sendMessage(dataPack); // 发给UI
+              this.saveRawDataToDB(dataPack.type, protocolPack.data);
+            }
           } else { // 帧有多个包
             if (this._settingService.debug) {
               console.log(`serial= ${serial}`);
@@ -167,8 +169,10 @@ export class UdpService {
                     if (this._settingService.debug) {
                       console.log('dataPackV2:', dataPack);
                     }
-                    this.sendMessage(dataPack); // 发给UI
-                    this.saveRawDataToDB(dataPack.type, workingProtocolPack.data);
+                    if (dataPack) {
+                      this.sendMessage(dataPack); // 发给UI
+                      this.saveRawDataToDB(dataPack.type, workingProtocolPack.data);
+                    }
                   }
                 } else {// TODO else 漏包\重复问题
                   console.log('丢包');
