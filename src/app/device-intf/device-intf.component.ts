@@ -157,7 +157,7 @@ export class DeviceIntfComponent implements OnInit {
   loadConfig() { // 读取中频配置
     const defaultIntfConfig = {workType: 2, broadband: 0, workPeriod: 0, workPeriodLength: 50, attenuationCode1: 1,
       attenuationCode2: 0, frontWorkModel: 1, singlePoleFiveRolls: 0, excludePulseThreshold: 0, sideProcessPulseCount: 1,
-      collectTime: 1, // 中频采集时间
+      workCenterFreq: 2, collectTime: 1, // 中频采集时间
       azimuthSearchStart: 1, azimuthSearchEnd: 1, elevationSearchStart: 1, elevationSearchEnd: 1, azimuthSearchStepLength: 0,
       elevationSearchStepLength: 0, countEstimatedThreshold: 0, attackCriterionSelect: 1, pulseMatchTolerance: 0,
       priMatchTolerance: 0, extControl: 0
@@ -170,6 +170,9 @@ export class DeviceIntfComponent implements OnInit {
         console.error(`error parser setting intf, ${e}`);
         this.intf = defaultIntfConfig;
       }
+      // if (!this.intf.workCenterFreq) {
+      //   this.intf.workCenterFreq = 2;
+      // }
       console.log(`intf params: ${JSON.stringify(this.intf)}`);
       this._cd.detectChanges(); // 检测更改，更新UI。
     });
