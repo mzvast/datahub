@@ -175,8 +175,8 @@
 
   <md-card-actions>
     <button md-button (click)="sendRequest()">发送请求</button>
-    <button md-button (click)="exportData()" *ngIf="intf.folderPath">导出数据</button>
-    <button md-button (click)="selectPath()"><span *ngIf="!intf.folderPath">选择保存位置</span><span *ngIf="intf.folderPath">{{intf.folderPath}}</span></button>
-    <button md-button (click)="saveConfig()">保存配置</button>
+    <!--<button md-button (click)="exportData()" *ngIf="intf.folderPath">导出数据</button>-->
+    <button md-button (click)="selectPath()"><span *ngIf="!intf.folderPath">选择CSV保存位置</span><span *ngIf="intf.folderPath">CSV保存位置: {{intf.folderPath}}</span></button>
+    <button md-button (click)="saveConfig()">保存参数</button>
   </md-card-actions>
 </md-card>
