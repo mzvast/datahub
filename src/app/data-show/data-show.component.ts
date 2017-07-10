@@ -3,6 +3,7 @@ import { DatabaseService } from './../database.service';
 import { Component, OnInit, OnDestroy, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MdDialog } from '@angular/material';
+import { DatePipe } from '@angular/common';
 
 
 @Component({
@@ -26,6 +27,7 @@ export class DataShowComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private _databaseService: DatabaseService,
+    private datePipe: DatePipe,
     private dialog: MdDialog) { }
 
   ngOnInit() {
@@ -53,7 +55,7 @@ export class DataShowComponent implements OnInit, OnDestroy {
         // console.log(data[0].createdAt);
         this.rows = data.map((curVal, index, arr) => {
           return {
-            time: curVal.createdAt.toString(),
+            time: this.datePipe.transform(curVal.createdAt, 'yyyy-MM-dd HH:mm:ss'),
             raw: curVal.raw.toString()
           };
         });
@@ -76,7 +78,7 @@ export class DataShowComponent implements OnInit, OnDestroy {
       });
     }
 
-    console.log('Select Event', selected, this.selected);
+    // console.log('Select Event', selected, this.selected);
   }
 
   onActivate(event) {
@@ -100,5 +102,4 @@ export class DataShowComponent implements OnInit, OnDestroy {
     this._databaseService.destroyTable(this.type);
     this.fetch();
   }
-
 }

@@ -35,6 +35,7 @@ import { PlaceholderComponent } from './placeholder/placeholder.component';
 import { ProtoInIntfComponent } from './proto-in-intf/proto-in-intf.component';
 import { DeviceIntfComponent } from './device-intf/device-intf.component';
 import { DataShowDialogComponent } from './data-show-dialog/data-show-dialog.component';
+import {DatePipe} from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -120,7 +121,7 @@ import { DataShowDialogComponent } from './data-show-dialog/data-show-dialog.com
   entryComponents: [
     DataShowDialogComponent
   ],
-  providers: [DatabaseService, UdpService, SettingService],
+  providers: [DatabaseService, UdpService, SettingService, DatePipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
