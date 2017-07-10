@@ -56,6 +56,7 @@ export class MysidenavComponent implements OnInit {
 
   toggleDebug() {
     this._settingService.toggleDebug();
+    // 原始数据记录只有调试模式下生效（防止用户误会数据记录）
     if (!this._settingService.debug && this._settingService.record) {
       this.record = false;
       this._settingService.toggleRecord();

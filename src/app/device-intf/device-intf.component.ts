@@ -16,7 +16,6 @@ declare var electron: any; // 　Typescript 定义
 })
 export class DeviceIntfComponent implements OnInit {
   directSaveFlag = true; // true直接保存, false弹出位置选择
-  folderPath: string;
   dialog = electron.remote.dialog;
   fs = electron.remote.getGlobal('fs');
   subscription: Subscription;
@@ -124,8 +123,8 @@ export class DeviceIntfComponent implements OnInit {
     // console.log('export data');
     const content = this.data2csv(data);
     const defaultFileName = new Date().toISOString().slice(0, 19).replace(/-/g, '').replace('T', '').replace(/:/g, '');
-    if (this.folderPath) {// 选定了默认位置，直接存储
-      this.writeFile(this.folderPath + '\\' + defaultFileName, content);
+    if (this.intf.folderPath) {// 选定了默认位置，直接存储
+      this.writeFile(this.intf.folderPath + '\\' + defaultFileName, content);
     } else { // 否则选择存储位置
       // You can obviously give a direct path without use the dialog (C:/Program Files/path/myfileexample.txt)
       this.dialog.showErrorBox('路径错误', '请先选择保存位置');
@@ -143,7 +142,8 @@ export class DeviceIntfComponent implements OnInit {
         return;
       } else {
         console.log(folderPaths);
-        this.folderPath = folderPaths[0];
+        this.intf.folderPath = folderPaths[0];
+        this.saveConfig();
         this._cd.detectChanges(); // 检测更改，更新UI。
       }
     });
@@ -160,24 +160,22 @@ export class DeviceIntfComponent implements OnInit {
       workCenterFreq: 2, collectTime: 1, // 中频采集时间
       azimuthSearchStart: 1, azimuthSearchEnd: 1, elevationSearchStart: 1, elevationSearchEnd: 1, azimuthSearchStepLength: 0,
       elevationSearchStepLength: 0, countEstimatedThreshold: 0, attackCriterionSelect: 1, pulseMatchTolerance: 0,
-      priMatchTolerance: 0, extControl: 0
+      priMatchTolerance: 0, extControl: 0, folderPath: 'C:'
     };
     this.intf = defaultIntfConfig;
     this._settingService.fetchSettingFromDB().then(() => {
       try {
         this.intf = JSON.parse(this._settingService.intf);
       } catch (e) {
-        console.error(`error parser setting intf, ${e}`);
+        console.error(`error parser intf params, ${e}`);
         this.intf = defaultIntfConfig;
       }
-      // if (!this.intf.workCenterFreq) {
-      //   this.intf.workCenterFreq = 2;
-      // }
+      if (!this.intf.folderPath) { // 默认保存路径
+        this.intf.folderPath = 'C:';
+      }
       console.log(`intf params: ${JSON.stringify(this.intf)}`);
       this._cd.detectChanges(); // 检测更改，更新UI。
     });
   }
-
-
 
 }
