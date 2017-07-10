@@ -50,7 +50,7 @@ export class DataShowComponent implements OnInit, OnDestroy {
   fetch() {
     this._databaseService.models[this.type].findAll()
       .then((data) => {
-        console.log(data);
+        // console.log(data);
         // console.log(data[0].raw.toString());
         // console.log(data[0].createdAt);
         this.rows = data.map((curVal, index, arr) => {
