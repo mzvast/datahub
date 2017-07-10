@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { UdpService } from 'app/udp.service';
 import { Buffer } from 'buffer';
+import {DatePipe} from '@angular/common';
 
 declare var electron: any; // 　Typescript 定义
 
@@ -33,6 +34,7 @@ export class DeviceIntfComponent implements OnInit {
   constructor(
     private _udpService: UdpService,
     private _cd: ChangeDetectorRef,
+    private datePipe: DatePipe,
     private _settingService: SettingService) { }
 
   ngOnInit() {
@@ -122,7 +124,8 @@ export class DeviceIntfComponent implements OnInit {
   exportData(data: Buffer) {
     // console.log('export data');
     const content = this.data2csv(data);
-    const defaultFileName = new Date().toISOString().slice(0, 19).replace(/-/g, '').replace('T', '').replace(/:/g, '');
+    const now = new Date();
+    const defaultFileName = this.datePipe.transform(now, 'yyyyMMdd_HHmmss') + '_' + now.getMilliseconds() + '.csv';
     if (this.intf.folderPath) {// 选定了默认位置，直接存储
       this.writeFile(this.intf.folderPath + '\\' + defaultFileName, content);
     } else { // 否则选择存储位置
@@ -175,6 +178,7 @@ export class DeviceIntfComponent implements OnInit {
       }
       console.log(`intf params: ${JSON.stringify(this.intf)}`);
       this._cd.detectChanges(); // 检测更改，更新UI。
+
     });
   }
 
