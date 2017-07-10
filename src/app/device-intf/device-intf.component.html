@@ -36,14 +36,14 @@
       <div class="box">
         <span class="item-header">工作周期数:</span>
         <md-input-container class="medium-input item-value">
-          <input mdInput value={{intf.workPeriod}} type="number" min="0">
+          <input mdInput [(ngModel)]="intf.workPeriod" type="number" min="0">
         </md-input-container>
         <span>(0：表示长期驻留)</span>
       </div>
       <div class="box">
         <span class="item-header">工作周期长度:</span>
         <md-input-container class="medium-input item-value">
-          <input mdInput value={{intf.workPeriodLength}} type="number" min="0">
+          <input mdInput [(ngModel)]="intf.workPeriodLength" type="number" min="0">
         </md-input-container>
         <span>(单位：20ms)</span>
       </div>
@@ -56,7 +56,7 @@
       <div class="box">
         <span class="item-header">衰减码2:</span>
         <md-input-container class="medium-input item-value">
-          <input mdInput value={{intf.attenuationCode2}} type="number" min="0" max="35">
+          <input mdInput [(ngModel)]="intf.attenuationCode2" type="number" min="0" max="35">
         </md-input-container>
         <span>(单位：dB)</span>
       </div>
@@ -69,77 +69,77 @@
       <div class="box">
         <span class="item-header">工作中心频率:</span>
         <md-input-container class="medium-input item-value">
-          <input mdInput value={{intf.workCenterFreq}} type="number">
+          <input mdInput [(ngModel)]="intf.workCenterFreq" type="number">
         </md-input-container>
         <span>(范围：2GHz-12GHz)</span>
       </div>
       <div class="box">
         <span class="item-header">单刀五掷:</span>
         <md-input-container class="medium-input item-value">
-          <input mdInput value={{intf.singlePoleFiveRolls}} type="number">
+          <input mdInput [(ngModel)]="intf.singlePoleFiveRolls" type="number">
         </md-input-container>
         <span></span>
       </div>
       <div class="box">
         <span class="item-header">脉宽剔除门限值:</span>
         <md-input-container class="medium-input item-value">
-          <input mdInput value={{intf.excludePulseThreshold}} type="number">
+          <input mdInput [(ngModel)]="intf.excludePulseThreshold" type="number">
         </md-input-container>
         <span>(单位：100ns)</span>
       </div>
       <div class="box">
         <span class="item-header">测向处理脉冲个数:</span>
         <md-input-container class="medium-input item-value">
-          <input mdInput value={{intf.sideProcessPulseCount}} type="number" min="1" max="255">
+          <input mdInput [(ngModel)]="intf.sideProcessPulseCount" type="number" min="1" max="255">
         </md-input-container>
         <span>(取值：1～255)</span>
       </div>
       <div class="box">
         <span class="item-header">方位角搜索起始值:</span>
         <md-input-container class="medium-input item-value">
-          <input mdInput value={{intf.azimuthSearchStart}} type="number" min="0" max="362">
+          <input mdInput [(ngModel)]="intf.azimuthSearchStart" type="number" min="0" max="362">
         </md-input-container>
         <span>(单位：度；取值0～362)</span>
       </div>
       <div class="box">
         <span class="item-header">方位角搜索终止值:</span>
         <md-input-container class="medium-input item-value">
-          <input mdInput value={{intf.azimuthSearchEnd}} type="number" min="0" max="362">
+          <input mdInput [(ngModel)]="intf.azimuthSearchEnd" type="number" min="0" max="362">
         </md-input-container>
         <span>(单位：度；取值0～362)</span>
       </div>
       <div class="box">
         <span class="item-header">仰角搜索起始值:</span>
         <md-input-container class="medium-input item-value">
-          <input mdInput value={{intf.elevationSearchStart}} type="number" min="51" max="90">
+          <input mdInput [(ngModel)]="intf.elevationSearchStart" type="number" min="51" max="90">
         </md-input-container>
         <span>(单位：度；取值51～90)</span>
       </div>
       <div class="box">
         <span class="item-header">仰角搜索起始值:</span>
         <md-input-container class="medium-input item-value">
-          <input mdInput value={{intf.elevationSearchEnd}} type="number" min="51" max="90">
+          <input mdInput [(ngModel)]="intf.elevationSearchEnd" type="number" min="51" max="90">
         </md-input-container>
         <span>(单位：度；取值51～90)</span>
       </div>
       <div class="box">
         <span class="item-header">方位角粗搜索步长:</span>
         <md-input-container class="medium-input item-value">
-          <input mdInput value={{intf.azimuthSearchStepLength}} type="number">
+          <input mdInput [(ngModel)]="intf.azimuthSearchStepLength" type="number">
         </md-input-container>
         <span>(单位：度)</span>
       </div>
       <div class="box">
         <span class="item-header">方位角粗搜索步长:</span>
         <md-input-container class="medium-input item-value">
-          <input mdInput value={{intf.elevationSearchStepLength}} type="number">
+          <input mdInput [(ngModel)]="intf.elevationSearchStepLength" type="number">
         </md-input-container>
         <span>(单位：度)</span>
       </div>
       <div class="box">
         <span class="item-header">个数估计门限:</span>
         <md-input-container class="medium-input item-value">
-          <input mdInput value={{intf.countEstimatedThreshold}} type="number" min="1" max="100">
+          <input mdInput [(ngModel)]="intf.countEstimatedThreshold" type="number" min="1" max="100">
         </md-input-container>
         <span>(取值1～100)</span>
       </div>
@@ -152,21 +152,21 @@
       <div class="box">
         <span class="item-header">脉宽匹配容差:</span>
         <md-input-container class="medium-input item-value">
-          <input mdInput value={{intf.pulseMatchTolerance}} type="number">
+          <input mdInput [(ngModel)]="intf.pulseMatchTolerance" type="number">
         </md-input-container>
         <span>(单位：ns)</span>
       </div>
       <div class="box">
         <span class="item-header">PRI匹配容差:</span>
         <md-input-container class="medium-input item-value">
-          <input mdInput value={{intf.priMatchTolerance}} type="number">
+          <input mdInput [(ngModel)]="intf.priMatchTolerance" type="number">
         </md-input-container>
         <span>(单位：ns)</span>
       </div>
       <div class="box">
         <span class="item-header">分机控制:</span>
         <md-input-container class="medium-input item-value">
-          <input mdInput value={{intf.extControl}} type="number">
+          <input mdInput [(ngModel)]="intf.extControl" type="number">
         </md-input-container>
         <span></span>
       </div>
