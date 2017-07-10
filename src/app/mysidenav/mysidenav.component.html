@@ -36,8 +36,8 @@
         <md-slide-toggle mdTooltip="点击切换" class="toolbar" color="accent" [(ngModel)]="debug" (click)="toggleDebug()">
           <span>调试模式</span>
         </md-slide-toggle>
-        <md-slide-toggle mdTooltip="点击切换" class="toolbar" color="accent" [(ngModel)]="record" (click)="toggleRecord()">
-          <span>数据记录</span>
+        <md-slide-toggle mdTooltip="点击切换" class="toolbar" color="accent" [(ngModel)]="record" (click)="toggleRecord()" disabled="{{!debug}}">
+          <span>原始数据记录</span>
         </md-slide-toggle>
       </md-nav-list>
     </div>

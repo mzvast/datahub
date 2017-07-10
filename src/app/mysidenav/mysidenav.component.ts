@@ -56,9 +56,16 @@ export class MysidenavComponent implements OnInit {
 
   toggleDebug() {
     this._settingService.toggleDebug();
+    if (!this._settingService.debug && this._settingService.record) {
+      this.record = false;
+      this._settingService.toggleRecord();
+    }
   }
+
   toggleRecord() {
-    this._settingService.toggleRecord();
+    if (this._settingService.debug) {
+      this._settingService.toggleRecord();
+    }
   }
 
 }
