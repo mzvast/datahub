@@ -19,38 +19,11 @@ export class DeviceIntfComponent implements OnInit {
   folderPath: string;
   dialog = electron.remote.dialog;
   fs = electron.remote.getGlobal('fs');
-  timeVal = 1;
-  timeMax = 25;
-  timeMin = 0.1;
   subscription: Subscription;
-  intf: string;
+  intf; // 参数
 
   data: Buffer; // 中频的数据
   serial: number = -1;
-
-  // 参数
-  workType = 2;
-  broadband = 1;
-  workPeriod = 0;
-  workPeriodLength = 50;
-  attenuationCode1 = 1;
-  attenuationCode2 = 0;
-  frontWorkModel = 1;
-  workCenterFreq = 1;
-  singlePoleFiveRolls = 0;
-  excludePulseThreshold = 0;
-  sideProcessPulseCount = 1;
-  azimuthSearchStart = 1;
-  azimuthSearchEnd = 1;
-  elevationSearchStart = 1;
-  elevationSearchEnd = 1;
-  azimuthSearchStepLength = 0;
-  elevationSearchStepLength = 0;
-  countEstimatedThreshold = 0;
-  attackCriterionSelect = 1;
-  pulseMatchTolerance = 0;
-  priMatchTolerance = 0;
-  extControl = 0;
 
   workTypeSelect = [{ code: 0, name: '实时校正模式' }, { code: 1, name: '自检模式' }, { code: 2, name: '搜索模式' }, { code: 3, name: '跟踪模式' }];
   broadbandSelect = [{ code: 0, name: '40M' }, { code: 1, name: '400M' }];
@@ -86,36 +59,36 @@ export class DeviceIntfComponent implements OnInit {
 
 
   sendRequest() {
-    console.log('timeVal=', this.timeVal);
+    console.log(`intermediateFrequencyCollectTime: ${this.intf.collectTime}`);
     this.serial++;
     if (this.serial >= 65535) {
       this.serial = 0;
     }
     const pack = new IntermediateFrequencyControlPack(this.serial);
-    pack.intermediateFrequencyCollectTime = this.timeVal;
-    pack.workType = this.workType;
-    pack.broadband = this.broadband;
-    pack.workPeriod = this.workPeriod;
+    pack.intermediateFrequencyCollectTime = this.intf.collectTime;
+    pack.workType = this.intf.workType;
+    pack.broadband = this.intf.broadband;
+    pack.workPeriod = this.intf.workPeriod;
     pack.workPeriodCount = this.serial; // 这个暂时和serial一样
-    pack.workPeriodLength = this.workPeriodLength;
-    pack.attenuationCode1 = this.attenuationCode1;
-    pack.attenuationCode2 = this.attenuationCode2;
-    pack.frontWorkModel = this.frontWorkModel;
-    pack.workCenterFreq = this.workCenterFreq;
-    pack.singlePoleFiveRolls = this.singlePoleFiveRolls;
-    pack.excludePulseThreshold = this.excludePulseThreshold;
-    pack.sideProcessPulseCount = this.sideProcessPulseCount;
-    pack.azimuthSearchStart = this.azimuthSearchStart;
-    pack.azimuthSearchEnd = this.azimuthSearchEnd;
-    pack.elevationSearchStart = this.elevationSearchStart;
-    pack.elevationSearchEnd = this.elevationSearchEnd;
-    pack.azimuthSearchStepLength = this.azimuthSearchStepLength;
-    pack.elevationSearchStepLength = this.elevationSearchStepLength;
-    pack.countEstimatedThreshold = this.countEstimatedThreshold;
-    pack.attackCriterionSelect = this.attackCriterionSelect;
-    pack.pulseMatchTolerance = this.pulseMatchTolerance;
-    pack.priMatchTolerance = this.priMatchTolerance;
-    pack.extControl = this.extControl;
+    pack.workPeriodLength = this.intf.workPeriodLength;
+    pack.attenuationCode1 = this.intf.attenuationCode1;
+    pack.attenuationCode2 = this.intf.attenuationCode2;
+    pack.frontWorkModel = this.intf.frontWorkModel;
+    pack.workCenterFreq = this.intf.workCenterFreq;
+    pack.singlePoleFiveRolls = this.intf.singlePoleFiveRolls;
+    pack.excludePulseThreshold = this.intf.excludePulseThreshold;
+    pack.sideProcessPulseCount = this.intf.sideProcessPulseCount;
+    pack.azimuthSearchStart = this.intf.azimuthSearchStart;
+    pack.azimuthSearchEnd = this.intf.azimuthSearchEnd;
+    pack.elevationSearchStart = this.intf.elevationSearchStart;
+    pack.elevationSearchEnd = this.intf.elevationSearchEnd;
+    pack.azimuthSearchStepLength = this.intf.azimuthSearchStepLength;
+    pack.elevationSearchStepLength = this.intf.elevationSearchStepLength;
+    pack.countEstimatedThreshold = this.intf.countEstimatedThreshold;
+    pack.attackCriterionSelect = this.intf.attackCriterionSelect;
+    pack.pulseMatchTolerance = this.intf.pulseMatchTolerance;
+    pack.priMatchTolerance = this.intf.priMatchTolerance;
+    pack.extControl = this.intf.extControl;
     this._udpService.sendIntFreqRequest(pack);
   }
 
@@ -148,7 +121,7 @@ export class DeviceIntfComponent implements OnInit {
   }
 
   exportData(data: Buffer) {
-    console.log('export data');
+    // console.log('export data');
     const content = this.data2csv(data);
     const defaultFileName = new Date().toISOString().slice(0, 19).replace(/-/g, '').replace('T', '').replace(/:/g, '');
     if (this.folderPath) {// 选定了默认位置，直接存储
@@ -177,17 +150,27 @@ export class DeviceIntfComponent implements OnInit {
   }
 
   saveConfig() { // 保存中频配置到数据库
-    this.intf = new Date().toISOString(); // TODO 修改成json字符串
-    this._settingService
-      .setIntf(this.intf)
-      .updateSettingToDB();
-    console.log('保存完成');
+    this._settingService.setIntf(JSON.stringify(this.intf)).updateSettingToDB();
+    // console.log('保存完成');
   }
 
   loadConfig() { // 读取中频配置
+    const defaultIntfConfig = {workType: 2, broadband: 0, workPeriod: 0, workPeriodLength: 50, attenuationCode1: 1,
+      attenuationCode2: 0, frontWorkModel: 1, singlePoleFiveRolls: 0, excludePulseThreshold: 0, sideProcessPulseCount: 1,
+      collectTime: 1, // 中频采集时间
+      azimuthSearchStart: 1, azimuthSearchEnd: 1, elevationSearchStart: 1, elevationSearchEnd: 1, azimuthSearchStepLength: 0,
+      elevationSearchStepLength: 0, countEstimatedThreshold: 0, attackCriterionSelect: 1, pulseMatchTolerance: 0,
+      priMatchTolerance: 0, extControl: 0
+    };
+    this.intf = defaultIntfConfig;
     this._settingService.fetchSettingFromDB().then(() => {
-      this.intf = this._settingService.intf;
-      console.log(this.intf);
+      try {
+        this.intf = JSON.parse(this._settingService.intf);
+      } catch (e) {
+        console.error(`error parser setting intf, ${e}`);
+        this.intf = defaultIntfConfig;
+      }
+      console.log(`intf params: ${JSON.stringify(this.intf)}`);
       this._cd.detectChanges(); // 检测更改，更新UI。
     });
   }
