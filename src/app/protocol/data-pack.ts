@@ -107,11 +107,10 @@ export class TagDataPack extends BaseDescriptionDataPack {
     const dictionary = new TagDataPackDictionary();
     const keys = Object.keys(dictionary); // 控制显示的字段
     const items = keys.map((curVal, index, arr) => {
-      // console.log(`key: ${this.dictionary[curVal]}, value: ${message[curVal]}`)
+      // console.log(`key: ${dictionary[curVal]}, value: ${message[curVal]}`)
       const obj = {};
       obj['name'] = dictionary[curVal];
       const value = description[curVal];
-      console.log(`curVal: ${curVal}`)
       switch (curVal) {
         case 'commandReceiveStatus0':
           obj['value'] = value === 0 ? '<font color="blue">接收正常</font>' : '<font color="red">出现丢帧</font>';
@@ -126,10 +125,10 @@ export class TagDataPack extends BaseDescriptionDataPack {
           obj['value'] = value === 0 ? '<font color="blue">正常</font>' : '<font color="red">不正常</font>';
           break;
         case 'frontWorkTemp':
-          obj['value'] = (value * 0.0078125) + '℃';
+          obj['value'] = (value * 0.0078125) + ' ℃';
           break;
         case 'extWorkTemp':
-          obj['value'] = (value * 0.0078125) + '℃';
+          obj['value'] = (value * 0.0078125) + ' ℃';
           break;
         default:
           obj['value'] = value;
@@ -239,6 +238,60 @@ export class NarrowBandFullPulseDataPack extends BaseDescriptionDataPack {
     return desc;
   }
 
+  parserDescriptionLocalized(description: BroadBandFullPulseDescription): any {
+    const dictionary = new NarrowBandFullPulseDictionary();
+    const keys = Object.keys(dictionary); // 控制显示的字段
+    const items = keys.map((curVal, index, arr) => {
+      // console.log(`key: ${dictionary[curVal]}, value: ${message[curVal]}`)
+      const obj = {};
+      obj['name'] = dictionary[curVal];
+      const value = description[curVal];
+      switch (curVal) {
+        case 'pdwToaTod':
+          obj['value'] = (value * 4.46) + ' ns';
+          break;
+        case 'pdwPw':
+          obj['value'] = (value * 4.46) + ' ns';
+          break;
+        case 'trackerFreRise':
+        case 'trackerFreMinOv':
+        case 'trackerFreMaxOv':
+        case 'trackerFre3':
+        case 'trackerFre4':
+          obj['value'] = (value * 0.01) + ' MHz';
+          break;
+        case 'pdwType':
+          // TODO 这个有点复杂，后面再弄
+          obj['value'] = value;
+          break;
+        case 'trackerOrien':
+          if (value === 0) {
+            obj['value'] = '递增';
+          } else if (value === 1) {
+            obj['value'] = '递减';
+          } else if (value === 2) {
+            obj['value'] = '递减';
+          } else if (value === 3) {
+            obj['value'] = '混合';
+          } else {
+            obj['value'] = '不是线调';
+          }
+          break;
+        default:
+          obj['value'] = value;
+          break;
+      }
+      if (curVal.startsWith('phase')) {
+        obj['value'] = value * 0.006 + ' 度';
+      }
+      if (curVal.startsWith('amplitude')) {
+        obj['value'] = value * 1 + ' dB';
+      }
+
+      return obj;
+    });
+    return items;
+  }
 }
 
 /**

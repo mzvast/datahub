@@ -62,7 +62,7 @@ export class DataShowDialogComponent implements OnInit {
     const pack: NarrowBandFullPulseDataPack = baseDataPack as NarrowBandFullPulseDataPack;
     // console.log(`pack data: ${pack.datas[0]}`);
     const message = pack.parserDescription(pack.datas[0]);
-    this.setItems(message, new NarrowBandFullPulseDictionary());
+    this.items = pack.parserDescriptionLocalized(message);
   }
 
   setItems(message: Object, dictionary: BaseDictionary): void {
