@@ -261,8 +261,18 @@ export class NarrowBandFullPulseDataPack extends BaseDescriptionDataPack {
           obj['value'] = (value * 0.01) + ' MHz';
           break;
         case 'pdwType':
-          // TODO 这个有点复杂，后面再弄
-          obj['value'] = value;
+          // Bit0-1： Bit2-3：0-脉冲Pdw，1-连续波Pdw,3-分集信号 Bit4-7：分集个数
+          const pwdType = (value & 0b00001100) >>> 2; // 取Bit2-3位
+          let pwdTypeString = value + '';
+          if (pwdType === 0) {
+            pwdTypeString = '脉冲Pdw';
+          } else if (pwdType === 1) {
+            pwdTypeString = '连续波Pdw';
+          } else if (pwdType === 3) {
+            const cnt = (value & 0b1111110000) >>> 4;
+            pwdTypeString = '分集信号，分集个数：' + cnt;
+          }
+          obj['value'] = pwdTypeString;
           break;
         case 'trackerOrien':
           if (value === 0) {

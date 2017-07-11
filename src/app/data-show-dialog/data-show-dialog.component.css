@@ -5,7 +5,7 @@ md-grid-tile{
   background: pink;
 }
 .container{
-  width: 50vw;
+  width: 60vw;
   max-height: 80vh;
   overflow-y: auto;
 }
