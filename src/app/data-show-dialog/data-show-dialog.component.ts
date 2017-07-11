@@ -55,7 +55,7 @@ export class DataShowDialogComponent implements OnInit {
     const pack: TagDataPack = baseDataPack as TagDataPack;
     // console.log(`pack data: ${pack.datas[0]}`);
     const message = pack.parserDescription(pack.datas[0]);
-    this.setItems(message, new TagDataPackDictionary());
+    this.items = pack.parserDescriptionLocalized(message);
   }
 
   parserNarrowBandFullPulseDataPack(baseDataPack: BaseDataPack) {
@@ -68,7 +68,7 @@ export class DataShowDialogComponent implements OnInit {
   setItems(message: Object, dictionary: BaseDictionary): void {
     const keys = Object.keys(dictionary); // 控制显示的字段
     this.items = keys.map((curVal, index, arr) => {
-      // console.log(`key: ${this.dictionary[curVal]}, value: ${message[curVal]}`)
+      // console.log(`key: ${dictionary[curVal]}, value: ${message[curVal]}`);
       const obj = {};
       obj['name'] = dictionary[curVal];
       obj['value'] = message[curVal];

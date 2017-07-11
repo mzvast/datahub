@@ -48,7 +48,7 @@ export class TagDataPack extends BaseDescriptionDataPack {
   sourceNodeNo: number; // 发方节点号1
   destNodeNo: number; // 收方节点号1
   feedbackCommandNo: number; // 反馈指令序号2
-  commandReceiveStatus0: number; // 指令接收状态1 0 指令接收正常；1指令接收出现丢帧；
+  commandReceiveStatus0: number; // 指令接收状态1 0 指令接收正常；1 指令接收出现丢帧；
   commandReceiveStatus1: number; // 指令接收状态1 0 指令解析正常；1 指令解析异常
   taskNo: number; // 任务编号2
   frontWorkTemp: number; // 前端工作温度2
@@ -102,18 +102,55 @@ export class TagDataPack extends BaseDescriptionDataPack {
     desc.frontStatusFeedback = dataHex.slice(180, 180 + 128).toString('hex');
     return desc;
   }
+
+  parserDescriptionLocalized(description: TagDataPackDescription): any {
+    const dictionary = new TagDataPackDictionary();
+    const keys = Object.keys(dictionary); // 控制显示的字段
+    const items = keys.map((curVal, index, arr) => {
+      // console.log(`key: ${this.dictionary[curVal]}, value: ${message[curVal]}`)
+      const obj = {};
+      obj['name'] = dictionary[curVal];
+      const value = description[curVal];
+      console.log(`curVal: ${curVal}`)
+      switch (curVal) {
+        case 'commandReceiveStatus0':
+          obj['value'] = value === 0 ? '<font color="blue">接收正常</font>' : '<font color="red">出现丢帧</font>';
+          break;
+        case 'commandReceiveStatus1':
+          obj['value'] = value === 0 ? '<font color="blue">解析正常</font>' : '<font color="red">解析异常</font>';
+          break;
+        case 'extWorkStatus0':
+          obj['value'] = value === 0 ? '<font color="blue">正常</font>' : '<font color="red">不正常</font>';
+          break;
+        case 'extWorkStatus1':
+          obj['value'] = value === 0 ? '<font color="blue">正常</font>' : '<font color="red">不正常</font>';
+          break;
+        case 'frontWorkTemp':
+          obj['value'] = (value * 0.0078125) + '℃';
+          break;
+        case 'extWorkTemp':
+          obj['value'] = (value * 0.0078125) + '℃';
+          break;
+        default:
+          obj['value'] = value;
+          break;
+      }
+      return obj;
+    });
+    return items;
+  }
 }
 
 export class TagDataPackDescription {
   sourceNodeNo: number; // 发方节点号1
   destNodeNo: number; // 收方节点号1
   feedbackCommandNo: number; // 反馈指令序号2
-  commandReceiveStatus0: number; // 指令接收状态1 0 指令接收正常；1指令接收出现丢帧；
+  commandReceiveStatus0: number; // 指令接收状态1 0 指令接收正常；1 指令接收出现丢帧；
   commandReceiveStatus1: number; // 指令接收状态1 0 指令解析正常；1 指令解析异常
   taskNo: number; // 任务编号2
   frontWorkTemp: number; // 前端工作温度2
   extWorkTemp: number; // 分机工作温度2
-  extWorkStatus0: number; // 分机工作状态1 信道化组件状态 0：正常，1：不正常 TODO 我觉得应该是2字节 文档写4字节
+  extWorkStatus0: number; // 分机工作状态1 信道化组件状态 0：正常，1：不正常
   extWorkStatus1: number; // 分机工作状态1 信号分选组件状态 0：正常，1：不正常
   fullPulseCount: number; // 全脉冲个数统计4
   radiationSourceCount: number; // 辐射源数据包统计4
@@ -125,19 +162,19 @@ export class TagDataPackDescription {
  * 标签包字典
  */
 export class TagDataPackDictionary extends BaseDictionary {
-  sourceNodeNo = ' 发方节点号1'; // 发方节点号1
-  destNodeNo = ' 收方节点号1'; // 收方节点号1
-  feedbackCommandNo = ' 反馈指令序号2'; // 反馈指令序号2
-  commandReceiveStatus0 = ' 指令接收状态1'; // 指令接收状态1 0 指令接收正常；1指令接收出现丢帧；
-  commandReceiveStatus1 = ' 指令接收状态1'; // 指令接收状态1 0 指令解析正常；1 指令解析异常
-  taskNo = ' 任务编号2'; // 任务编号2
-  frontWorkTemp = ' 前端工作温度2'; // 前端工作温度2
-  extWorkTemp = ' 分机工作温度2'; // 分机工作温度2
-  extWorkStatus0 = ' 分机工作状态1'; // 分机工作状态1 信道化组件状态 0：正常，1：不正常
-  extWorkStatus1 = ' 分机工作状态1'; // 分机工作状态1 信号分选组件状态 0：正常，1：不正常
-  fullPulseCount = ' 全脉冲个数统计4'; // 全脉冲个数统计4
-  radiationSourceCount = ' 辐射源数据包统计4'; // 辐射源数据包统计4
-  ifDataLen = ' 中频数据统计4'; // 中频数据统计4
+  sourceNodeNo = '发方节点号'; // 发方节点号1
+  destNodeNo = '收方节点号'; // 收方节点号1
+  feedbackCommandNo = '反馈指令序号'; // 反馈指令序号2
+  commandReceiveStatus0 = '指令接收状态'; // 指令接收状态0 0 指令接收正常；1指令接收出现丢帧；
+  commandReceiveStatus1 = '指令解析状态'; // 指令接收状态1 0 指令解析正常；1 指令解析异常
+  taskNo = '任务编号'; // 任务编号2
+  frontWorkTemp = '前端工作温度'; // 前端工作温度2
+  extWorkTemp = '分机工作温度'; // 分机工作温度2
+  extWorkStatus0 = '信道化组件状态'; // 分机工作状态1 信道化组件状态 0：正常，1：不正常
+  extWorkStatus1 = '信号分选组件状态'; // 分机工作状态1 信号分选组件状态 0：正常，1：不正常
+  fullPulseCount = '全脉冲个数统计'; // 全脉冲个数统计4
+  radiationSourceCount = '辐射源数据包统计'; // 辐射源数据包统计4
+  ifDataLen = '中频数据统计'; // 中频数据统计4
   // backup: string; // 备份16
   // frontStatusFeedback: string; // 前端状态反馈128,没说具体是什么，方便存储，用string
 }
