@@ -457,6 +457,112 @@ export class NarrowBandSourceDataPack extends BaseDescriptionDataPack {
     return des;
   }
 
+  parserDescriptionLocalized(description: NarrowBandRadiationDescription) {
+    const dictionary = new NarrowBandRadiationDictionary();
+    const keys = Object.keys(dictionary); // 控制显示的字段
+    const items = keys.map((curVal, index, arr) => {
+      // console.log(`key: ${dictionary[curVal]}, value: ${message[curVal]}`)
+      const obj = {};
+      obj['name'] = dictionary[curVal];
+      const value = description[curVal];
+      switch (curVal) {
+        case 'rfExtType':
+          if (value === 0) {
+            obj['value'] = '固定';
+          } else if (value === 1) {
+            obj['value'] = '脉间捷变';
+          } else if (value === 2) {
+            obj['value'] = '脉组捷变';
+          } else if (value === 3) {
+            obj['value'] = '分时分集';
+          } else if (value === 4) {
+            obj['value'] = '连续波';
+          } else if (value === 5) {
+            obj['value'] = '双频点';
+          } else {
+            obj['value'] = '未知' + value;
+          }
+          break;
+        case 'rfIntType':
+          if (value === 0) {
+            obj['value'] = '单载频';
+          } else if (value === 1) {
+            obj['value'] = '多载频';
+          } else if (value === 2) {
+            obj['value'] = '调频';
+          } else {
+            obj['value'] = '未知' + value;
+          }
+          break;
+        case 'rfNum':
+          const rfNum = value & 0b0000000011111111; // 取Bit2-3位
+          const spectrum = (value & 0b1111111100000000) >>> 8;
+          obj['value'] = '个数：' + rfNum + '，频段号：' + spectrum;
+          break;
+        case 'rf1':
+        case 'rf2':
+        case 'rf3':
+        case 'rf4':
+        case 'rf5':
+        case 'rf6':
+        case 'rf7':
+        case 'rf8':
+          obj['value'] = (value * 0.1) + ' MHz';
+          break;
+        case 'rpiType':
+          if (value === 0) {
+            obj['value'] = '固定';
+          } else if (value === 1) {
+            obj['value'] = '抖动';
+          } else if (value === 2) {
+            obj['value'] = '滑变';
+          } else if (value === 3) {
+            obj['value'] = '成组参差';
+          } else if (value === 4) {
+            obj['value'] = '固定参差';
+          } else if (value === 5) {
+            obj['value'] = 'PD';
+          } else {
+            obj['value'] = '未知' + value;
+          }
+          break;
+        case 'rpi1':
+        case 'rpi2':
+        case 'rpi3':
+        case 'rpi4':
+        case 'rpi5':
+        case 'rpi6':
+        case 'rpi7':
+        case 'rpi8':
+          obj['value'] = (value * 16) + ' ns';
+          break;
+        case 'pwType':
+          if (value === 0) {
+            obj['value'] = '固定';
+          } else if (value === 1) {
+            obj['value'] = '变化';
+          } else {
+            obj['value'] = '未知' + value;
+          }
+          break;
+        case 'pw1':
+        case 'pw2':
+        case 'pw3':
+        case 'pw4':
+        case 'pw5':
+        case 'pw6':
+        case 'pw7':
+        case 'pw8':
+          obj['value'] = (value * 16) + ' ns'; // TODO 可能是5ns
+          break;
+        default:
+          obj['value'] = value;
+          break;
+      }
+      return obj;
+    });
+    return items;
+  }
 }
 
 /**

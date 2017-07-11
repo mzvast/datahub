@@ -3,8 +3,8 @@ import { MD_DIALOG_DATA } from '@angular/material';
 import {ProtocolPack} from '../protocol/protocol-pack';
 import {Buffer} from 'buffer';
 import {
-  NarrowBandFullPulseDictionary, NarrowBandFullPulseDataPack, BaseDataPack, TagDataPack,
-  NarrowBandSourceDataPack, BaseDictionary, TagDataPackDictionary, NarrowBandRadiationDictionary
+  NarrowBandFullPulseDataPack, BaseDataPack, TagDataPack,
+  NarrowBandSourceDataPack
 } from './../protocol/data-pack';
 
 @Component({
@@ -48,7 +48,7 @@ export class DataShowDialogComponent implements OnInit {
     const pack: NarrowBandSourceDataPack = baseDataPack as NarrowBandSourceDataPack;
     // console.log(`pack data: ${pack.datas[0]}`);
     const message = pack.parserDescription(pack.datas[0]);
-    this.setItems(message, new NarrowBandRadiationDictionary());
+    this.items = pack.parserDescriptionLocalized(message);
   }
 
   parserTagDataPack(baseDataPack: BaseDataPack) {
@@ -63,17 +63,6 @@ export class DataShowDialogComponent implements OnInit {
     // console.log(`pack data: ${pack.datas[0]}`);
     const message = pack.parserDescription(pack.datas[0]);
     this.items = pack.parserDescriptionLocalized(message);
-  }
-
-  setItems(message: Object, dictionary: BaseDictionary): void {
-    const keys = Object.keys(dictionary); // 控制显示的字段
-    this.items = keys.map((curVal, index, arr) => {
-      // console.log(`key: ${dictionary[curVal]}, value: ${message[curVal]}`);
-      const obj = {};
-      obj['name'] = dictionary[curVal];
-      obj['value'] = message[curVal];
-      return obj;
-    });
   }
 
   ngOnInit() { }
