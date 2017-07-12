@@ -4,7 +4,8 @@ import { Subscription } from 'rxjs/Subscription';
 import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { UdpService } from 'app/udp.service';
 import { Buffer } from 'buffer';
-import {DatePipe} from '@angular/common';
+import { DatePipe } from '@angular/common';
+import {MdSnackBar, MdSnackBarConfig} from '@angular/material';
 
 declare var electron: any; // 　Typescript 定义
 
@@ -35,6 +36,7 @@ export class DeviceIntfComponent implements OnInit {
     private _udpService: UdpService,
     private _cd: ChangeDetectorRef,
     private datePipe: DatePipe,
+    private snackBar: MdSnackBar,
     private _settingService: SettingService) { }
 
   ngOnInit() {
@@ -96,10 +98,13 @@ export class DeviceIntfComponent implements OnInit {
   writeFile(fileName: string, content: any) {
     this.fs.writeFile(fileName, content, (err) => {
       if (err) {
-        alert('An error ocurred creating the file ' + err.message);
+        this.snackBar.open('CSV文件保存失败: ' + err.message);
+        // alert('An error ocurred creating the file ' + err.message);
+      } else {
+        const config = new MdSnackBarConfig();
+        config.duration = 5000;
+        this.snackBar.open('CSV文件成功保存至: ' + fileName, null, config);
       }
-
-      alert('The file has been succesfully saved');
     });
   }
 
@@ -178,6 +183,14 @@ export class DeviceIntfComponent implements OnInit {
       }
       console.log(`intf params: ${JSON.stringify(this.intf)}`);
       this._cd.detectChanges(); // 检测更改，更新UI。
+
+      // Test save file
+      // const content = '1222,2222\n2222';
+      // const now = new Date();
+      // const defaultFileName = this.datePipe.transform(now, 'yyyyMMdd_HHmmss') + '_' + now.getMilliseconds() + '.csv';
+      // if (this.intf.folderPath) {// 选定了默认位置，直接存储
+      //   this.writeFile(this.intf.folderPath + '\\' + defaultFileName, content);
+      // }
 
     });
   }
