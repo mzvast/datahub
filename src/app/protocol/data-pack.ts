@@ -553,7 +553,7 @@ export class NarrowBandSourceDataPack extends BaseDescriptionDataPack {
         case 'pw6':
         case 'pw7':
         case 'pw8':
-          obj['value'] = (value * 16) + ' ns'; // TODO 可能是5ns
+          obj['value'] = (value * 4.46) + ' ns';
           break;
         default:
           obj['value'] = value;
