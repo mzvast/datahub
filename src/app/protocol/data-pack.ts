@@ -559,6 +559,13 @@ export class NarrowBandSourceDataPack extends BaseDescriptionDataPack {
           obj['value'] = value;
           break;
       }
+      if (curVal.startsWith('azimuth')) {
+        obj['value'] = (value * 0.1) + ' 度';
+      }
+      if (curVal.startsWith('elevationAngle')) {
+        obj['value'] = (value * 0.1) + ' 度';
+      }
+
       return obj;
     });
     return items;
