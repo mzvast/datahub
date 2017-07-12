@@ -18,6 +18,7 @@ import {
 export class DataShowDialogComponent implements OnInit {
 
   items = [];
+  dataPack: BaseDataPack;
 
   constructor(@Optional() @Inject(MD_DIALOG_DATA) public data: any) {
     // console.log(data);
@@ -27,19 +28,24 @@ export class DataShowDialogComponent implements OnInit {
   parserRaw(raw: string) {
     // 数据库里前面的东西没有存，没用，只存了data，所以放一些0
     const protocolPack = new ProtocolPack(0, 0, 0, 0, 0, 1, Buffer.from(raw, 'hex'));
-    const dataPack: BaseDataPack = protocolPack.parserDataPack(false); // 解析包数据
-    console.log(`data pack parser ok, type: ${dataPack.type}`);
-
-    switch (dataPack.type) {
-      case 0:
-        this.parserTagDataPack(dataPack);
-        break;
-      case 1:
-        this.parserNarrowBandFullPulseDataPack(dataPack);
-        break;
-      case 5:
-        this.parserNarrowBandSourceDataPack(dataPack);
-        break;
+    this.dataPack = protocolPack.parserDataPack(false); // 解析包数据
+    console.log(`data pack parser ok, type: ${this.dataPack.type}`);
+    if (this.dataPack) {
+      const gps = this.dataPack.gps;
+      this.dataPack.gps = [gps.slice(0, 64), gps.slice(64)].join('\n');
+      const control = this.dataPack.control;
+      this.dataPack.control = [control.slice(0, 64), control.slice(64)].join('\n');
+      switch (this.dataPack.type) {
+        case 0:
+          this.parserTagDataPack(this.dataPack);
+          break;
+        case 1:
+          this.parserNarrowBandFullPulseDataPack(this.dataPack);
+          break;
+        case 5:
+          this.parserNarrowBandSourceDataPack(this.dataPack);
+          break;
+      }
     }
 
   }

@@ -1,10 +1,12 @@
-md-grid-tile{
-  border:dotted 1px lightgrey;
+md-grid-tile {
+  border: dotted 1px lightgrey;
 }
-.title{
+
+.title {
   background: pink;
 }
-.container{
+
+.container {
   width: 60vw;
   max-height: 80vh;
   overflow-y: auto;

@@ -4,9 +4,17 @@
   <md-card-content>
     <div class="container">
 
-      <h2>{{error}}</h2>
+      <h2 *ngIf="!dataPack">解析错误</h2>
 
       <md-grid-list cols="4" rowHeight="100px" rowHeight="2em">
+        <div>
+          <md-grid-tile colspan=1 rowspan=2 class="title"><span>系统控制信息</span></md-grid-tile>
+          <md-grid-tile colspan=3 rowspan=2><span [innerHTML]="dataPack?.control"></span></md-grid-tile>
+        </div>
+        <div>
+          <md-grid-tile colspan=1 rowspan=2 class="title"><span>当前GPS数据</span></md-grid-tile>
+          <md-grid-tile colspan=3 rowspan=2><span [innerHTML]="dataPack?.gps"></span></md-grid-tile>
+        </div>
         <div *ngFor="let item of items">
           <md-grid-tile colspan=1 rowspan=1 class="title"><span>{{item?.name}}</span></md-grid-tile>
           <md-grid-tile colspan=1 rowspan=1><span [innerHTML]="item?.value"></span></md-grid-tile>
