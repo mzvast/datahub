@@ -9,12 +9,12 @@
             <h3 for="">发送地址/端口</h3>
             <td>
               <md-input-container class="example-full-width">
-                <input mdInput placeholder="IP地址" value="192.168.0.11">
+                <input mdInput placeholder="IP地址" [(ngModel)]="remoteHost" name="remoteHost">
               </md-input-container>
             </td>
             <td>
               <md-input-container class="example-full-width">
-                <input mdInput placeholder="端口" value="6011">
+                <input mdInput placeholder="端口" [(ngModel)]="remotePort" name="remotePort">
               </md-input-container>
             </td>
           </tr>
@@ -27,7 +27,7 @@
           </td>-->
             <td>
               <md-input-container class="example-full-width">
-                <input mdInput placeholder="端口" value="{{localPort}}">
+                <input mdInput placeholder="端口" [(ngModel)]="localPort" name="localPort">
               </md-input-container>
             </td>
           </tr>

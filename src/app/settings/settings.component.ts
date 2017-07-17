@@ -1,5 +1,6 @@
 import { SettingService } from './../setting.service';
 import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { MdSnackBar, MdSnackBarConfig} from '@angular/material';
 
 @Component({
   selector: 'app-settings',
@@ -15,7 +16,8 @@ export class SettingsComponent implements OnInit {
 
   constructor(
     private _settingService: SettingService,
-    private _cd: ChangeDetectorRef, ) {
+    private _cd: ChangeDetectorRef,
+    private snackBar: MdSnackBar) {
     this._settingService.fetchSettingFromDB().then(() => {
       this.parseData();
     });
@@ -26,7 +28,14 @@ export class SettingsComponent implements OnInit {
   }
 
   save() {
-    console.log(this._settingService.local_port);
+    this._settingService.local_port = this.localPort;
+    this._settingService.remote_host = this.remoteHost;
+    this._settingService.remote_port = this.remotePort;
+    this._settingService.updateSettingToDB();
+    const config = new MdSnackBarConfig();
+    config.duration = 5000;
+    this.snackBar.open('保存成功 ', null, config);
+    // console.log(this._settingService.local_port);
   }
 
   parseData() {
