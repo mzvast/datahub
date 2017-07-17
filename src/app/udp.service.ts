@@ -165,7 +165,6 @@ export class UdpService {
                   if (workingProtocolPack.isComplete()) {// 最后一包
                     this.workingProtocolPacks.delete(key); // 删除全局暂存的包
                     const dataPack: BaseDataPack = workingProtocolPack.parserDataPack(this._settingService.debug); // 解析拼接成的包
-                    workingProtocolPack = null; // 删除局部变量
                     if (this._settingService.debug) {
                       console.log('dataPackV2:', dataPack);
                     }
@@ -173,6 +172,7 @@ export class UdpService {
                       this.sendMessage(dataPack); // 发给UI
                       this.saveRawDataToDB(dataPack.type, workingProtocolPack.data);
                     }
+                    workingProtocolPack = null; // 删除局部变量
                   }
                 } else {// TODO else 漏包\重复问题
                   console.log('丢包');
