@@ -174,10 +174,12 @@ export class ProtocolPack {
           console.error(`parser intermediate frequency data pack error, length less than 140.`);
           return null;
         }
-        const gps4 = data.slice(76, 76 + 64).toString('hex'); // 中频数据包的gps有点不一样
-        const pack4 = new IntermediateFrequencyDataPack(control, gps4);
-        pack4.serial = data.readUInt32LE(72, false); // 中频包序号 暂定：（每秒发一次）固定每次中频数据发1M，即分2次帧发送。这2次中频包序号相同，拼起来绘图。
-        pack4.data = data.slice(140, 140 + 524288);
+        if (debug) {
+          console.error(`intermediate frequency length: ${len}.`);
+        }
+        // 中频去掉GPS
+        const pack4 = new IntermediateFrequencyDataPack(control);
+        pack4.data = data.slice(72, 72 + 10240);
         // debug it
         if (debug) {
           console.log(`parser intermediate frequency data pack success.`);

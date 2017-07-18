@@ -593,18 +593,15 @@ export class PhaseCorrectionDataPack extends BaseDescriptionDataPack {
 export class IntermediateFrequencyDataPack extends BaseDataPack {
   // 中频数据量很大，存Buffer 中频数据描述字 512K
   data: Buffer;
-  // pulseArriveTime: number; // 脉冲到达时间4
-  serial: number; // 中频包序号4
   // backup: string; // 备份304
 
-  constructor(control: string, gps: string) {
-    super(control, gps);
+  constructor(control: string) {
+    super(control, '');
     this.type = 4;
   }
 
   description() {
-    return `[intermediate frequency data pack] control: ${this.control}, gps: ${this.gps}, ` +
-      `serial: ${this.serial}`;
+    return `[intermediate frequency data pack] control: ${this.control} `;
   }
 
   /**

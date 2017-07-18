@@ -3,7 +3,6 @@ import { IntermediateFrequencyControlPack, IntermediateFrequencyDataPack } from 
 import { Subscription } from 'rxjs/Subscription';
 import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { UdpService } from 'app/udp.service';
-import { Buffer } from 'buffer';
 import { DatePipe } from '@angular/common';
 import { MdSnackBar, MdSnackBarConfig} from '@angular/material';
 
@@ -23,7 +22,6 @@ export class DeviceIntfComponent implements OnInit {
   subscription: Subscription;
   intf; // 参数
 
-  data: Buffer; // 中频的数据
   serial: number = -1;
 
   workTypeSelect = [{ code: 0, name: '实时校正模式' }, { code: 1, name: '自检模式' }, { code: 2, name: '搜索模式' }, { code: 3, name: '跟踪模式' }];
@@ -43,18 +41,7 @@ export class DeviceIntfComponent implements OnInit {
     this.loadConfig();
     this.subscription = this._udpService.getMessage().subscribe((msg: IntermediateFrequencyDataPack) => {
       if (msg.type === 4) {// 判断是中频数据
-        if (msg.serial === this.serial) {
-          this.data = Buffer.concat([this.data, msg.data]);
-
-          // 协议说分2次发，所以只要拼接一次就算结束了,满了自动导出成csv
-          this.exportData(this.data);
-          this.data = Buffer.alloc(0);
-          this.serial = -1;
-        } else { // 首波中频
-          this.data = msg.data;
-          this.serial = msg.serial;
-        }
-
+        this.exportData(msg.data);
         this._cd.detectChanges(); // 检测更改，更新UI。
       }
     });
@@ -127,7 +114,7 @@ export class DeviceIntfComponent implements OnInit {
   }
 
   exportData(data: Buffer) {
-    // console.log('export data');
+    console.log('export data start');
     const content = this.data2csv(data);
     const now = new Date();
     const defaultFileName = this.datePipe.transform(now, 'yyyyMMdd_HHmmss') + '_' + now.getMilliseconds() + '.csv';
