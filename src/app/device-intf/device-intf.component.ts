@@ -5,6 +5,7 @@ import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, ChangeDe
 import { UdpService } from 'app/udp.service';
 import { DatePipe } from '@angular/common';
 import { MdSnackBar, MdSnackBarConfig} from '@angular/material';
+import { Buffer } from 'buffer';
 
 declare var electron: any; // 　Typescript 定义
 
