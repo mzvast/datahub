@@ -178,8 +178,8 @@ export class ProtocolPack {
           console.error(`intermediate frequency length: ${len}.`);
         }
         // 中频去掉GPS
-        const pack4 = new IntermediateFrequencyDataPack(control);
-        pack4.data = data.slice(72, 72 + 10240);
+        const pack4 = new IntermediateFrequencyDataPack(control, gps);
+        pack4.data = data.slice(136, 136 + 10240);
         // debug it
         if (debug) {
           console.log(`parser intermediate frequency data pack success.`);

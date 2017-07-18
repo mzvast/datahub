@@ -595,8 +595,8 @@ export class IntermediateFrequencyDataPack extends BaseDataPack {
   data: Buffer;
   // backup: string; // 备份304
 
-  constructor(control: string) {
-    super(control, '');
+  constructor(control: string, gps: string) {
+    super(control, gps);
     this.type = 4;
   }
 
