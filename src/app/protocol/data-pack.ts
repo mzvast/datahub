@@ -591,9 +591,8 @@ export class PhaseCorrectionDataPack extends BaseDescriptionDataPack {
  * 中频数据包4
  */
 export class IntermediateFrequencyDataPack extends BaseDataPack {
-  // 中频数据量很大，存Buffer 中频数据描述字 512K
+  // 中频数据量很大，存Buffer 中频数据描述字
   data: Buffer;
-  // backup: string; // 备份304
 
   constructor(control: string, gps: string) {
     super(control, gps);
@@ -611,7 +610,7 @@ export class IntermediateFrequencyDataPack extends BaseDataPack {
    */
   parserDescription(data: Buffer): string {
     let csv = '';
-    for (let i = 0; i < data.length; i++) {
+    for (let i = 0; i < data.length / 2; i++) {
       csv = csv + data.readInt16LE(i * 2); // 有符号的，所以是Int，否则是readUInt16LE
       if (i % 2 === 0) { // 如果是第一个数据，就后面加逗号，否则换行(0x0A)
         csv += ',';

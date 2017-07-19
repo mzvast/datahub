@@ -169,6 +169,9 @@ export class UdpService {
                       console.log('dataPackV2:', dataPack);
                     }
                     if (dataPack) {
+                      if (this._settingService.debug) {
+                        console.log(`dataPackV2 send dataPack message, type: ${dataPack.type}`);
+                      }
                       this.sendMessage(dataPack); // 发给UI
                       this.saveRawDataToDB(dataPack.type, workingProtocolPack.data);
                     }
@@ -188,12 +191,12 @@ export class UdpService {
           // 数据1024都用完了,把headerFounded变成false，再次进入循环解析
           workingBuffer = workingBuffer.slice(1024);
           headerFounded = false;
-        } else {
+        } else { // end workingBuffer.length >= 1024
           console.warn(`read pack not 1024, wait for another pack to append.`);
         }
 
-      }
-    }
+      } // end if header found
+    } // end while
     this.workingBuffers.set(key, workingBuffer);
   }
 

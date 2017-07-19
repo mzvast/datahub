@@ -175,7 +175,7 @@ export class ProtocolPack {
           return null;
         }
         if (debug) {
-          console.error(`intermediate frequency length: ${len}.`);
+          console.log(`intermediate frequency length: ${len}.`);
         }
         // 中频去掉GPS
         const pack4 = new IntermediateFrequencyDataPack(control, gps);

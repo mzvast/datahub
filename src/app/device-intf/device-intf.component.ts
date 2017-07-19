@@ -41,6 +41,7 @@ export class DeviceIntfComponent implements OnInit {
   ngOnInit() {
     this.loadConfig();
     this.subscription = this._udpService.getMessage().subscribe((msg: IntermediateFrequencyDataPack) => {
+      console.log(`receive intermediate freq data pack, type: ${msg.type}`);
       if (msg.type === 4) {// 判断是中频数据
         this.exportData(msg.data);
         this._cd.detectChanges(); // 检测更改，更新UI。
@@ -103,7 +104,7 @@ export class DeviceIntfComponent implements OnInit {
    */
   data2csv(data: Buffer): string {
     let csv = '';
-    for (let i = 0; i < data.length; i++) {
+    for (let i = 0; i < data.length / 2; i++) {
       csv = csv + data.readInt16LE(i * 2); // 有符号的，所以是Int，否则是readUInt16LE
       if (i % 2 === 0) { // 如果是第一个数据，就后面加逗号，否则换行(0x0A)
         csv += ',';
