@@ -80,7 +80,8 @@ export class UdpService {
       console.log('UDP server closed!');
     });
 
-    this.server.bind(this._settingService.local_port, this._settingService.local_host);
+    // this.server.bind(this._settingService.local_port, this._settingService.local_host);
+    this.server.bind(this._settingService.local_port);
   }
 
   stopUdpServer() {

@@ -184,7 +184,7 @@ export class ProtocolPack {
         if (debug) {
           console.log(`parser intermediate frequency data pack success.`);
           console.log(pack4.description());
-          console.log(pack4.parserDescription(pack4.data));
+          // console.log(pack4.parserDescription(pack4.data));
         }
         return pack4;
       case 5: // 窄带辐射源数据包

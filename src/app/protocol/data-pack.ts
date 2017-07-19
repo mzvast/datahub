@@ -600,25 +600,12 @@ export class IntermediateFrequencyDataPack extends BaseDataPack {
   }
 
   description() {
-    return `[intermediate frequency data pack] control: ${this.control} `;
+    return `[intermediate frequency data pack] control: ${this.control}, gps: ${this.gps}, ` +
+      `data length: ${this.data.length}`;
   }
 
-  /**
-   * 一个通道有两组数据，分别由高位和低位表示。
-   * @param data
-   * @returns {string}
-   */
   parserDescription(data: Buffer): string {
-    let csv = '';
-    for (let i = 0; i < data.length / 2; i++) {
-      csv = csv + data.readInt16LE(i * 2); // 有符号的，所以是Int，否则是readUInt16LE
-      if (i % 2 === 0) { // 如果是第一个数据，就后面加逗号，否则换行(0x0A)
-        csv += ',';
-      } else {
-        csv += '\n'; // 最后一行可能会是一个空行，应该也不要紧，如果要紧就判断是最后两个字节后去掉
-      }
-    }
-    return csv;
+    return ''; // 暂时不要了
   }
 }
 
