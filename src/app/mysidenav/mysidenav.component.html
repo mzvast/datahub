@@ -39,6 +39,7 @@
         <md-slide-toggle mdTooltip="点击切换" class="toolbar" color="accent" [(ngModel)]="record" (click)="toggleRecord()" disabled="{{!debug}}">
           <span>原始数据记录</span>
         </md-slide-toggle>
+        <h4 md-subheader>{{buildTimestamp}}</h4>
       </md-nav-list>
     </div>
   </md-sidenav>

@@ -10,6 +10,7 @@ import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy } from '@
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class MysidenavComponent implements OnInit {
+  buildTimestamp: string;
   debug: boolean;
   record: boolean;
   devices = [
@@ -51,6 +52,8 @@ export class MysidenavComponent implements OnInit {
     this._settingService.fetchSettingFromDB().then(() => {
       this.debug = this._settingService.debug;
       this.record = this._settingService.record;
+
+      this.buildTimestamp = this._settingService.buildTimestamp;
     });
   }
 
