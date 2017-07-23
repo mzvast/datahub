@@ -12,7 +12,13 @@
   [footerHeight]="50"
   [rowHeight]="'auto'"
   [scrollbarH]="true"
-  [limit]="10"
+
+  [externalPaging]="true"
+  [count]="page.totalElements"
+  [offset]="page.pageNumber"
+  [limit]="page.size"
+  (page)='fetch($event)'
+
   [selected]="selected"
   [selectionType]="'multi'"
   (activate)="onActivate($event)"

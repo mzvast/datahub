@@ -23,20 +23,22 @@ export class DataShowComponent implements OnInit, OnDestroy {
     { name: '时间', prop: 'time' },
     { name: '数据', prop: 'raw' }
   ];
+  page = new Page();
 
   constructor(
     private route: ActivatedRoute,
     private _databaseService: DatabaseService,
     private datePipe: DatePipe,
-    private dialog: MdDialog) { }
+    private dialog: MdDialog) {
+    this.page.pageNumber = 0;
+    this.page.size = 10;
+  }
 
   ngOnInit() {
     this.sub = this.route.params.subscribe(params => {
       this.type = params['type']; //
-      // In a real app: dispatch action to load the details here.
       this._databaseService.authenticate();
-      this.fetch();
-
+      this.fetch({ offset: 0 });
     });
   }
   ngOnDestroy() {
@@ -47,13 +49,17 @@ export class DataShowComponent implements OnInit, OnDestroy {
     this.dialog.open(DataShowDialogComponent);
   }
 
-  fetch() {
-    this._databaseService.models[this.type].findAll()
-      .then((data) => {
-        // console.log(data);
+  fetch(pageInfo) {
+    this.page.pageNumber = pageInfo.offset;
+    this._databaseService.models[this.type].findAndCountAll({ offset: this.page.pageNumber * this.page.size, limit: this.page.size })
+      .then((result) => {
+        // console.log(`${result.rows.length} rows fetched`);
+        // console.log(`${result.count} total rows`);
+        this.page.totalElements = result.count;
         // console.log(data[0].raw.toString());
         // console.log(data[0].createdAt);
-        this.rows = data.map((curVal, index, arr) => {
+        this.rows = result.rows.map((curVal, index, arr) => {
+          // console.log(`data length: ${data.length}, curVal: ${curVal}`);
           return {
             time: this.datePipe.transform(curVal.createdAt, 'yyyy-MM-dd HH:mm:ss'),
             raw: curVal.raw.toString()
@@ -100,6 +106,14 @@ export class DataShowComponent implements OnInit, OnDestroy {
   clearHistory() {
     console.log('Clear History', this.type);
     this._databaseService.destroyTable(this.type);
-    this.fetch();
+    this.fetch({ offset: 0 });
   }
+}
+
+
+class Page {
+  size = 0;
+  totalElements = 0;
+  totalPages = 0;
+  pageNumber = 0;
 }
