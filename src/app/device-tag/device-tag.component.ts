@@ -27,7 +27,7 @@ export class DeviceTagComponent implements OnInit, OnDestroy {
         this.gps = [msg.gps.slice(0, 64), msg.gps.slice(64)].join('\n');
         this.control = [msg.control.slice(0, 64), msg.control.slice(64)].join('\n');
         // console.log(message);
-        this.setItems(message);
+        this.items = msg.parserDescriptionLocalized(message);
         this.cd.detectChanges(); // 检测更改，更新UI。
       }
     });
@@ -35,15 +35,4 @@ export class DeviceTagComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
-
-  setItems(message: Object): void {
-    const keys = Object.keys(this.dictionary); // 控制显示的字段
-    this.items = keys.map((curVal, index, arr) => {
-      const obj = {};
-      obj['name'] = this.dictionary[curVal];
-      obj['value'] = message[curVal];
-      return obj;
-    });
-  }
-
 }
