@@ -123,7 +123,7 @@ export class UdpService {
         this.saveRawDataToDB(dataPack.type, protocolPack.data);
       }
     } else {
-      // TODO 要根据8511修改协议，具体看怎么区分
+      // 8511 回复：主识别码分别打上之前的数据类型就行了吧
       const key = fromAddress + '_' + idcodePrimary;
       if (this._settingService.debug) {
         console.log(`key= ${key}, serial= ${serial}`);
