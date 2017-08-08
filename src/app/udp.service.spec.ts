@@ -1,15 +1,15 @@
 import { TestBed, inject } from '@angular/core/testing';
 
-import { UdpService } from './udp.service';
+import { TcpService } from './tcp.service';
 
-describe('UdpService', () => {
+describe('TcpService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [UdpService]
+      providers: [TcpService]
     });
   });
 
-  it('should ...', inject([UdpService], (service: UdpService) => {
+  it('should ...', inject([TcpService], (service: TcpService) => {
     expect(service).toBeTruthy();
   }));
 });

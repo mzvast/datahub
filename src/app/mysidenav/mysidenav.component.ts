@@ -1,5 +1,5 @@
 import { SettingService } from './../setting.service';
-import { UdpService } from './../udp.service';
+import { TcpService } from '../tcp.service';
 import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
@@ -46,7 +46,7 @@ export class MysidenavComponent implements OnInit {
   //     icon: 'send'
   //   }
   // ]
-  constructor(private _udpService: UdpService, private _settingService: SettingService) { }
+  constructor(private _tcpService: TcpService, private _settingService: SettingService) { }
 
   ngOnInit() {
     this._settingService.fetchSettingFromDB().then(() => {

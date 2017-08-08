@@ -1,26 +1,29 @@
 /**
  * 安装和升级处理
  */
-const setupEvents = require('./setupEvents')
+const setupEvents = require('./setupEvents');
 if (setupEvents.handleSquirrelEvent()) {
   // squirrel event handled and app will exit in 1000ms, so don't do anything else
   return;
 }
-const { app, ipcMain, BrowserWindow } = require('electron')
+const { app, ipcMain, BrowserWindow } = require('electron');
 
-const path = require('path')
-const url = require('url')
+const path = require('path');
+const url = require('url');
 require('dotenv').config();//载入.env文件的环境变量
 /**
  * Database Sequelize
  */
-global['models'] = require('./database/models')
+global['models'] = require('./database/models');
 /**
  * UDP
  */
-global['dgram'] = require('dgram')
+global['dgram'] = require('dgram');
+global['net'] = require('net');
 global['udp'] = {server: null, client: null};
+global['tcp'] = {server: null, client: null};
 global['fs'] = require('fs');
+
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.

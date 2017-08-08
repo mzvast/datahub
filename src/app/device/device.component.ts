@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { DatabaseService } from 'app/database.service';
-import { UdpService } from 'app/udp.service';
+import { TcpService } from 'app/tcp.service';
 
 declare var electron: any; // 　Typescript 定义
 
@@ -30,7 +30,7 @@ export class DeviceComponent implements OnInit, OnDestroy {
       url: 'intf'
     }
   ];
-  constructor(private databaseService: DatabaseService, private udpService: UdpService, private parentRouter: Router) {
+  constructor(private databaseService: DatabaseService, private tcpService: TcpService, private parentRouter: Router) {
 
   }
 
@@ -38,18 +38,18 @@ export class DeviceComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.log('停止UDP监听');
-    this.udpService.stopUdpServer();
+    console.log('停止TCP监听');
+    this.tcpService.stopTcpServer();
   }
 
   startReceive() {
-    console.log('启动UDP监听');
-    this.udpService.startUdpServer();
+    console.log('启动TCP监听');
+    this.tcpService.startTcpServer();
   }
 
   stopReceive() {
-    console.log('停止UDP监听');
-    this.udpService.stopUdpServer();
+    console.log('停止TCP监听');
+    this.tcpService.stopTcpServer();
     // this.parentRouter.navigateByUrl('/device'); // 切换到空白页
   }
 

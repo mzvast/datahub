@@ -1,6 +1,6 @@
-import { TagDataPack, TagDataPackDictionary } from './../protocol/data-pack';
+import { TagDataPack } from './../protocol/data-pack';
 import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { UdpService } from 'app/udp.service';
+import { TcpService } from 'app/tcp.service';
 import { Subscription } from 'rxjs/Subscription';
 
 @Component({
@@ -14,14 +14,13 @@ export class DeviceTagComponent implements OnInit, OnDestroy {
   // message: TagDataPack;
   subscription: Subscription;
   items = [];
-  dictionary: TagDataPackDictionary = new TagDataPackDictionary();
 
   control: string;
   gps: string;
 
-  constructor(private udpService: UdpService, private cd: ChangeDetectorRef) { }
+  constructor(private tcpService: TcpService, private cd: ChangeDetectorRef) { }
   ngOnInit() {
-    this.subscription = this.udpService.getMessage().subscribe((msg: TagDataPack) => {
+    this.subscription = this.tcpService.getMessage().subscribe((msg: TagDataPack) => {
       if (msg.type === 0) {// 判断是标签包
         const message = msg.parserDescription(msg.datas[0]);
         this.gps = [msg.gps.slice(0, 64), msg.gps.slice(64)].join('\n');

@@ -1,24 +1,23 @@
-import { BaseDataPack, IntermediateFrequencyControlPack } from './protocol/data-pack';
-import { SettingService } from './setting.service';
-import { DatabaseService } from './database.service';
-import { Injectable } from '@angular/core';
-import { Buffer } from 'buffer';
-import { ProtocolPack } from 'app/protocol/protocol-pack';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
+import {BaseDataPack, IntermediateFrequencyControlPack} from './protocol/data-pack';
+import {SettingService} from './setting.service';
+import {DatabaseService} from './database.service';
+import {Injectable} from '@angular/core';
+import {Buffer} from 'buffer';
+import {ProtocolPack} from 'app/protocol/protocol-pack';
+import {BehaviorSubject} from 'rxjs/BehaviorSubject';
+import {Observable} from 'rxjs/Observable';
 
 declare var electron: any; // 　Typescript 定义
 
 @Injectable()
-export class UdpService {
+export class TcpService {
+  net = electron.remote.getGlobal('net');
   dgram = electron.remote.getGlobal('dgram');
-  server = electron.remote.getGlobal('udp').server;
-
   workingProtocolPacks: Map<string, ProtocolPack>;
   subject = new BehaviorSubject<any>({});
 
   constructor(private _dbService: DatabaseService, private _settingService: SettingService) {
-    console.log('udp service constructor');
+    console.log('tcp service constructor');
     this._dbService.authenticate();
     // this._dbService.create('tag', '123445');
     // this._dbService.index();
@@ -26,11 +25,11 @@ export class UdpService {
      * 判断udp server是否已启动，占用了端口
      */
     // console.log(this.server);
-    if (this.server) {
-      this.stopUdpServer();
+    if (electron.remote.getGlobal('net').server) {
+      this.stopTcpServer();
     }
 
-    // this.startUdpServer();
+    // this.startTcpServer();
     // this.setRemoteAddress('127.0.0.1', 8511); // Test send to local port
     // this.sendMsg('Hello World');
   }
@@ -47,47 +46,46 @@ export class UdpService {
     return this.subject.asObservable();
   }
 
-  startUdpServer() {
+  startTcpServer() {
     this.workingProtocolPacks = new Map();
-    electron.remote.getGlobal('udp').server = this.dgram.createSocket('udp4');
-    this.server = electron.remote.getGlobal('udp').server;
-    this.server.on('listening', () => {
-      const address = this.server.address();
-      console.log(`server listening ${address.address}:${address.port}`);
-    });
 
-    this.server.on('message', (msg, rinfo) => {
-      // const buf = Buffer.from(msg);
-      if (this._settingService.debug) {
-        // console.log(msg); // Buffer
-        // const str = msg.toString('hex');
-        // console.log(`server got ${msg.length} bytes: ${str} from ${rinfo.address}:${rinfo.port}`);
-        console.log(`server got ${msg.length} bytes from ${rinfo.address}:${rinfo.port}`);
-      }
-      if (this._settingService.record) {
-        this._dbService.create('pkg', `${msg.toString('hex')}`);
-      }
-      this.parserProtocolPack(Buffer.from(msg), `${rinfo.address}:${rinfo.port}`);
-      // this.stopUdpServer();
-    });
+    const that = this;
 
-    this.server.on('error', (err) => {
-      console.log(`server error:\n${err.stack}`);
-      this.server.close();
-      console.log('UDP server closed!');
-    });
+    electron.remote.getGlobal('tcp').server = this.net.createServer(function (sock) {
 
-    // this.server.bind(this._settingService.local_port, this._settingService.local_host);
-    this.server.bind(this._settingService.local_port);
+      console.log(`client connected: ${sock.remoteAddress}:${sock.remotePort}`);
+
+
+      sock.on('data', function (data) {
+        if (!electron.remote.getGlobal('tcp').server) {
+          return;
+        }
+        console.log(`server got ${data.length} bytes from ${sock.remoteAddress}:${sock.remotePort}`);
+        that.parserProtocolPack(Buffer.from(data), `${sock.remoteAddress}:${sock.remotePort}`);
+        if (that._settingService.record) {
+          that._dbService.create('pkg', `${data.toString('hex')}`);
+        }
+      });
+
+      sock.on('close', function (data) {
+        console.log(`client disconnected: ${sock.remoteAddress}:${sock.remotePort}`);
+      });
+
+    }).listen(this._settingService.local_port);
+
+    console.log(`tcp server listening on: ${this._settingService.local_port}`);
+
   }
 
-  stopUdpServer() {
+  stopTcpServer() {
     this.workingProtocolPacks = null;
-    if (electron.remote.getGlobal('udp').server != null) {
-      electron.remote.getGlobal('udp').server.close();
-      electron.remote.getGlobal('udp').server = null; // 重置null，防止内存泄露
-      console.log('UDP server closed!');
+    if (electron.remote.getGlobal('tcp').server != null) {
+      electron.remote.getGlobal('tcp').server.close(function () {
+        console.log('tcp server closed.');
+      });
+      electron.remote.getGlobal('tcp').server = null; // 重置null，防止内存泄露
     }
+
   }
 
   parserProtocolPack(msg: Buffer, fromAddress: string) {

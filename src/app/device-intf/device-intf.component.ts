@@ -2,7 +2,7 @@ import { SettingService } from './../setting.service';
 import { IntermediateFrequencyControlPack, IntermediateFrequencyDataPack } from './../protocol/data-pack';
 import { Subscription } from 'rxjs/Subscription';
 import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { UdpService } from 'app/udp.service';
+import { TcpService } from 'app/tcp.service';
 import { DatePipe } from '@angular/common';
 import { MdSnackBar, MdSnackBarConfig} from '@angular/material';
 import { Buffer } from 'buffer';
@@ -32,7 +32,7 @@ export class DeviceIntfComponent implements OnInit {
   attackCriterionSelectSelect = [{ code: 0, name: '脉宽最大作为攻击对象' }, { code: 1, name: '重频最高作为攻击对象' }];
 
   constructor(
-    private _udpService: UdpService,
+    private tcpService: TcpService,
     private _cd: ChangeDetectorRef,
     private datePipe: DatePipe,
     private snackBar: MdSnackBar,
@@ -40,7 +40,7 @@ export class DeviceIntfComponent implements OnInit {
 
   ngOnInit() {
     this.loadConfig();
-    this.subscription = this._udpService.getMessage().subscribe((msg: IntermediateFrequencyDataPack) => {
+    this.subscription = this.tcpService.getMessage().subscribe((msg: IntermediateFrequencyDataPack) => {
       console.log(`receive intermediate freq data pack, type: ${msg.type}`);
       if (msg.type === 4) {// 判断是中频数据
         this.exportData(msg.data);
@@ -81,7 +81,7 @@ export class DeviceIntfComponent implements OnInit {
     pack.pulseMatchTolerance = this.intf.pulseMatchTolerance;
     pack.priMatchTolerance = this.intf.priMatchTolerance;
     pack.extControl = this.intf.extControl;
-    this._udpService.sendIntFreqRequest(pack);
+    this.tcpService.sendIntFreqRequest(pack);
   }
 
   writeFile(fileName: string, content: any) {

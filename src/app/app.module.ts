@@ -10,7 +10,7 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 import { AppComponent } from './app.component';
 import { DatabaseService } from './database.service';
-import { UdpService } from './udp.service';
+import { TcpService } from './tcp.service';
 import { SettingService } from './setting.service';
 import { MysidenavComponent } from './mysidenav/mysidenav.component';
 import { ProtoInComponent } from './proto-in/proto-in.component';
@@ -35,7 +35,7 @@ import { PlaceholderComponent } from './placeholder/placeholder.component';
 import { ProtoInIntfComponent } from './proto-in-intf/proto-in-intf.component';
 import { DeviceIntfComponent } from './device-intf/device-intf.component';
 import { DataShowDialogComponent } from './data-show-dialog/data-show-dialog.component';
-import {DatePipe} from '@angular/common';
+import { DatePipe } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -121,7 +121,7 @@ import {DatePipe} from '@angular/common';
   entryComponents: [
     DataShowDialogComponent
   ],
-  providers: [DatabaseService, UdpService, SettingService, DatePipe],
+  providers: [DatabaseService, TcpService, SettingService, DatePipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
