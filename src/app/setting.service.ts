@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 export class SettingService {
 
   // TODO 每次修改代码给他们的时候，修改这里，可以让用户知道是不是时候用了新版
-  buildTimestamp =  'V20170810-2';
+  buildTimestamp =  'V20170810-4';
 
   local_port: number;
   remote_port: number;
