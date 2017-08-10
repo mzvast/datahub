@@ -92,12 +92,12 @@ export class TcpService {
   }
 
   /**
-   * 解析2014个，msg的长度肯定1024
+   * 解析1024个，msg的长度肯定1024,header也肯定正确了
    * @param {Buffer} msg
    * @param {string} key
    */
   parserProtocolBody(msg: Buffer, key: string) {
-    const header: number = msg.readUInt16LE(0, false); // 数据头
+    // const header: number = msg.readUInt16LE(0, false); // 数据头
     const len: number = msg.readUInt16LE(2); // 数据长度
     const source: number = msg.readUInt16LE(4); // 源地址
     const dest: number = msg.readUInt16LE(6); // 目的地址
@@ -107,8 +107,8 @@ export class TcpService {
     const frameCount: number = msg.readUInt32LE(16); // 帧包数
     // const checkSum = msg.readUInt16LE(1020); // 校验
     const end = msg.readUInt16LE(1022); // 帧结束符
-    if (header !== 0x5555 || end !== 0xAAAA) {
-      console.error(`pack header is ${header.toString(16)}, end is 0x${end.toString(16)}, drop this pack.`);
+    if (end !== 0xAAAA) {
+      console.error(`pack end is 0x${end.toString(16)}, drop this pack.`);
       return;
     }
 
@@ -200,7 +200,7 @@ export class TcpService {
         } else {
           console.warn(`read pack not 1024, wait for another pack to append.`);
         }
-      }
+      } // end header found
     } // end while
     if (workingBuffer.length > 0) {
       this.workingBuffers.set(fromAddress, workingBuffer);
