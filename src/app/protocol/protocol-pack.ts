@@ -13,6 +13,7 @@ import {
  * 通信报文
  */
 export class ProtocolPack {
+  private host: string; // 来自哪个IP
   // private head = 0x5555; // 数据头 2
   // private end  = 0xAAAA; // 帧结束符 2
   // private len: number; // 数据长度 2
@@ -25,7 +26,9 @@ export class ProtocolPack {
   public data: Buffer; // 数据 Buffer
   // private checkSum: number; // 和校验 2
 
-  constructor(source: number, dest: number, idcodePrimary: number, idcodeSecondly: number, serial: number, frameCount: number, data) {
+  constructor(host: string, source: number, dest: number, idcodePrimary: number, idcodeSecondly: number,
+              serial: number, frameCount: number, data: Buffer) {
+    this.host = host;
     this.source = source;
     this.dest = dest;
     this.idcodePrimary = idcodePrimary;
@@ -91,7 +94,7 @@ export class ProtocolPack {
           console.error(`parser tag data pack error, length is not 312.`);
           return null;
         }
-        const pack = new TagDataPack(control, gps);
+        const pack = new TagDataPack(this.host, control, gps);
         pack.datas.push(data.slice(0).toString('hex'));
         // debug it
         if (debug) {
@@ -111,7 +114,7 @@ export class ProtocolPack {
           console.error(`parser narrow band data pack error, length less than ${140 + count1 * bytesPerData1}.`);
           return null;
         }
-        const pack1 = new NarrowBandFullPulseDataPack(control, gps);
+        const pack1 = new NarrowBandFullPulseDataPack(this.host, control, gps);
         for (let i = 0; i < count1; i++) {
           pack1.datas.push(data.slice(140 + bytesPerData1 * i, 140 + bytesPerData1 * i + bytesPerData1).toString('hex'));
         }
@@ -178,7 +181,7 @@ export class ProtocolPack {
           console.log(`intermediate frequency length: ${len}.`);
         }
         // 中频去掉GPS
-        const pack4 = new IntermediateFrequencyDataPack(control, gps);
+        const pack4 = new IntermediateFrequencyDataPack(this.host, control, gps);
         pack4.data = data.slice(136, 136 + 10240);
         // debug it
         if (debug) {
@@ -198,7 +201,7 @@ export class ProtocolPack {
           console.error(`parser narrow band source data pack error, length less than ${140 + count5 * bytesPerData5}.`);
           return null;
         }
-        const pack5 = new NarrowBandSourceDataPack(control, gps);
+        const pack5 = new NarrowBandSourceDataPack(this.host, control, gps);
         for (let i = 0; i < count5; i++) {
           pack5.datas.push(data.slice(140 + bytesPerData5 * i, 140 + bytesPerData5 * i + bytesPerData5).toString('hex'));
         }
@@ -211,7 +214,7 @@ export class ProtocolPack {
           console.error(`positioning data pack error, length is not 268.`);
           return null;
         }
-        const pack6 = new PositioningDataPack(control, gps);
+        const pack6 = new PositioningDataPack(this.host, control, gps);
         pack6.backup = data.slice(136, 136 + 128).toString('hex');
         console.log(`parser positioning data pack success.`);
         // debug it
@@ -229,7 +232,7 @@ export class ProtocolPack {
           console.error(`parser phase correction data pack error, length less than ${140 + count5 * bytesPerData11}.`);
           return null;
         }
-        const pack11 = new PhaseCorrectionDataPack(control, gps);
+        const pack11 = new PhaseCorrectionDataPack(this.host, control, gps);
         for (let i = 0; i < count11; i++) {
           pack11.datas.push(data.slice(140 + bytesPerData11 * i, 140 + bytesPerData11 * i + bytesPerData11).toString('hex'));
         }

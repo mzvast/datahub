@@ -1,5 +1,9 @@
 <md-grid-list cols="4" rowHeight="100px" rowHeight="2em">
   <div>
+    <md-grid-tile colspan=1 rowspan=2 class="title"><span>Host</span></md-grid-tile>
+    <md-grid-tile colspan=3 rowspan=2><span [innerHTML]="host"></span></md-grid-tile>
+  </div>
+  <div>
     <md-grid-tile colspan=1 rowspan=2 class="title"><span>系统控制信息</span></md-grid-tile>
     <md-grid-tile colspan=3 rowspan=2><span [innerHTML]="control"></span></md-grid-tile>
   </div>

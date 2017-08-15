@@ -22,12 +22,12 @@ export class DataShowDialogComponent implements OnInit {
 
   constructor(@Optional() @Inject(MD_DIALOG_DATA) public data: any) {
     // console.log(data);
-    this.parserRaw(data.raw);
+    this.parserRaw(data.remote_host, data.raw);
   }
 
-  parserRaw(raw: string) {
+  parserRaw(host: string, raw: string) {
     // 数据库里前面的东西没有存，没用，只存了data，所以放一些0
-    const protocolPack = new ProtocolPack(0, 0, 0, 0, 0, 1, Buffer.from(raw, 'hex'));
+    const protocolPack = new ProtocolPack(host, 0, 0, 0, 0, 0, 1, Buffer.from(raw, 'hex'));
     this.dataPack = protocolPack.parserDataPack(false); // 解析包数据
     console.log(`data pack parser ok, type: ${this.dataPack.type}`);
     if (this.dataPack) {

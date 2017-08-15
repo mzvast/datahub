@@ -111,7 +111,7 @@ export class TcpService {
     }
     const key = host + ':' + port + '_' + idcodePrimary;
     const data = msg.slice(20, 20 + len); // 数据字段
-    const protocolPack = new ProtocolPack(source, dest, idcodePrimary, idcodeSecondly, serial, frameCount, data);
+    const protocolPack = new ProtocolPack(host, source, dest, idcodePrimary, idcodeSecondly, serial, frameCount, data);
     // console.log(frameCount);
     if (frameCount === 1) { // 帧只有1个包
       const dataPack: BaseDataPack = protocolPack.parserDataPack(this._settingService.debug); // 解析包数据

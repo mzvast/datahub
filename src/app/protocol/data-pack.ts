@@ -9,6 +9,7 @@ export class BaseDictionary { }
  * 数据基类
  */
 export class BaseDataPack {
+  host: string; // 来自哪个IP
   // private head = 0x1ACF; // 帧有效标记2
   type: number; // 数据类型 2
   // private len: number; // 数据长度 4
@@ -19,7 +20,8 @@ export class BaseDataPack {
   // 固定信息
   // private end: number; // 包尾4, 0x0000FC1D
 
-  constructor(control: string, gps: string) {
+  constructor(host: string, control: string, gps: string) {
+    this.host = host;
     this.control = control;
     this.gps = gps;
   }
@@ -35,8 +37,8 @@ export class BaseDescriptionDataPack extends BaseDataPack {
   // 先存成string，取出用的时候再解析里面具体的东西吧
   datas: Array<string> = new Array();
 
-  constructor(control: string, gps: string) {
-    super(control, gps);
+  constructor(host: string, control: string, gps: string) {
+    super(host, control, gps);
   }
 
 }
@@ -61,8 +63,8 @@ export class TagDataPack extends BaseDescriptionDataPack {
   backup: string; // 备份16
   frontStatusFeedback: string; // 前端状态反馈128,没说具体是什么，方便存储，用string
 
-  constructor(control: string, gps: string) {
-    super(control, gps);
+  constructor(host: string, control: string, gps: string) {
+    super(host, control, gps);
     this.type = 0;
   }
 
@@ -182,8 +184,8 @@ export class TagDataPackDictionary extends BaseDictionary {
  */
 export class NarrowBandFullPulseDataPack extends BaseDescriptionDataPack {
 
-  constructor(control: string, gps: string) {
-    super(control, gps);
+  constructor(host: string, control: string, gps: string) {
+    super(host, control, gps);
     this.type = 1;
   }
 
@@ -309,8 +311,8 @@ export class NarrowBandFullPulseDataPack extends BaseDescriptionDataPack {
  */
 export class BroadBandFullPulseDataPack extends BaseDescriptionDataPack {
 
-  constructor(control: string, gps: string) {
-    super(control, gps);
+  constructor(host: string, control: string, gps: string) {
+    super(host, control, gps);
     this.type = 2;
   }
 
@@ -370,8 +372,8 @@ export class BroadBandFullPulseDataPack extends BaseDescriptionDataPack {
  * 宽带辐射源数据包3
  */
 export class BroadBandSourceDataPack extends BaseDescriptionDataPack {
-  constructor(control: string, gps: string) {
-    super(control, gps);
+  constructor(host: string, control: string, gps: string) {
+    super(host, control, gps);
     this.type = 3;
   }
 
@@ -390,8 +392,8 @@ export class BroadBandSourceDataPack extends BaseDescriptionDataPack {
  * 窄带辐射源数据包5
  */
 export class NarrowBandSourceDataPack extends BaseDescriptionDataPack {
-  constructor(control: string, gps: string) {
-    super(control, gps);
+  constructor(host: string, control: string, gps: string) {
+    super(host, control, gps);
     this.type = 5;
   }
 
@@ -576,8 +578,8 @@ export class NarrowBandSourceDataPack extends BaseDescriptionDataPack {
  * 相位校正数据包11 or 13?
  */
 export class PhaseCorrectionDataPack extends BaseDescriptionDataPack {
-  constructor(control: string, gps: string) {
-    super(control, gps);
+  constructor(host: string, control: string, gps: string) {
+    super(host, control, gps);
     this.type = 11; // TODO 11 or 13
   }
 
@@ -594,8 +596,8 @@ export class IntermediateFrequencyDataPack extends BaseDataPack {
   // 中频数据量很大，存Buffer 中频数据描述字
   data: Buffer;
 
-  constructor(control: string, gps: string) {
-    super(control, gps);
+  constructor(host: string, control: string, gps: string) {
+    super(host, control, gps);
     this.type = 4;
   }
 
@@ -615,8 +617,8 @@ export class IntermediateFrequencyDataPack extends BaseDataPack {
 export class PositioningDataPack extends BaseDataPack {
   backup: string; // 备份128
 
-  constructor(control: string, gps: string) {
-    super(control, gps);
+  constructor(host: string, control: string, gps: string) {
+    super(host, control, gps);
     this.type = 6;
   }
 

@@ -35,9 +35,6 @@ export class DataShowComponent implements OnInit, OnDestroy {
               private dialog: MdDialog) {
     this.page.pageNumber = 0;
     this.page.size = 10;
-    this._settingService.fetchSettingFromDB().then(() => {
-      this.parseSetting();
-    });
   }
 
   parseSetting() {
@@ -55,7 +52,10 @@ export class DataShowComponent implements OnInit, OnDestroy {
     this.sub = this.route.params.subscribe(params => {
       this.type = params['type']; //
       this._databaseService.authenticate();
-      this.fetch({offset: 0});
+      this._settingService.fetchSettingFromDB().then(() => {
+        this.parseSetting();
+        this.fetch({offset: 0});
+      });
     });
   }
 
@@ -87,6 +87,7 @@ export class DataShowComponent implements OnInit, OnDestroy {
         // console.log(`data length: ${data.length}, curVal: ${curVal}`);
         return {
           time: this.datePipe.transform(curVal.createdAt, 'yyyy-MM-dd HH:mm:ss'),
+          remote_host: curVal.remote_host,
           raw: curVal.raw.toString()
         };
       });
@@ -103,6 +104,7 @@ export class DataShowComponent implements OnInit, OnDestroy {
       this.dialog.open(DataShowDialogComponent, {
         data: {
           raw: this.selected[0]['raw'],
+          remote_host: this.selected[0]['remote_host'],
           type: this.type
         }
       });

@@ -17,12 +17,14 @@ export class DeviceRadiationComponent implements OnInit, OnDestroy {
 
   control: string;
   gps: string;
+  host: string;
 
   constructor(private tcpService: TcpService, private cd: ChangeDetectorRef) { }
   ngOnInit() {
     this.subscription = this.tcpService.getMessage().subscribe((msg: NarrowBandSourceDataPack) => {
       if (msg.type === 5) {// 判断是窄带辐射源
         const message = msg.parserDescription(msg.datas[0]);
+        this.host = msg.host;
         this.gps = [msg.gps.slice(0, 64), msg.gps.slice(64)].join('\n');
         this.control = [msg.control.slice(0, 64), msg.control.slice(64)].join('\n');
         this.items = msg.parserDescriptionLocalized(message);
