@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   up: function(queryInterface, Sequelize) {
-    return queryInterface.createTable('locations', {
+    return queryInterface.createTable('hosts', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -10,9 +10,6 @@ module.exports = {
       },
       remote_host: {
         type: Sequelize.STRING
-      },
-      raw: {
-        type: Sequelize.BLOB
       },
       createdAt: {
         allowNull: false,
@@ -25,6 +22,6 @@ module.exports = {
     });
   },
   down: function(queryInterface, Sequelize) {
-    return queryInterface.dropTable('locations');
+    return queryInterface.dropTable('hosts');
   }
 };

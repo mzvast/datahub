@@ -8,6 +8,9 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      remote_host: {
+        type: Sequelize.STRING
+      },
       raw: {
         type: Sequelize.BLOB
       },

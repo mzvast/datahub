@@ -6,6 +6,7 @@ module.exports = function(sequelize, DataTypes) {
     remote_port: DataTypes.BIGINT,
     remote_host: DataTypes.STRING,
     intf: DataTypes.STRING,
+    other: DataTypes.STRING,
     debug: DataTypes.BOOLEAN,
     record: DataTypes.BOOLEAN
   }, {
