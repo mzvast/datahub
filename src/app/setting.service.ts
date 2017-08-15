@@ -16,7 +16,7 @@ export class SettingService {
   otherSt: JSON;
 
   constructor(private _dbService: DatabaseService) {
-    console.log('setting service constructor');
+    // console.log('setting service constructor');
     this.fetchSettingFromDB().then(() => {
       console.log('数据库读取完成');
     });
@@ -29,7 +29,7 @@ export class SettingService {
           id: 1
         }
       }).then((data) => {
-        console.log(`data= ${data}`);
+        // console.log(`data= ${data}`);
         if (data) {
           this.parseData(data);
           resolve();

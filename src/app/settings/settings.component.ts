@@ -35,7 +35,7 @@ export class SettingsComponent implements OnInit {
     this._settingService.updateOtherSettingToDB(this.hosts.split(','), null);
     const config = new MdSnackBarConfig();
     config.duration = 5000;
-    this.snackBar.open('保存成功 ', null, config);
+    this.snackBar.open('保存成功', null, config);
     // console.log(this._settingService.local_port);
   }
 

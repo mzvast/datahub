@@ -8,7 +8,7 @@ export class DatabaseService {
   models = this.remote.getGlobal('models');
 
   constructor() {
-    console.log('database service constructor');
+    // console.log('database service constructor');
   }
 
   authenticate() {

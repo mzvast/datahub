@@ -6,6 +6,7 @@ import {Buffer} from 'buffer';
 import {ProtocolPack} from 'app/protocol/protocol-pack';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Observable} from 'rxjs/Observable';
+import {MdSnackBar, MdSnackBarConfig} from '@angular/material';
 
 declare var electron: any; // 　Typescript 定义
 
@@ -17,8 +18,10 @@ export class TcpService {
   workingProtocolPacks: Map<string, ProtocolPack>;
   subject = new BehaviorSubject<any>({});
 
-  constructor(private _dbService: DatabaseService, private _settingService: SettingService) {
-    console.log('tcp service constructor');
+  constructor(private _dbService: DatabaseService,
+              private _settingService: SettingService,
+              private snackBar: MdSnackBar) {
+    // console.log('tcp service constructor');
     this._dbService.authenticate();
     // this._dbService.create('tag', '123445');
     // this._dbService.index();
@@ -56,7 +59,7 @@ export class TcpService {
     electron.remote.getGlobal('tcp').server = this.net.createServer(function (sock) {
 
       console.log(`client connected: ${sock.remoteAddress}:${sock.remotePort}`);
-
+      that.showMessage('已连接: ' + sock.remoteAddress);
 
       sock.on('data', function (data) {
         if (!electron.remote.getGlobal('tcp').server) {
@@ -70,6 +73,7 @@ export class TcpService {
       });
 
       sock.on('close', function (data) {
+        that.showMessage('已断开: ' + sock.remoteAddress);
         console.log(`client disconnected: ${sock.remoteAddress}:${sock.remotePort}`);
       });
 
@@ -77,6 +81,12 @@ export class TcpService {
 
     console.log(`tcp server listening on: ${this._settingService.local_port}`);
 
+  }
+
+  showMessage(message) {
+    const config = new MdSnackBarConfig();
+    config.duration = 5000;
+    this.snackBar.open(message, null, config);
   }
 
   stopTcpServer() {
@@ -212,7 +222,7 @@ export class TcpService {
    * @param dataPack
    */
   saveRawDataToDB(type: number, host: string, data: Buffer) {
-    console.log(`save raw to db: ${type}`);
+    console.log(`save raw to db, type: ${type}, host: ${host}`);
     switch (type) {
       case 0: // 标签包
         this._dbService.create('tag', host, data.toString('hex'));
