@@ -63,9 +63,9 @@ export class TcpService {
           return;
         }
         console.log(`server got ${data.length} bytes from ${sock.remoteAddress}:${sock.remotePort}`);
-        that.parserProtocolPack(Buffer.from(data), `${sock.remoteAddress}:${sock.remotePort}`);
+        that.parserProtocolPack(Buffer.from(data), sock.remoteAddress, sock.remotePort);
         if (that._settingService.record) {
-          that._dbService.create('pkg', `${data.toString('hex')}`);
+          that._dbService.create('pkg', sock.remoteAddress, `${data.toString('hex')}`);
         }
       });
 
@@ -93,10 +93,8 @@ export class TcpService {
 
   /**
    * 解析1024个，msg的长度肯定1024,header也肯定正确了
-   * @param {Buffer} msg
-   * @param {string} key
    */
-  parserProtocolBody(msg: Buffer, key: string) {
+  parserProtocolBody(msg: Buffer, host: string, port: number) {
     // const header: number = msg.readUInt16LE(0, false); // 数据头
     const len: number = msg.readUInt16LE(2); // 数据长度
     const source: number = msg.readUInt16LE(4); // 源地址
@@ -111,7 +109,7 @@ export class TcpService {
       console.error(`pack end is 0x${end.toString(16)}, drop this pack.`);
       return;
     }
-
+    const key = host + ':' + port + '_' + idcodePrimary;
     const data = msg.slice(20, 20 + len); // 数据字段
     const protocolPack = new ProtocolPack(source, dest, idcodePrimary, idcodeSecondly, serial, frameCount, data);
     // console.log(frameCount);
@@ -122,7 +120,7 @@ export class TcpService {
       }
       if (dataPack) {
         this.sendMessage(dataPack); // 发给UI
-        this.saveRawDataToDB(dataPack.type, protocolPack.data);
+        this.saveRawDataToDB(dataPack.type, host, protocolPack.data);
       }
     } else {
       if (this._settingService.debug) {
@@ -148,7 +146,7 @@ export class TcpService {
                 //   console.log(`dataPackV2 send dataPack message, type: ${dataPack.type}`);
                 // }
                 this.sendMessage(dataPack); // 发给UI
-                this.saveRawDataToDB(dataPack.type, workingProtocolPack.data);
+                this.saveRawDataToDB(dataPack.type, host, workingProtocolPack.data);
               }
               workingProtocolPack = null; // 删除局部变量
               this.workingProtocolPacks.delete(key);
@@ -164,11 +162,12 @@ export class TcpService {
     }
   }
 
-  parserProtocolPack(buffer: Buffer, fromAddress: string) {
+  parserProtocolPack(buffer: Buffer, host: string, port: number) {
     let workingBuffer;
     if (!this.workingBuffers) {
       this.workingBuffers = new Map();
     }
+    const fromAddress = host + ':' + port;
     workingBuffer = this.workingBuffers.get(fromAddress); // 获取全局暂存包
     if (!workingBuffer) {// 全局暂存包不存在，则创建之
       workingBuffer = Buffer.concat([Buffer.alloc(0), buffer]);
@@ -190,9 +189,7 @@ export class TcpService {
       }
       if (headerFounded) {
         if (workingBuffer.length >= 1024) {
-          const idcodePrimary: number = workingBuffer.readUInt16LE(8); // 主识别码
-          const key = fromAddress + '_' + idcodePrimary;
-          this.parserProtocolBody(workingBuffer.slice(0, 1024), key);
+          this.parserProtocolBody(workingBuffer.slice(0, 1024), host, port);
 
           // 数据1024都用完了,把headerFounded变成false，再次进入循环解析
           workingBuffer = workingBuffer.slice(1024);
@@ -214,17 +211,17 @@ export class TcpService {
    * 存的是protocol-pack里的data字段
    * @param dataPack
    */
-  saveRawDataToDB(type: number, data: Buffer) {
+  saveRawDataToDB(type: number, host: string, data: Buffer) {
     console.log(`save raw to db: ${type}`);
     switch (type) {
       case 0: // 标签包
-        this._dbService.create('tag', data.toString('hex'));
+        this._dbService.create('tag', host, data.toString('hex'));
         break;
       case 1: // 窄带全脉冲数据包
-        this._dbService.create('pdw', data.toString('hex'));
+        this._dbService.create('pdw', host, data.toString('hex'));
         break;
       case 5: // 窄带辐射源数据包
-        this._dbService.create('radiation', data.toString('hex'));
+        this._dbService.create('radiation', host, data.toString('hex'));
         break;
     }
   }
