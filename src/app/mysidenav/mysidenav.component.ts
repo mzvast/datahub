@@ -1,6 +1,6 @@
 import { SettingService } from './../setting.service';
-import { TcpService } from '../tcp.service';
 import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
+import * as myGlobals from '../globals.service';
 
 @Component({
   selector: 'app-mysidenav',
@@ -25,7 +25,7 @@ export class MysidenavComponent implements OnInit {
       name: '软件设置',
       icon: 'settings',
       url: 'settings'
-    }]
+    }];
   data = [
     {
       name: '历史数据',
@@ -46,14 +46,14 @@ export class MysidenavComponent implements OnInit {
   //     icon: 'send'
   //   }
   // ]
-  constructor(private _tcpService: TcpService, private _settingService: SettingService) { }
+  constructor(private _settingService: SettingService) { }
 
   ngOnInit() {
     this._settingService.fetchSettingFromDB().then(() => {
       this.debug = this._settingService.debug;
       this.record = this._settingService.record;
 
-      this.buildTimestamp = this._settingService.buildTimestamp;
+      this.buildTimestamp = myGlobals.codeVersion;
     });
   }
 
