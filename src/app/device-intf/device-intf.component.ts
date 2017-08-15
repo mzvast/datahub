@@ -17,7 +17,6 @@ declare var electron: any; // 　Typescript 定义
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class DeviceIntfComponent implements OnInit {
-  directSaveFlag = true; // true直接保存, false弹出位置选择
   dialog = electron.remote.dialog;
   fs = electron.remote.getGlobal('fs');
   subscription: Subscription;

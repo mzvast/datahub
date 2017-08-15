@@ -3,6 +3,9 @@
    <li>{{item}}</li>
  </ul>
 </div>-->
+<md-select placeholder="选择Host" [(ngModel)]="selectedHost" (ngModelChange)="updateSelectedHost()" style="margin: 10px;">
+  <md-option *ngFor="let host of hosts" [value]="host">{{ host }}</md-option>
+</md-select>
 <ngx-datatable
   class="material"
   [rows]="rows"

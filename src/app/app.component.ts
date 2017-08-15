@@ -7,9 +7,7 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title: string;
-  remoteHost: string;
   constructor() {
     this.title = 'Hey God';
-    this.remoteHost = '192.168.1.1';
   }
 }

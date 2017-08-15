@@ -13,6 +13,7 @@ export class SettingsComponent implements OnInit {
   localPort: number;
   remotePort: number;
   remoteHost: string;
+  hosts: string;
 
   constructor(
     private _settingService: SettingService,
@@ -31,7 +32,7 @@ export class SettingsComponent implements OnInit {
     this._settingService.local_port = this.localPort;
     this._settingService.remote_host = this.remoteHost;
     this._settingService.remote_port = this.remotePort;
-    this._settingService.updateSettingToDB();
+    this._settingService.updateOtherSettingToDB(this.hosts.split(','), null);
     const config = new MdSnackBarConfig();
     config.duration = 5000;
     this.snackBar.open('保存成功 ', null, config);
@@ -42,6 +43,8 @@ export class SettingsComponent implements OnInit {
     this.localPort = this._settingService.local_port;
     this.remoteHost = this._settingService.remote_host;
     this.remotePort = this._settingService.remote_port;
+    const hosts = this._settingService.otherSt['hosts'];
+    this.hosts = hosts.join(',');
     this._cd.detectChanges(); // 检测更改，更新UI。
   }
 

@@ -1,6 +1,6 @@
-import { MySettings } from './settings/my-settings';
-import { DatabaseService } from './database.service';
-import { Injectable } from '@angular/core';
+import {MySettings} from './settings/my-settings';
+import {DatabaseService} from './database.service';
+import {Injectable} from '@angular/core';
 
 @Injectable()
 export class SettingService {
@@ -12,6 +12,8 @@ export class SettingService {
   debug: boolean;
   record: boolean;
   intf: string;
+  other: string;
+  otherSt: JSON;
 
   constructor(private _dbService: DatabaseService) {
     console.log('setting service constructor');
@@ -51,6 +53,30 @@ export class SettingService {
     this.debug = st.debug;
     this.record = st.record;
     this.intf = st.intf;
+    this.other = st.other;
+    if (!st.other) {
+      st.other = '{}';
+    }
+    const otherSt = JSON.parse(st.other);
+    if (!otherSt.remoteHost) {
+      otherSt.remoteHost = '192.168.1.1';
+    }
+    if (!otherSt.hosts) {
+      otherSt.hosts = ['192.168.1.1'];
+    }
+    this.otherSt = otherSt;
+  }
+
+  updateOtherSettingToDB(hosts: Array<string>, selectedHost: string) {
+    if (hosts != null) {
+      this.otherSt['hosts'] = hosts;
+    }
+    if (selectedHost != null) {
+      this.otherSt['remoteHost'] = selectedHost;
+    }
+    this.other = JSON.stringify(this.otherSt);
+    // console.log(`other: ${this.other}`);
+    this.updateSettingToDB();
   }
 
   updateSettingToDB() { // 更新数据库
@@ -61,13 +87,14 @@ export class SettingService {
       remote_host: this.remote_host,
       intf: this.intf,
       debug: this.debug,
-      record: this.record
+      record: this.record,
+      other: this.other
     };
     // console.log('newData=', newData);
     this._dbService.models.setting
       .update(
-      newData,
-      { where: { id: 1 } }
+        newData,
+        {where: {id: 1}}
       );
   }
 
@@ -98,7 +125,8 @@ export class SettingService {
           remote_port: '6011',
           debug: false,
           record: false,
-          intf: ''
+          intf: '',
+          other: '{}'
         });
         console.log('设置初始化完成');
         resolve();
