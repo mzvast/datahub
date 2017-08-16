@@ -1,6 +1,7 @@
 import {ChangeDetectionStrategy, Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {JsonEditorComponent, JsonEditorOptions} from 'angular4-jsoneditor/jsoneditor/jsoneditor.component';
 import {MdSnackBar, MdSnackBarConfig} from '@angular/material';
+import * as myGlobals from '../globals.service';
 
 @Component({
   selector: 'app-proto-in-narrow-pdw',
@@ -18,7 +19,7 @@ export class ProtoInNarrowPdwComponent implements OnInit {
   constructor(private snackBar: MdSnackBar) {
     this.editorOptions = new JsonEditorOptions();
     // this.editorOptions.modes = ['code', 'text', 'tree', 'view']; // set all allowed modes
-    this.editorOptions.modes = ['code', 'tree', 'view']; // set all allowed modes
+    // this.editorOptions.modes = ['code'];
     this.editorOptions.mode = 'code'; // set only one mode
     // const that = this;
     this.editorOptions.onChange = function () {
@@ -48,15 +49,25 @@ export class ProtoInNarrowPdwComponent implements OnInit {
   ngOnInit() {
   }
 
+  saveNew() {
+
+  }
+
   save() {
     const config = new MdSnackBarConfig();
     config.duration = 5000;
     try {
-      const dataValue = JSON.stringify(this.editor.get());
-      console.log(dataValue);
-      this.snackBar.open('保存成功', null, config);
+      const json = this.editor.get();
+      const validateResult = myGlobals.validateProtocol(json);
+      if (!validateResult.result) {
+        this.snackBar.open(validateResult.message, null, config);
+        return;
+      }
+      const dataValue = JSON.stringify(json);
+      // console.log(dataValue);
+      this.snackBar.open('保存成功，字节数: ' + validateResult.bytes, null, config);
     } catch (e) {
-      this.snackBar.open('格式错误，请检查', null, config);
+      this.snackBar.open('JSON格式错误，请检查', null, config);
     }
   }
 
