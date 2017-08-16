@@ -1,5 +1,7 @@
 <div style="margin: 5px 0 0 10px;">
-  <json-editor [options]="editorOptions" [data]="data"></json-editor>
+  <div style="height:600px;">
+    <json-editor [options]="editorOptions" [data]="data" style="width: 100%;height:100%;"></json-editor>
+  </div>
   <md-card-actions>
     <button md-button (click)="save()">保存</button>
     <button md-button (click)="initSetting()">恢复默认值</button>

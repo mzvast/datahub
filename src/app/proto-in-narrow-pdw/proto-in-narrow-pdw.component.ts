@@ -21,6 +21,10 @@ export class ProtoInNarrowPdwComponent implements OnInit {
     // this.editorOptions.modes = ['code', 'text', 'tree', 'view']; // set all allowed modes
     this.editorOptions.modes = ['code', 'tree', 'view']; // set all allowed modes
     this.editorOptions.mode = 'code'; // set only one mode
+    // const that = this;
+    // this.editorOptions.onChange = function () {
+    //   that.editorOptions.max
+    // }
 
     this.data = {
       'products': '111'
