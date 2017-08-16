@@ -36,6 +36,7 @@ import { ProtoInIntfComponent } from './proto-in-intf/proto-in-intf.component';
 import { DeviceIntfComponent } from './device-intf/device-intf.component';
 import { DataShowDialogComponent } from './data-show-dialog/data-show-dialog.component';
 import { DatePipe } from '@angular/common';
+import { Ng4JsonEditorModule } from 'angular4-jsoneditor';
 
 @NgModule({
   declarations: [
@@ -71,6 +72,7 @@ import { DatePipe } from '@angular/common';
     HttpModule,
     MaterialModule,
     BrowserAnimationsModule,
+    Ng4JsonEditorModule,
     RouterModule.forRoot([
       {
         path: 'device',
@@ -80,9 +82,9 @@ import { DatePipe } from '@angular/common';
           { path: 'tag', component: DeviceTagComponent },
           { path: 'pdw', component: DevicePdwComponent },
           { path: 'radiation', component: DeviceRadiationComponent },
-          { path: 'intf', component: DeviceIntfComponent },
-          { path: 'phase', component: DevicePhaseComponent },
-          { path: 'location', component: DeviceLocationComponent }
+          { path: 'intf', component: DeviceIntfComponent } // ,
+          // { path: 'phase', component: DevicePhaseComponent },
+          // { path: 'location', component: DeviceLocationComponent }
         ]
       },
       {
@@ -105,15 +107,15 @@ import { DatePipe } from '@angular/common';
         path: 'proto-in',
         component: ProtoInComponent,
         children: [
-          { path: '', component: ProtoInTagComponent },
-          { path: 'tag', component: ProtoInTagComponent },
-          { path: 'wide-pdw', component: ProtoInWidePdwComponent },
-          { path: 'wide-radiation', component: ProtoInWideRadiationComponent },
-          { path: 'location', component: ProtoInLocationComponent },
+          { path: '', component: PlaceholderComponent },
+          // { path: 'tag', component: ProtoInTagComponent },
+          // { path: 'wide-pdw', component: ProtoInWidePdwComponent },
+          // { path: 'wide-radiation', component: ProtoInWideRadiationComponent },
+          // { path: 'location', component: ProtoInLocationComponent },
           { path: 'narrow-pdw', component: ProtoInNarrowPdwComponent },
           { path: 'narrow-radiation', component: ProtoInNarrowRadiationComponent },
-          { path: 'intf', component: ProtoInIntfComponent },
-          { path: 'phrase', component: ProtoInPhraseComponent }
+          { path: 'intf', component: ProtoInIntfComponent } // ,
+          // { path: 'phrase', component: ProtoInPhraseComponent }
         ]
       }
     ])

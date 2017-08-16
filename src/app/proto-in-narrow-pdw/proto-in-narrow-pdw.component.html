@@ -1,3 +1,7 @@
-<p>
-  proto-in-narrow-pdw works!
-</p>
+<div style="margin: 5px 0 0 10px;">
+  <json-editor [options]="editorOptions" [data]="data"></json-editor>
+  <md-card-actions>
+    <button md-button (click)="save()">保存</button>
+    <button md-button (click)="initSetting()">恢复默认值</button>
+  </md-card-actions>
+</div>
