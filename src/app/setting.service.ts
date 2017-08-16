@@ -59,7 +59,7 @@ export class SettingService {
     }
     const otherSt = JSON.parse(st.other);
     if (!otherSt.remoteHost) {
-      otherSt.remoteHost = '192.168.1.1';
+      otherSt.remoteHost = '192.168.0.1';
     }
     if (!otherSt.hosts) {
       otherSt.hosts = ['192.168.1.1'];
@@ -121,7 +121,7 @@ export class SettingService {
           id: 1,
           local_port: 8512,
           local_host: '0.0.0.0',
-          remote_host: '192.168.0.31',
+          remote_host: '192.168.0.1',
           remote_port: '6011',
           debug: false,
           record: false,

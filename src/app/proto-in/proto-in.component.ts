@@ -9,31 +9,33 @@ import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy } from '@
 })
 export class ProtoInComponent implements OnInit {
   protocols = [
+    // {
+    //   name: '标签包',
+    //   url: 'tag'
+    // }, {
+    //   name: '宽带PDW',
+    //   url: 'wide-pdw'
+    // }, {
+    //   name: '宽带辐射源结果',
+    //   url: 'wide-radiation'
+    // }, {
+    //   name: '测向与定位信息',
+    //   url: 'location'
+    // },
     {
-      name: '标签包',
-      url: 'tag'
-    }, {
-      name: '宽带PDW',
-      url: 'wide-pdw'
-    }, {
-      name: '宽带辐射源结果',
-      url: 'wide-radiation'
-    }, {
-      name: '测向与定位信息',
-      url: 'location'
-    }, {
-      name: '窄带PDW',
+      name: '全脉冲',
       url: 'narrow-pdw'
     }, {
-      name: '窄带辐射源结果',
+      name: '辐射源',
       url: 'narrow-radiation'
     }, {
-      name: '中频数据包',
-      url: 'if'
-    }, {
-      name: '相位校正数据包',
-      url: 'phrase'
+      name: '中频',
+      url: 'intf'
     }
+    // , {
+    //   name: '相位校正数据包',
+    //   url: 'phrase'
+    // }
   ];
   constructor() { }
 
