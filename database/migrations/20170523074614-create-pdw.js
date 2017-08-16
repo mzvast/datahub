@@ -11,6 +11,9 @@ module.exports = {
       remote_host: {
         type: Sequelize.STRING
       },
+      proto_id: {
+        type: Sequelize.INTEGER
+      },
       raw: {
         type: Sequelize.BLOB
       },

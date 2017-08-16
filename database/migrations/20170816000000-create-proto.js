@@ -1,17 +1,11 @@
 'use strict';
 module.exports = {
   up: function(queryInterface, Sequelize) {
-    return queryInterface.createTable('pkgs', {
+    return queryInterface.createTable('intfs', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
-      },
-      remote_host: {
-        type: Sequelize.STRING
-      },
-      proto_id: {
         type: Sequelize.INTEGER
       },
       raw: {
@@ -28,6 +22,6 @@ module.exports = {
     });
   },
   down: function(queryInterface, Sequelize) {
-    return queryInterface.dropTable('pkgs');
+    return queryInterface.dropTable('intfs');
   }
 };

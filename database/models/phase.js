@@ -2,6 +2,7 @@
 module.exports = function(sequelize, DataTypes) {
   var phase = sequelize.define('phase', {
     remote_host: DataTypes.STRING,
+    proto_id: DataTypes.INTEGER,
     raw: DataTypes.BLOB
   }, {
     classMethods: {
