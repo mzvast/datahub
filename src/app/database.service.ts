@@ -45,7 +45,15 @@ export class DatabaseService {
       });
   }
 
-  create(table: string, host: string, raw: any) {
+  create(table: string, proto_id: number, host: string, raw: any) {
+    this.models[table].create({
+      proto_id: proto_id,
+      remote_host: host,
+      raw: raw
+    });
+  }
+
+  createRaw(table: string, host: string, raw: any) {
     this.models[table].create({
       remote_host: host,
       raw: raw

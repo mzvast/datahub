@@ -1,6 +1,8 @@
 'use strict';
 module.exports = function(sequelize, DataTypes) {
   var intf = sequelize.define('intf', {
+    type: DataTypes.INTEGER,
+    in_use: DataTypes.BOOLEAN,
     raw: DataTypes.BLOB
   }, {
     classMethods: {

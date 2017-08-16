@@ -8,6 +8,12 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      in_use: {
+        type: Sequelize.BOOLEAN
+      },
+      type: {
+        type: Sequelize.INTEGER
+      },
       raw: {
         type: Sequelize.BLOB
       },

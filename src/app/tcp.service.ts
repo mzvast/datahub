@@ -7,6 +7,7 @@ import {ProtocolPack} from 'app/protocol/protocol-pack';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Observable} from 'rxjs/Observable';
 import {MdSnackBar, MdSnackBarConfig} from '@angular/material';
+import * as myGlobals from './globals.service';
 
 declare var electron: any; // 　Typescript 定义
 
@@ -68,7 +69,7 @@ export class TcpService {
         console.log(`server got ${data.length} bytes from ${sock.remoteAddress}:${sock.remotePort}`);
         that.parserProtocolPack(Buffer.from(data), sock.remoteAddress, sock.remotePort);
         if (that._settingService.record) {
-          that._dbService.create('pkg', sock.remoteAddress, `${data.toString('hex')}`);
+          that._dbService.createRaw('pkg', sock.remoteAddress, `${data.toString('hex')}`);
         }
       });
 
@@ -219,19 +220,18 @@ export class TcpService {
 
   /**
    * 存的是protocol-pack里的data字段
-   * @param dataPack
    */
   saveRawDataToDB(type: number, host: string, data: Buffer) {
     console.log(`save raw to db, type: ${type}, host: ${host}`);
     switch (type) {
       case 0: // 标签包
-        this._dbService.create('tag', host, data.toString('hex'));
+        this._dbService.create('tag', myGlobals.IN_USE_PROTOCOL_ID_TYPE0, host, data.toString('hex'));
         break;
       case 1: // 窄带全脉冲数据包
-        this._dbService.create('pdw', host, data.toString('hex'));
+        this._dbService.create('pdw', myGlobals.IN_USE_PROTOCOL_ID_TYPE1, host, data.toString('hex'));
         break;
       case 5: // 窄带辐射源数据包
-        this._dbService.create('radiation', host, data.toString('hex'));
+        this._dbService.create('radiation', myGlobals.IN_USE_PROTOCOL_ID_TYPE5, host, data.toString('hex'));
         break;
     }
   }
