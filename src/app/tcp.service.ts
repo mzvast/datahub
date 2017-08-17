@@ -60,6 +60,7 @@ export class TcpService {
     electron.remote.getGlobal('tcp').server = this.net.createServer(function (sock) {
 
       console.log(`client connected: ${sock.remoteAddress}:${sock.remotePort}`);
+      that._settingService.updateSettingHostIfNotExists(sock.remoteAddress);
       that.showMessage('已连接: ' + sock.remoteAddress);
 
       sock.on('data', function (data) {

@@ -62,9 +62,18 @@ export class SettingService {
       otherSt.remoteHost = '192.168.0.1';
     }
     if (!otherSt.hosts) {
-      otherSt.hosts = ['192.168.1.1'];
+      otherSt.hosts = ['127.0.0.1'];
     }
     this.otherSt = otherSt;
+  }
+
+  updateSettingHostIfNotExists(host: string) {
+    const hosts = this.otherSt['hosts'];
+    if (hosts.indexOf(host) < 0) {
+      hosts.push(host);
+      this.updateOtherSettingToDB(hosts, null);
+      console.warn(`settings hosts not contains: ${host}, append it to settings`);
+    }
   }
 
   updateOtherSettingToDB(hosts: Array<string>, selectedHost: string) {
