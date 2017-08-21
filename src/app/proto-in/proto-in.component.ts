@@ -20,9 +20,11 @@ export class ProtoInComponent implements OnInit {
 
   protos = [{code: 0, name: '标签包'}, {code: 1, name: '全脉冲'}, {code: 5, name: '辐射源'}, {code: -4, name: '中频控制'}];
   selectedProto: number;
+  status: string;
 
   rows = [];
   selected = [];
+  currentData;
   page = new Page();
 
   constructor(private _databaseService: DatabaseService,
@@ -52,7 +54,7 @@ export class ProtoInComponent implements OnInit {
     this.fetch({offset: 0});
   }
 
-  fetch(pageInfo) {
+  fetchAndSelect(pageInfo, select: boolean) {
     this.page.pageNumber = pageInfo.offset;
     this._databaseService.models['proto'].findAndCountAll({
       where: {
@@ -75,13 +77,12 @@ export class ProtoInComponent implements OnInit {
         };
       });
       // if (!this.selected || this.selected.length === 0) {
-        if (this.rows.length > 0) {
-          this.selected = [this.rows[0]];
-          this.editor.set(JSON.parse(this.selected[0]['raw']));
-        } else {
-          this.selected = [];
-          this.editor.set(JSON.parse('{}'));
+      if (this.rows.length > 0) {
+        if (select || !this.currentData) {
+          this.updateCurrentEditor(this.rows[0]);
         }
+
+      }
       // }
       // console.log(this.data);
     }).catch((error) => {
@@ -89,10 +90,13 @@ export class ProtoInComponent implements OnInit {
     });
   }
 
+  fetch(pageInfo) {
+    this.fetchAndSelect(pageInfo, false);
+  }
+
   onSelect({selected}) {
     // console.log('Select Event', selected, this.selected);
-    const json = JSON.parse(this.selected[0]['raw']);
-    this.editor.set(json);
+    this.updateCurrentEditor(this.selected[0]);
   }
 
   onActivate(event) {
@@ -113,7 +117,7 @@ export class ProtoInComponent implements OnInit {
         {in_use: 1}, {where: {type: this.selectedProto, id: selectedId}}
       ).then(function () {
         this.showToast('成功设置');
-        this.fetch({offset: 0});
+        this.fetchAndSelect({offset: 0}, false);
       });
     });
   }
@@ -138,16 +142,16 @@ export class ProtoInComponent implements OnInit {
           {raw: dataValue}, {where: {id: selectedId}}
         ).then(function () {
           that.showToast('成功保存');
-          that.fetch({offset: 0});
+          that.fetchAndSelect({offset: 0}, false);
         });
       } else {
         that._databaseService.models['proto'].create({
           in_use: false,
-          type: this.selectedProto,
+          type: that.selectedProto,
           raw: dataValue
         }).then(function () {
           that.showToast('成功另存');
-          that.fetch({offset: 0});
+          that.fetchAndSelect({offset: 0}, true);
         });
       }
 
@@ -170,6 +174,37 @@ export class ProtoInComponent implements OnInit {
     const config = new MdSnackBarConfig();
     config.duration = 5000;
     this.snackBar.open(message, null, config);
+  }
+
+  updateCurrentEditor(data) {
+    this.updateStatus('', false);
+    this.currentData = data;
+    try {
+      const jsonValue = JSON.parse(data['raw']);
+      this.editor.set(jsonValue);
+      const validateResult = myGlobals.validateProtocol(jsonValue);
+      if (!validateResult.result) {
+        this.updateStatus(validateResult.message, false);
+      } else {
+        this.updateStatus('协议' + data['id'] + '解析成功，字节数：' + validateResult.bytes, false);
+      }
+    } catch (e) {
+      this.editor.set(JSON.parse('{}'));
+      this.updateStatus('JSON解析错误', false);
+      console.error('parser json error', e);
+    }
+  }
+
+  updateStatus(message: string, success: boolean) {
+    if (!message) {
+      this.status = '';
+      return;
+    }
+    if (success) {
+      this.status = '<font color=\"red\">' + message + '</font>';
+    } else {
+      this.status = '<font color=\"green\">' + message + '</font>';
+    }
   }
 
 }
