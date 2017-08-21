@@ -3,19 +3,71 @@
   <md-divider></md-divider>
   <md-card-content>
     <div class="card-content">
-      <md-nav-list dense class="subnav">
-        <a md-list-item routerLink={{link.url}} *ngFor="let link of protocols" routerLinkActive="active">
-          <h4 md-line>{{link.name}}</h4>
-        </a>
-      </md-nav-list>
-      <div class="proto-content">
-        <router-outlet></router-outlet>
+      <md-select placeholder="选择协议类型" [(ngModel)]="selectedProto" (ngModelChange)="updateSelectedProto()" style="margin: 20px 10px 10px 10px;">
+        <md-option *ngFor="let proto of protos" [value]="proto.code">{{ proto.name }}</md-option>
+      </md-select>
+      <ngx-datatable
+        class="material"
+        [rows]="rows"
+        [columnMode]="'force'"
+        [headerHeight]="50"
+        [footerHeight]="50"
+        [rowHeight]="'auto'"
+        [scrollbarH]="true"
+
+        [externalPaging]="true"
+        [count]="page.totalElements"
+        [offset]="page.pageNumber"
+        [limit]="page.size"
+        (page)='fetch($event)'
+
+        [selected]="selected"
+        [selectionType]="'single'"
+        (activate)="onActivate($event)"
+        (select)='onSelect($event)'>
+
+        <ngx-datatable-column name="id" prop="id">
+          <ng-template let-column="column" ngx-datatable-header-template>
+            版本号
+          </ng-template>
+          <ng-template let-value="value" ngx-datatable-cell-template>
+            {{value}}
+          </ng-template>
+        </ngx-datatable-column>
+
+        <ngx-datatable-column name="time" prop="time">
+          <ng-template let-column="column" ngx-datatable-header-template>
+            更新时间
+          </ng-template>
+          <ng-template let-value="value" ngx-datatable-cell-template>
+            {{value}}
+          </ng-template>
+        </ngx-datatable-column>
+
+        <ngx-datatable-column name="Action" sortable="false" prop="in_use">
+          <template let-column="column" ngx-datatable-header-template>
+            当前协议
+          </template>
+          <template let-row="row" let-value="value" ngx-datatable-cell-template>
+            <!--<button md-icon-button (click)="blockAgents(value)" [disabled]="row['status']==='BLOCKED'">-->
+            <!--设为当前协议-->
+            <!--</button>-->
+            <md-icon [hidden]="!value">done</md-icon>
+          </template>
+        </ngx-datatable-column>
+      </ngx-datatable>
+
+      <div style="height:400px; margin-top: 5px;">
+        <json-editor [options]="editorOptions" style="width: 100%;height:100%;"></json-editor>
       </div>
     </div>
   </md-card-content>
-  <!--<md-divider></md-divider>-->
-  <!--<md-card-actions>-->
-    <!--<button md-button>保存</button>-->
-    <!--<button md-button>取消</button>-->
-  <!--</md-card-actions>-->
+
+  <md-divider></md-divider>
+  <md-card-actions>
+    <button md-button (click)="save()">保存</button>
+    <button md-button (click)="saveNew()">另存</button>
+    <button md-button (click)="setDefault()">设为当前解析协议</button>
+    <!--<button md-button (click)="initSetting()">恢复默认值</button>-->
+  </md-card-actions>
 </md-card>

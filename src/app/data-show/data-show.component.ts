@@ -5,6 +5,7 @@ import {ActivatedRoute} from '@angular/router';
 import {MdDialog} from '@angular/material';
 import {DatePipe} from '@angular/common';
 import {SettingService} from '../setting.service';
+import {Page} from '../globals.service';
 
 
 @Component({
@@ -19,7 +20,6 @@ export class DataShowComponent implements OnInit, OnDestroy {
   selectedHost;
   type: string;
   private sub: any;
-  data = [];
   rows = [];
   selected = [];
   columns: any[] = [
@@ -134,12 +134,4 @@ export class DataShowComponent implements OnInit, OnDestroy {
     this._databaseService.destroyTable(this.type);
     this.fetch({offset: 0});
   }
-}
-
-
-class Page {
-  size = 0;
-  totalElements = 0;
-  totalPages = 0;
-  pageNumber = 0;
 }

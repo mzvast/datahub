@@ -20,19 +20,11 @@ import { DeviceTagComponent } from './device-tag/device-tag.component';
 import { DeviceRadiationComponent } from './device-radiation/device-radiation.component';
 import { DevicePhaseComponent } from './device-phase/device-phase.component';
 import { DeviceLocationComponent } from './device-location/device-location.component';
-import { ProtoInTagComponent } from './proto-in-tag/proto-in-tag.component';
-import { ProtoInWidePdwComponent } from './proto-in-wide-pdw/proto-in-wide-pdw.component';
-import { ProtoInNarrowPdwComponent } from './proto-in-narrow-pdw/proto-in-narrow-pdw.component';
-import { ProtoInWideRadiationComponent } from './proto-in-wide-radiation/proto-in-wide-radiation.component';
-import { ProtoInNarrowRadiationComponent } from './proto-in-narrow-radiation/proto-in-narrow-radiation.component';
-import { ProtoInLocationComponent } from './proto-in-location/proto-in-location.component';
-import { ProtoInPhraseComponent } from './proto-in-phrase/proto-in-phrase.component';
 import { DeviceComponent } from './device/device.component';
 import { SettingsComponent } from './settings/settings.component';
 import { DataShowComponent } from './data-show/data-show.component';
 import { DataComponent } from './data/data.component';
 import { PlaceholderComponent } from './placeholder/placeholder.component';
-import { ProtoInIntfComponent } from './proto-in-intf/proto-in-intf.component';
 import { DeviceIntfComponent } from './device-intf/device-intf.component';
 import { DataShowDialogComponent } from './data-show-dialog/data-show-dialog.component';
 import { DatePipe } from '@angular/common';
@@ -49,19 +41,11 @@ import { Ng4JsonEditorModule } from 'angular4-jsoneditor';
     DeviceRadiationComponent,
     DevicePhaseComponent,
     DeviceLocationComponent,
-    ProtoInTagComponent,
-    ProtoInWidePdwComponent,
-    ProtoInNarrowPdwComponent,
-    ProtoInWideRadiationComponent,
-    ProtoInNarrowRadiationComponent,
-    ProtoInLocationComponent,
-    ProtoInPhraseComponent,
     DeviceComponent,
     SettingsComponent,
     DataShowComponent,
     DataComponent,
     PlaceholderComponent,
-    ProtoInIntfComponent,
     DeviceIntfComponent,
     DataShowDialogComponent
   ],
@@ -105,18 +89,7 @@ import { Ng4JsonEditorModule } from 'angular4-jsoneditor';
       },
       {
         path: 'proto-in',
-        component: ProtoInComponent,
-        children: [
-          { path: '', component: PlaceholderComponent },
-          // { path: 'tag', component: ProtoInTagComponent },
-          // { path: 'wide-pdw', component: ProtoInWidePdwComponent },
-          // { path: 'wide-radiation', component: ProtoInWideRadiationComponent },
-          // { path: 'location', component: ProtoInLocationComponent },
-          { path: 'narrow-pdw', component: ProtoInNarrowPdwComponent },
-          { path: 'narrow-radiation', component: ProtoInNarrowRadiationComponent },
-          { path: 'intf', component: ProtoInIntfComponent } // ,
-          // { path: 'phrase', component: ProtoInPhraseComponent }
-        ]
+        component: ProtoInComponent
       }
     ])
   ],

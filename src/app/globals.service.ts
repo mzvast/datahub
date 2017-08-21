@@ -9,6 +9,13 @@ export let IN_USE_PROTOCOL_TYPE0: JSON;
 export let IN_USE_PROTOCOL_TYPE1: JSON;
 export let IN_USE_PROTOCOL_TYPE5: JSON;
 
+export class Page {
+  size = 0;
+  totalElements = 0;
+  totalPages = 0;
+  pageNumber = 0;
+}
+
 /**
  * 检测是否有效的协议，返回协议一共用了多少字节，如果协议有问题，返回-1
  */
