@@ -1,6 +1,6 @@
 'use strict';
 module.exports = function(sequelize, DataTypes) {
-  var intf = sequelize.define('intf', {
+  var proto = sequelize.define('proto', {
     type: DataTypes.INTEGER,
     in_use: DataTypes.BOOLEAN,
     raw: DataTypes.BLOB
@@ -11,5 +11,5 @@ module.exports = function(sequelize, DataTypes) {
       }
     }
   });
-  return intf;
+  return proto;
 };
