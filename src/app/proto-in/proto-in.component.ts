@@ -60,6 +60,7 @@ export class ProtoInComponent implements OnInit {
         // ,attr2: 'cake'
       },
       // where: ['remote_host = "::ffff:127.0.0.1"'],
+      order: 'id desc',
       offset: this.page.pageNumber * this.page.size,
       limit: this.page.size
     }).then((result) => {

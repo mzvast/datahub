@@ -75,6 +75,7 @@ export class DataShowComponent implements OnInit, OnDestroy {
         // ,attr2: 'cake'
       },
       // where: ['remote_host = "::ffff:127.0.0.1"'],
+      order: 'createdAt desc',
       offset: this.page.pageNumber * this.page.size,
       limit: this.page.size
     }).then((result) => {
