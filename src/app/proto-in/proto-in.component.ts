@@ -31,7 +31,7 @@ export class ProtoInComponent implements OnInit {
               private datePipe: DatePipe,
               private snackBar: MdSnackBar) {
     this.page.pageNumber = 0;
-    this.page.size = 10;
+    this.page.size = 5;
 
     this.editorOptions = new JsonEditorOptions();
     // this.editorOptions.modes = ['code', 'text', 'tree', 'view']; // set all allowed modes
@@ -110,14 +110,15 @@ export class ProtoInComponent implements OnInit {
     }
     // console.log(this.selected[0]['id']);
     const selectedId = this.selected[0]['id'];
-    this._databaseService.models['proto'].update(
-      {in_use: 0}, {where: {type: this.selectedProto}}
+    const that = this;
+    that._databaseService.models['proto'].update(
+      {in_use: 0}, {where: {type: that.selectedProto}}
     ).then(function () {
-      this._databaseService.models['proto'].update(
-        {in_use: 1}, {where: {type: this.selectedProto, id: selectedId}}
+      that._databaseService.models['proto'].update(
+        {in_use: 1}, {where: {type: that.selectedProto, id: selectedId}}
       ).then(function () {
-        this.showToast('成功设置');
-        this.fetchAndSelect({offset: 0}, false);
+        that.showToast('成功设置');
+        that.fetchAndSelect({offset: 0}, false);
       });
     });
   }
@@ -186,7 +187,7 @@ export class ProtoInComponent implements OnInit {
       if (!validateResult.result) {
         this.updateStatus(validateResult.message, false);
       } else {
-        this.updateStatus('协议' + data['id'] + '解析成功，字节数：' + validateResult.bytes, false);
+        this.updateStatus(data['id'] + '号协议解析成功，字节数：' + validateResult.bytes, false);
       }
     } catch (e) {
       this.editor.set(JSON.parse('{}'));
