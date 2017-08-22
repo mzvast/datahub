@@ -63,14 +63,12 @@ export function validateProtocol(json: JSON) {
         if (item.hasOwnProperty('enum')) {
           // 这里暂时不检查了
         } else {
-          if (!item.hasOwnProperty('multiple')) {
-            result.message = '协议检测错误，第' + idx + '项缺少倍数（multiple）';
-            return result;
-          }
-          const multiple = item['multiple'];
-          if (typeof multiple !== 'number') {
-            result.message = '协议检测错误，第' + idx + '项倍数（multiple）必须是number';
-            return result;
+          if (item.hasOwnProperty('multiple')) {
+            const multiple = item['multiple'];
+            if (typeof multiple !== 'number') {
+              result.message = '协议检测错误，第' + idx + '项倍数（multiple）必须是number';
+              return result;
+            }
           }
         }
       }

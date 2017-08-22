@@ -37,9 +37,19 @@ export class ProtoInComponent implements OnInit {
     // this.editorOptions.modes = ['code', 'text', 'tree', 'view']; // set all allowed modes
     // this.editorOptions.modes = ['code'];
     this.editorOptions.mode = 'code'; // set only one mode
-    // const that = this;
+    const that = this;
     this.editorOptions.onChange = function () {
-      console.log(`onChange:`);
+      try {
+        const json = that.editor.get();
+        const validateResult = myGlobals.validateProtocol(json);
+        if (!validateResult.result) {
+          that.updateStatus(validateResult.message, false);
+        } else {
+          that.updateStatus('协议解析成功，总字节数：' + validateResult.bytes, true);
+        }
+      } catch (e) {
+        that.updateStatus('JSON解析错误', false);
+      }
     };
   }
 
@@ -51,7 +61,7 @@ export class ProtoInComponent implements OnInit {
 
   updateSelectedProto() {
     // console.log(`selectedProto:${this.selectedProto}`);
-    this.fetch({offset: 0});
+    this.fetchAndSelect({offset: 0}, true);
   }
 
   fetchAndSelect(pageInfo, select: boolean) {
@@ -62,7 +72,7 @@ export class ProtoInComponent implements OnInit {
         // ,attr2: 'cake'
       },
       // where: ['remote_host = "::ffff:127.0.0.1"'],
-      order: 'id desc',
+      order: 'in_use desc, id desc',
       offset: this.page.pageNumber * this.page.size,
       limit: this.page.size
     }).then((result) => {
@@ -164,11 +174,7 @@ export class ProtoInComponent implements OnInit {
   }
 
   save() {
-    let selectedId = 0;
-    if (this.selected && this.selected.length > 0) {
-      selectedId = this.selected[0]['id'];
-    }
-    this.doSave(selectedId);
+    this.doSave(this.currentData['id']);
   }
 
   showToast(message: string) {
@@ -187,7 +193,7 @@ export class ProtoInComponent implements OnInit {
       if (!validateResult.result) {
         this.updateStatus(validateResult.message, false);
       } else {
-        this.updateStatus(data['id'] + '号协议解析成功，字节数：' + validateResult.bytes, false);
+        this.updateStatus(data['id'] + '号协议解析成功，总字节数：' + validateResult.bytes, true);
       }
     } catch (e) {
       this.editor.set(JSON.parse('{}'));
@@ -202,9 +208,9 @@ export class ProtoInComponent implements OnInit {
       return;
     }
     if (success) {
-      this.status = '<font color=\"red\">' + message + '</font>';
-    } else {
       this.status = '<font color=\"green\">' + message + '</font>';
+    } else {
+      this.status = '<font color=\"red\">' + message + '</font>';
     }
   }
 
