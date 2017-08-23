@@ -39,6 +39,10 @@ export class BaseDataPack {
           console.log(`parser item index out of bound, index: ${index + b}, bound: ${data.length}`);
           break;
         }
+        if (item.hasOwnProperty('hide')) {
+          index = index + b;
+          continue;
+        }
         const name = item['name'];
         const type = item['type'];
         let value = '';

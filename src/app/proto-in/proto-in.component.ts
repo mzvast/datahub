@@ -31,7 +31,7 @@ export class ProtoInComponent implements OnInit {
               private datePipe: DatePipe,
               private snackBar: MdSnackBar) {
     this.page.pageNumber = 0;
-    this.page.size = 5;
+    this.page.size = 10;
 
     this.editorOptions = new JsonEditorOptions();
     // this.editorOptions.modes = ['code', 'text', 'tree', 'view']; // set all allowed modes
@@ -82,7 +82,7 @@ export class ProtoInComponent implements OnInit {
           id: curVal.id,
           type: curVal.type,
           in_use: curVal.in_use,
-          time: this.datePipe.transform(curVal.createdAt, 'yyyy-MM-dd HH:mm:ss'),
+          time: this.datePipe.transform(curVal.updatedAt, 'yyyy-MM-dd HH:mm:ss'),
           raw: curVal.raw.toString()
         };
       });
