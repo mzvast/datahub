@@ -3,68 +3,107 @@
   <md-divider></md-divider>
   <md-card-content>
     <div class="card-content">
-      <md-select placeholder="选择协议类型" [(ngModel)]="selectedProto" (ngModelChange)="updateSelectedProto()" style="margin: 20px 10px 10px 10px;">
-        <md-option *ngFor="let proto of protos" [value]="proto.code">{{ proto.name }}</md-option>
-      </md-select>
-      <ngx-datatable
-        class="material"
-        [rows]="rows"
-        [columnMode]="'force'"
-        [headerHeight]="50"
-        [footerHeight]="50"
-        [rowHeight]="'auto'"
-        [scrollbarH]="true"
+      <table style="width: 100%;">
+        <tr style="width: 100%; vertical-align: top;">
+          <td width="460" style="width: 460px;">
+            <md-select placeholder="选择协议类型" [(ngModel)]="selectedProto" (ngModelChange)="updateSelectedProto()" style="margin: 20px 10px 10px 10px;">
+              <md-option *ngFor="let proto of protos" [value]="proto.code">{{ proto.name }}</md-option>
+            </md-select>
+            <ngx-datatable #myTable
+              class="material"
+              [rows]="rows"
+              [columnMode]="'force'"
+              [headerHeight]="50"
+              [footerHeight]="50"
+              [rowHeight]="'auto'"
+              [scrollbarH]="true"
 
-        [externalPaging]="true"
-        [count]="page.totalElements"
-        [offset]="page.pageNumber"
-        [limit]="page.size"
-        (page)='fetch($event)'
+              [externalPaging]="true"
+              [count]="page.totalElements"
+              [offset]="page.pageNumber"
+              [limit]="page.size"
+              (page)='fetch($event)'
 
-        [selected]="selected"
-        [selectionType]="'single'"
-        (activate)="onActivate($event)"
-        (select)='onSelect($event)'>
+              [selected]="selected"
+              [selectionType]="'single'"
+              (activate)="onActivate($event)"
+              (select)='onSelect($event)'>
 
-        <ngx-datatable-column name="id" prop="id">
-          <ng-template let-column="column" ngx-datatable-header-template>
-            版本号
-          </ng-template>
-          <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
-            <strong [hidden]="!row['in_use']">{{value}}</strong>
-            <span [hidden]="row['in_use']">{{value}}</span>
-          </ng-template>
-        </ngx-datatable-column>
+              <ngx-datatable-column name="id" prop="id" [width]="50">
+                <ng-template let-column="column" ngx-datatable-header-template>
+                  版本号
+                </ng-template>
+                <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                  <strong [hidden]="!row['in_use']">{{value}}</strong>
+                  <span [hidden]="row['in_use']">{{value}}</span>
+                </ng-template>
+              </ngx-datatable-column>
 
-        <ngx-datatable-column name="time" prop="time">
-        <ng-template let-column="column" ngx-datatable-header-template>
-        修改时间
-        </ng-template>
-        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
-        <!--{{value}}-->
-          <strong [hidden]="!row['in_use']">{{value}}</strong>
-          <span [hidden]="row['in_use']">{{value}}</span>
-        </ng-template>
-        </ngx-datatable-column>
+              <ngx-datatable-column name="time" prop="time">
+                <ng-template let-column="column" ngx-datatable-header-template>
+                  修改时间
+                </ng-template>
+                <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                  <!--{{value}}-->
+                  <strong [hidden]="!row['in_use']">{{value}}</strong>
+                  <span [hidden]="row['in_use']">{{value}}</span>
+                </ng-template>
+              </ngx-datatable-column>
 
-        <ngx-datatable-column name="Action" sortable="false" prop="in_use">
-          <ng-template let-column="column" ngx-datatable-header-template>
-            当前协议
-          </ng-template>
-          <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
-            <!--<button md-icon-button (click)="blockAgents(value)" [disabled]="row['status']==='BLOCKED'">-->
-            <!--设为当前协议-->
-            <!--</button>-->
-            <md-icon [hidden]="!value">done</md-icon>
-          </ng-template>
-        </ngx-datatable-column>
-      </ngx-datatable>
-      <p>
-        <span [innerHTML]="status"></span>
-      </p>
-      <div style="height:520px; margin-top: 5px;">
-        <json-editor [options]="editorOptions" style="width: 100%;height:100%;"></json-editor>
-      </div>
+              <ngx-datatable-column name="Action" sortable="false" prop="in_use">
+                <ng-template let-column="column" ngx-datatable-header-template>
+                  当前协议
+                </ng-template>
+                <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                  <!--<button md-icon-button (click)="blockAgents(value)" [disabled]="row['status']==='BLOCKED'">-->
+                  <!--设为当前协议-->
+                  <!--</button>-->
+                  <md-icon [hidden]="!value">done</md-icon>
+                </ng-template>
+              </ngx-datatable-column>
+
+              <ngx-datatable-footer>
+                <ng-template
+                  ngx-datatable-footer-template
+                  let-rowCount="rowCount"
+                  let-pageSize="pageSize"
+                  let-selectedCount="selectedCount",
+                  let-curPage="curPage"
+                  let-offset="offset">
+                  <div style="padding: 5px 10px;">
+                    <div>
+                      {{rowCount}}条 | {{curPage}}/{{pageSize}}页
+                    </div>
+                  </div>
+                  <datatable-pager
+                    [pagerLeftArrowIcon]="'datatable-icon-left'"
+                    [pagerRightArrowIcon]="'datatable-icon-right'"
+                    [pagerPreviousIcon]="'datatable-icon-prev'"
+                    [pagerNextIcon]="'datatable-icon-skip'"
+                    [page]="curPage"
+                    [size]="pageSize"
+                    [count]="rowCount"
+                    [hidden]="!((rowCount / pageSize) > 1)"
+                    (change)="myTable.onFooterPage($event)">
+                  </datatable-pager>
+
+                </ng-template>
+
+              </ngx-datatable-footer>
+            </ngx-datatable>
+          </td>
+          <td>
+            <p>
+              <span [innerHTML]="status"></span>
+            </p>
+            <div style="height:520px; margin-top: 5px;">
+              <json-editor [options]="editorOptions" style="width: 100%;height:100%;"></json-editor>
+            </div>
+          </td>
+        </tr>
+      </table>
+
+
     </div>
   </md-card-content>
 

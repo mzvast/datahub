@@ -6,7 +6,7 @@
 <md-select placeholder="选择Host" [(ngModel)]="selectedHost" (ngModelChange)="updateSelectedHost()" style="margin: 10px;">
   <md-option *ngFor="let host of hosts" [value]="host">{{ host }}</md-option>
 </md-select>
-<ngx-datatable
+<ngx-datatable #myTable
   class="material"
   [rows]="rows"
   [columnMode]="'force'"
@@ -26,5 +26,34 @@
   [selectionType]="'multi'"
   (activate)="onActivate($event)"
   (select)='onSelect($event)'>
+
+  <ngx-datatable-footer>
+    <ng-template
+      ngx-datatable-footer-template
+      let-rowCount="rowCount"
+      let-pageSize="pageSize"
+      let-selectedCount="selectedCount",
+      let-curPage="curPage"
+      let-offset="offset">
+      <div style="padding: 5px 10px;">
+        <div>
+          {{rowCount}}条 | {{curPage}}/{{pageSize}}页
+        </div>
+      </div>
+      <datatable-pager
+        [pagerLeftArrowIcon]="'datatable-icon-left'"
+        [pagerRightArrowIcon]="'datatable-icon-right'"
+        [pagerPreviousIcon]="'datatable-icon-prev'"
+        [pagerNextIcon]="'datatable-icon-skip'"
+        [page]="curPage"
+        [size]="pageSize"
+        [count]="rowCount"
+        [hidden]="!((rowCount / pageSize) > 1)"
+        (change)="myTable.onFooterPage($event)">
+      </datatable-pager>
+
+    </ng-template>
+
+  </ngx-datatable-footer>
 </ngx-datatable>
 <button md-raised-button (click)="clearHistory()">清除历史</button>

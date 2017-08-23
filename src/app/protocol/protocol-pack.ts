@@ -147,7 +147,10 @@ export class ProtocolPack {
         for (let i = 0; i < count5; i++) {
           pack5.datas.push(data.slice(140 + bytesPerData5 * i, 140 + bytesPerData5 * i + bytesPerData5));
         }
-        console.log(`parser narrow band source data pack success.`);
+        if (debug) {
+          console.log(`parser narrow band source data pack success.`);
+          console.log(pack5.description());
+        }
         return pack5;
     }
     return null;

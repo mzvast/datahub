@@ -6,7 +6,7 @@
 
       <h2 *ngIf="!dataPack">解析错误</h2>
 
-      <md-grid-list cols="4" rowHeight="100px" rowHeight="2em">
+      <md-grid-list cols="4" rowHeight="2em">
         <div>
           <md-grid-tile colspan=1 rowspan=1 class="title"><span>Host</span></md-grid-tile>
           <md-grid-tile colspan=3 rowspan=1><span [innerHTML]="dataPack?.host"></span></md-grid-tile>
