@@ -40,8 +40,14 @@ export class BaseDataPack {
           break;
         }
         if (item.hasOwnProperty('hide')) {
-          index = index + b;
-          continue;
+          const hideValue = item['hide'];
+          if (typeof hideValue === 'boolean' && hideValue === false) {
+            // 如果hide是false就不要忽略了
+          } else {
+            index = index + b;
+            continue;
+          }
+
         }
         const name = item['name'];
         const type = item['type'];

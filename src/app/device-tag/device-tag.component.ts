@@ -18,12 +18,14 @@ export class DeviceTagComponent implements OnInit, OnDestroy {
   control: string;
   gps: string;
   host: string;
+  protoId: number;
 
   constructor(private tcpService: TcpService, private cd: ChangeDetectorRef) { }
   ngOnInit() {
     this.subscription = this.tcpService.getMessage().subscribe((msg: TagDataPack) => {
       if (msg.type === 0) {// 判断是标签包
         this.host = msg.host;
+        this.protoId = msg.protoId;
         this.gps = [msg.gps.slice(0, 64), msg.gps.slice(64)].join('\n');
         this.control = [msg.control.slice(0, 64), msg.control.slice(64)].join('\n');
         // console.log(message);

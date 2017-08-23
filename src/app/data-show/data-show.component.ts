@@ -24,6 +24,7 @@ export class DataShowComponent implements OnInit, OnDestroy {
   selected = [];
   columns: any[] = [
     {name: '时间', prop: 'time'},
+    {name: '协议ID', prop: 'proto_id'},
     {name: '数据', prop: 'raw'}
   ];
   page = new Page();
