@@ -23,11 +23,10 @@ export class DeviceRadiationComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.subscription = this.tcpService.getMessage().subscribe((msg: NarrowBandSourceDataPack) => {
       if (msg.type === 5) {// 判断是窄带辐射源
-        const message = msg.parserDescription(msg.datas[0]);
         this.host = msg.host;
         this.gps = [msg.gps.slice(0, 64), msg.gps.slice(64)].join('\n');
         this.control = [msg.control.slice(0, 64), msg.control.slice(64)].join('\n');
-        this.items = msg.parserDescriptionLocalized(message);
+        this.items = msg.parseItems(msg.datas[0]);
         this.cd.detectChanges(); // 检测更改，更新UI。
       }
     });

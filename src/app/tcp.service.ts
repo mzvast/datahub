@@ -7,7 +7,6 @@ import {ProtocolPack} from 'app/protocol/protocol-pack';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Observable} from 'rxjs/Observable';
 import {MdSnackBar, MdSnackBarConfig} from '@angular/material';
-import * as myGlobals from './globals.service';
 
 declare var electron: any; // 　Typescript 定义
 
@@ -18,13 +17,13 @@ export class TcpService {
   workingBuffers: Map<string, Buffer>;
   workingProtocolPacks: Map<string, ProtocolPack>;
   subject = new BehaviorSubject<any>({});
+  protos: Map<number, JSON>;
+  protoIds: Map<number, number>;
 
   constructor(private _dbService: DatabaseService,
               private _settingService: SettingService,
               private snackBar: MdSnackBar) {
-    // console.log('tcp service constructor');
     this._dbService.authenticate();
-    // this._dbService.create('tag', '123445');
     // this._dbService.index();
     /**
      * 判断udp server是否已启动，占用了端口
@@ -51,7 +50,28 @@ export class TcpService {
     return this.subject.asObservable();
   }
 
+  loadProtocols() {
+    this.protos = new Map();
+    this.protoIds = new Map();
+    this._dbService.models['proto'].findAll({
+      where: {
+        in_use: 1
+      },
+    }).then((result) => {
+      result.forEach((curVal) => {
+        this.protos.set(curVal.type, JSON.parse(curVal.raw.toString()));
+        this.protoIds.set(curVal.type, curVal.id);
+        if (this._settingService.debug) {
+          console.log(`in use proto type: ${curVal.type}, ${curVal.raw.toString()}`);
+        }
+      });
+    }).catch((error) => {
+      console.log('can not load protos from db:', error);
+    });
+  }
+
   startTcpServer() {
+    this.loadProtocols();
     this.workingBuffers = new Map();
     this.workingProtocolPacks = new Map();
 
@@ -131,8 +151,17 @@ export class TcpService {
         console.log('dataPack:', dataPack);
       }
       if (dataPack) {
-        this.sendMessage(dataPack); // 发给UI
-        this.saveRawDataToDB(dataPack.type, host, protocolPack.data);
+        const protoId = this.protoIds.get(dataPack.type);
+        if (!protoId) {
+          console.error(`can not find current protoId, abort`);
+        } else {
+          const proto = this.protos.get(dataPack.type);
+          dataPack.protoId = protoId;
+          dataPack.proto = proto;
+          this.sendMessage(dataPack); // 发给UI
+          this.saveRawDataToDB(dataPack.type, protoId, host, protocolPack.data);
+        }
+
       }
     } else {
       if (this._settingService.debug) {
@@ -157,8 +186,16 @@ export class TcpService {
                 // if (this._settingService.debug) {
                 //   console.log(`dataPackV2 send dataPack message, type: ${dataPack.type}`);
                 // }
-                this.sendMessage(dataPack); // 发给UI
-                this.saveRawDataToDB(dataPack.type, host, workingProtocolPack.data);
+                const protoId = this.protoIds.get(dataPack.type);
+                if (!protoId) {
+                  console.error(`can not find current protoId, abort`);
+                } else {
+                  const proto = this.protos.get(dataPack.type);
+                  dataPack.protoId = protoId;
+                  dataPack.proto = proto;
+                  this.sendMessage(dataPack); // 发给UI
+                  this.saveRawDataToDB(dataPack.type, protoId, host, workingProtocolPack.data);
+                }
               }
               workingProtocolPack = null; // 删除局部变量
               this.workingProtocolPacks.delete(key);
@@ -222,17 +259,17 @@ export class TcpService {
   /**
    * 存的是protocol-pack里的data字段
    */
-  saveRawDataToDB(type: number, host: string, data: Buffer) {
-    console.log(`save raw to db, type: ${type}, host: ${host}`);
+  saveRawDataToDB(type: number, protoId: number, host: string, data: Buffer) {
+    console.log(`save raw to db, type: ${type}, protoId: ${protoId}, host: ${host}`);
     switch (type) {
       case 0: // 标签包
-        this._dbService.create('tag', myGlobals.IN_USE_PROTOCOL_ID_TYPE0, host, data.toString('hex'));
+        this._dbService.create('tag', protoId, host, data.toString('hex'));
         break;
       case 1: // 窄带全脉冲数据包
-        this._dbService.create('pdw', myGlobals.IN_USE_PROTOCOL_ID_TYPE1, host, data.toString('hex'));
+        this._dbService.create('pdw', protoId, host, data.toString('hex'));
         break;
       case 5: // 窄带辐射源数据包
-        this._dbService.create('radiation', myGlobals.IN_USE_PROTOCOL_ID_TYPE5, host, data.toString('hex'));
+        this._dbService.create('radiation', protoId, host, data.toString('hex'));
         break;
     }
   }

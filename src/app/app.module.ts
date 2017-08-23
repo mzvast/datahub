@@ -18,8 +18,6 @@ import { ProtoOutComponent } from './proto-out/proto-out.component';
 import { DevicePdwComponent } from './device-pdw/device-pdw.component';
 import { DeviceTagComponent } from './device-tag/device-tag.component';
 import { DeviceRadiationComponent } from './device-radiation/device-radiation.component';
-import { DevicePhaseComponent } from './device-phase/device-phase.component';
-import { DeviceLocationComponent } from './device-location/device-location.component';
 import { DeviceComponent } from './device/device.component';
 import { SettingsComponent } from './settings/settings.component';
 import { DataShowComponent } from './data-show/data-show.component';
@@ -39,8 +37,6 @@ import { Ng4JsonEditorModule } from 'angular4-jsoneditor';
     DevicePdwComponent,
     DeviceTagComponent,
     DeviceRadiationComponent,
-    DevicePhaseComponent,
-    DeviceLocationComponent,
     DeviceComponent,
     SettingsComponent,
     DataShowComponent,
@@ -66,9 +62,7 @@ import { Ng4JsonEditorModule } from 'angular4-jsoneditor';
           { path: 'tag', component: DeviceTagComponent },
           { path: 'pdw', component: DevicePdwComponent },
           { path: 'radiation', component: DeviceRadiationComponent },
-          { path: 'intf', component: DeviceIntfComponent } // ,
-          // { path: 'phase', component: DevicePhaseComponent },
-          // { path: 'location', component: DeviceLocationComponent }
+          { path: 'intf', component: DeviceIntfComponent }
         ]
       },
       {

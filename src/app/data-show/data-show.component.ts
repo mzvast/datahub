@@ -89,6 +89,7 @@ export class DataShowComponent implements OnInit, OnDestroy {
         return {
           time: this.datePipe.transform(curVal.createdAt, 'yyyy-MM-dd HH:mm:ss'),
           remote_host: curVal.remote_host,
+          proto_id: curVal.proto_id,
           raw: curVal.raw.toString()
         };
       });
@@ -102,12 +103,22 @@ export class DataShowComponent implements OnInit, OnDestroy {
     if (this.type === 'pkg') {
       // TODO 这个原始数据不用popup了，要不然copy数据到剪贴板？
     } else {
-      this.dialog.open(DataShowDialogComponent, {
-        data: {
-          raw: this.selected[0]['raw'],
-          remote_host: this.selected[0]['remote_host'],
-          type: this.type
+      const protoId = this.selected[0]['proto_id'];
+      this._databaseService.models['proto'].findById(protoId).then((result) => {
+        if (this._settingService.debug) {
+          console.log(`proto: ${protoId}`, result.raw.toString());
         }
+        this.dialog.open(DataShowDialogComponent, {
+          data: {
+            raw: this.selected[0]['raw'],
+            remote_host: this.selected[0]['remote_host'],
+            type: this.type,
+            protoId: result.id,
+            proto: JSON.parse(result.raw.toString())
+          }
+        });
+      }).catch((error) => {
+        console.log('error:', error);
       });
     }
 

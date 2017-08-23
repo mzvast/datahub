@@ -48,15 +48,15 @@
         </ngx-datatable-column>
 
         <ngx-datatable-column name="Action" sortable="false" prop="in_use">
-          <template let-column="column" ngx-datatable-header-template>
+          <ng-template let-column="column" ngx-datatable-header-template>
             当前协议
-          </template>
-          <template let-row="row" let-value="value" ngx-datatable-cell-template>
+          </ng-template>
+          <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
             <!--<button md-icon-button (click)="blockAgents(value)" [disabled]="row['status']==='BLOCKED'">-->
             <!--设为当前协议-->
             <!--</button>-->
             <md-icon [hidden]="!value">done</md-icon>
-          </template>
+          </ng-template>
         </ngx-datatable-column>
       </ngx-datatable>
       <p>
