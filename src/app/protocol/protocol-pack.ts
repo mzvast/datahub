@@ -88,7 +88,7 @@ export class ProtocolPack {
     switch (type) {
       case 0: // 【标签包】
         const pack = new TagDataPack(this.host, control, gps);
-        pack.data = data.slice(0);
+        pack.datas.push(data.slice(0));
         // debug it
         if (debug) {
           console.log(pack.description());
@@ -125,7 +125,7 @@ export class ProtocolPack {
         }
         // 中频去掉GPS
         const pack4 = new IntermediateFrequencyDataPack(this.host, control, gps);
-        pack4.data = data.slice(136, 136 + 10240);
+        pack4.datas.push(data.slice(136, 136 + 10240));
         // debug it
         if (debug) {
           console.log(`parser intermediate frequency data pack success.`);

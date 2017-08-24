@@ -42,7 +42,7 @@ export class DeviceIntfComponent implements OnInit {
     this.subscription = this.tcpService.getMessage().subscribe((msg: IntermediateFrequencyDataPack) => {
       console.log(`receive intermediate freq data pack, type: ${msg.type}`);
       if (msg.type === 4) {// 判断是中频数据
-        this.exportData(msg.data);
+        this.exportData(msg.datas[0]);
         this._cd.detectChanges(); // 检测更改，更新UI。
       }
     });

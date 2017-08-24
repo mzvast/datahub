@@ -10,12 +10,7 @@ import {
 import {MD_DIALOG_DATA, MdSnackBar, MdSnackBarConfig} from '@angular/material';
 import {ProtocolPack} from '../protocol/protocol-pack';
 import {Buffer} from 'buffer';
-import {
-  BaseDataPack,
-  NarrowBandFullPulseDataPack,
-  NarrowBandSourceDataPack,
-  TagDataPack
-} from './../protocol/data-pack';
+import {BaseDataPack} from './../protocol/data-pack';
 
 @Component({
   selector: 'app-data-show-dialog',
@@ -27,9 +22,13 @@ import {
 
 export class DataShowDialogComponent implements OnInit, OnDestroy {
 
-  items = [];
+  items = []; // TODO 这里还不对，要根据每一列要获取要的数据
+  tabs = [];
+  columns = [];
   dataPack: BaseDataPack;
   raw: string;
+  currentIndex = 0;
+  columnsPerTab = 10;
 
   constructor(@Optional() @Inject(MD_DIALOG_DATA) public data: any, private snackBar: MdSnackBar) {
     // console.log(data);
@@ -47,43 +46,52 @@ export class DataShowDialogComponent implements OnInit, OnDestroy {
     this.dataPack = protocolPack.parserDataPack(false); // 解析包数据
     this.dataPack.proto = proto;
     this.dataPack.protoId = protoId;
+    this.currentIndex = 0;
     console.log(`data pack parser ok, type: ${this.dataPack.type}, protoId: ${protoId}`);
     if (this.dataPack) {
       const gps = this.dataPack.gps;
       this.dataPack.gps = [gps.slice(0, 64), gps.slice(64)].join('\n');
       const control = this.dataPack.control;
       this.dataPack.control = [control.slice(0, 64), control.slice(64)].join('\n');
-      switch (this.dataPack.type) {
-        case 0:
-          this.parserTagDataPack(this.dataPack);
-          break;
-        case 1:
-          this.parserNarrowBandFullPulseDataPack(this.dataPack);
-          break;
-        case 5:
-          this.parserNarrowBandSourceDataPack(this.dataPack);
-          break;
-      }
+
+      this.tabs = this.generateTabs();
+      this.columns = this.generateColumns();
+      this.items = this.dataPack.parseItems(this.dataPack.datas[this.currentIndex]);
     }
 
   }
 
-  parserNarrowBandSourceDataPack(baseDataPack: BaseDataPack) {
-    const pack: NarrowBandSourceDataPack = baseDataPack as NarrowBandSourceDataPack;
-    // console.log(`pack data: ${pack.datas[0]}`);
-    this.items = pack.parseItems(pack.datas[0]);
+  generateTabs() {
+    const items = [];
+    const page = ~~((this.dataPack.datas.length - 1) / this.columnsPerTab + 1);
+    console.log(`datas length: ${this.dataPack.datas.length}, page: ${page}`);
+    for (let i = 0; i < page; i++) {
+      const obj = {};
+      let end = i * this.columnsPerTab + this.columnsPerTab;
+      if (end > this.dataPack.datas.length) {
+        end = this.dataPack.datas.length;
+      }
+      obj['name'] = (i * this.columnsPerTab + 1) + '-' + end;
+      obj['value'] = i;
+      items.push(obj);
+    }
+    return items;
   }
 
-  parserTagDataPack(baseDataPack: BaseDataPack) {
-    const pack: TagDataPack = baseDataPack as TagDataPack;
-    // console.log(`pack data: ${pack.datas[0]}`);
-    this.items = pack.parseItems(pack.data);
-  }
-
-  parserNarrowBandFullPulseDataPack(baseDataPack: BaseDataPack) {
-    const pack: NarrowBandFullPulseDataPack = baseDataPack as NarrowBandFullPulseDataPack;
-    // console.log(`pack data: ${pack.datas[0]}`);
-    this.items = pack.parseItems(pack.datas[0]);
+  generateColumns() {
+    const start = this.currentIndex * this.columnsPerTab;
+    let end = start + this.columnsPerTab;
+    if (end > this.dataPack.datas.length) {
+      end = this.dataPack.datas.length;
+    }
+    const items = [];
+    for (let i = start; i < end; i++) {
+      const obj = {};
+      obj['name'] = i;
+      obj['value'] = i;
+      items.push(obj);
+    }
+    return items;
   }
 
   ngOnInit() {
@@ -108,5 +116,11 @@ export class DataShowDialogComponent implements OnInit, OnDestroy {
     const config = new MdSnackBarConfig();
     config.duration = 5000;
     this.snackBar.open(message, null, config);
+  }
+
+  tabSelected(event) {
+    this.currentIndex = event.index;
+    this.items = this.dataPack.parseItems(this.dataPack.datas[this.currentIndex]);
+    // console.log(event);
   }
 }

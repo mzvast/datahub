@@ -22,6 +22,8 @@ export class BaseDataPack {
   // 固定信息
   // private end: number; // 包尾4, 0x0000FC1D
 
+  datas: Array<Buffer> = new Array();
+
   constructor(host: string, control: string, gps: string) {
     this.host = host;
     this.control = control;
@@ -50,6 +52,8 @@ export class BaseDataPack {
 
         }
         const name = item['name'];
+        const unit = item.hasOwnProperty('unit') ? item['unit'] : '';
+        // name = name + unit;
         const type = item['type'];
         let value = '';
         if (type === 'string') {
@@ -59,14 +63,14 @@ export class BaseDataPack {
           if (type === 'number') {
             if (item.hasOwnProperty('enum')) {
               const v2 = this.findEnum(item['enum'], v);
-              value = v2 ? v2 : ('未知' + v);
+              value = v2 ? v2 : ('<font color=\"red\">未知' + v + '</font>');
             } else {
-              const unit = item.hasOwnProperty('unit') ? item['unit'] : '';
               if (item.hasOwnProperty('multiple')) {
                 const multiple = item['multiple'];
                 v = v * multiple;
               }
               value = v + unit;
+              // value = v + '';
             }
           } else if (type === 'flag') {
             if (v === 0) {
@@ -104,24 +108,9 @@ export class BaseDataPack {
 }
 
 /**
- * 数据信息是: 第一个是个数，后面是多少个数据
- */
-export class BaseDescriptionDataPack extends BaseDataPack {
-
-  // dataCount: number; // 全脉冲个数统计4
-  datas: Array<Buffer> = new Array();
-
-  constructor(host: string, control: string, gps: string) {
-    super(host, control, gps);
-  }
-
-}
-
-/**
  * 标签包0 312字节
  */
 export class TagDataPack extends BaseDataPack {
-  data: Buffer;
 
   constructor(host: string, control: string, gps: string) {
     super(host, control, gps);
@@ -129,14 +118,14 @@ export class TagDataPack extends BaseDataPack {
   }
 
   description() {
-    return `[TagDataPack] control: ${this.control}, gps: ${this.gps}, data length: ${this.data.length}`;
+    return `[TagDataPack] control: ${this.control}, gps: ${this.gps}, datas length: ${this.datas.length}`;
   }
 }
 
 /**
  * 窄带全脉冲数据包1
  */
-export class NarrowBandFullPulseDataPack extends BaseDescriptionDataPack {
+export class NarrowBandFullPulseDataPack extends BaseDataPack {
 
   constructor(host: string, control: string, gps: string) {
     super(host, control, gps);
@@ -152,7 +141,7 @@ export class NarrowBandFullPulseDataPack extends BaseDescriptionDataPack {
 /**
  * 窄带辐射源数据包5
  */
-export class NarrowBandSourceDataPack extends BaseDescriptionDataPack {
+export class NarrowBandSourceDataPack extends BaseDataPack {
   constructor(host: string, control: string, gps: string) {
     super(host, control, gps);
     this.type = 5;
@@ -169,8 +158,6 @@ export class NarrowBandSourceDataPack extends BaseDescriptionDataPack {
  * 中频数据包4
  */
 export class IntermediateFrequencyDataPack extends BaseDataPack {
-  // 中频数据量很大，存Buffer 中频数据描述字
-  data: Buffer;
 
   constructor(host: string, control: string, gps: string) {
     super(host, control, gps);
@@ -179,7 +166,7 @@ export class IntermediateFrequencyDataPack extends BaseDataPack {
 
   description() {
     return `[IntermediateFrequencyDataPack] control: ${this.control}, gps: ${this.gps}, ` +
-      `data length: ${this.data.length}`;
+      `datas length: ${this.datas.length}`;
   }
 }
 

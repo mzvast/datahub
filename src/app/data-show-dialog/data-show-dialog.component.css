@@ -11,7 +11,7 @@ md-grid-tile {
 }
 
 .container {
-  width: 60vw;
+  width: 65vw;
   max-height: 80vh;
   overflow-y: auto;
 }
