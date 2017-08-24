@@ -5,7 +5,8 @@ import { HttpModule } from '@angular/http';
 import { RouterModule } from '@angular/router';
 
 import { MaterialModule } from '@angular/material';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+// import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 import { AppComponent } from './app.component';
@@ -52,7 +53,8 @@ import { ClipboardModule } from 'ngx-clipboard';
     FormsModule,
     HttpModule,
     MaterialModule,
-    BrowserAnimationsModule,
+    // BrowserAnimationsModule,
+    NoopAnimationsModule,
     Ng4JsonEditorModule,
     ClipboardModule,
     RouterModule.forRoot([

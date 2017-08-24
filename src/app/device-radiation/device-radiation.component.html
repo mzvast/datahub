@@ -19,9 +19,15 @@
     <md-grid-tile colspan=3 rowspan=2 ngxClipboard [cbContent]="gps" (cbOnSuccess)="valueCopied(gps)"
                   class="can-copy"><span [innerHTML]="gps"></span></md-grid-tile>
   </div>
-  <div *ngFor="let item of items">
-    <md-grid-tile colspan=1 rowspan=1 class="title"><span>{{item?.name}}</span></md-grid-tile>
-    <md-grid-tile colspan=1 rowspan=1 ngxClipboard [cbContent]="item?.value" (cbOnSuccess)="valueCopied(item?.value)"
-                  class="can-copy"><span [innerHTML]="item?.value"></span></md-grid-tile>
-  </div>
 </md-grid-list>
+
+<md-tab-group (selectChange)="tabSelected($event)">
+  <md-tab *ngFor="let tab of tabs" label="{{tab.name}}" >
+    <md-grid-list cols="{{columns.length+1}}" rowHeight="2em" *ngIf="currentIndex === tab.value">
+      <div *ngFor="let item of items">
+        <md-grid-tile colspan=1 rowspan=1 class="title"><span>{{item?.name}}</span></md-grid-tile>
+        <md-grid-tile *ngFor="let column of columns" colspan=1 rowspan=1><span [innerHTML]="item?.value"></span></md-grid-tile>
+      </div>
+    </md-grid-list>
+  </md-tab>
+</md-tab-group>
