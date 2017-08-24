@@ -91,13 +91,20 @@
 
               </ngx-datatable-footer>
             </ngx-datatable>
+
+            <p>
+              <span>示例</span>
+            </p>
+            <div style="height:220px; margin-top: 5px;">
+              <json-editor #editorSample [options]="editorSampleOptions" [data]="sample" style="width: 100%;height:100%;"></json-editor>
+            </div>
           </td>
           <td>
             <p>
               <span [innerHTML]="status"></span>
             </p>
             <div style="height:520px; margin-top: 5px;">
-              <json-editor [options]="editorOptions" style="width: 100%;height:100%;"></json-editor>
+              <json-editor #editor [options]="editorOptions" style="width: 100%;height:100%;"></json-editor>
             </div>
           </td>
         </tr>

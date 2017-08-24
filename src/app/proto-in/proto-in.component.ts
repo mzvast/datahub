@@ -16,11 +16,16 @@ import {MdSnackBar, MdSnackBarConfig} from '@angular/material';
 export class ProtoInComponent implements OnInit {
 
   public editorOptions: JsonEditorOptions;
-  @ViewChild(JsonEditorComponent) editor: JsonEditorComponent;
+  public editorSampleOptions: JsonEditorOptions;
+  // @ViewChild(JsonEditorComponent) editor: JsonEditorComponent;
+  @ViewChild('editor') editor: JsonEditorComponent;
+  @ViewChild('editorSample') editorSample: JsonEditorComponent;
 
   protos = [{code: 0, name: '标签包'}, {code: 1, name: '全脉冲'}, {code: 5, name: '辐射源'}, {code: -4, name: '中频控制'}];
   selectedProto: number;
   status: string;
+
+  sample;
 
   rows = [];
   selected = [];
@@ -31,7 +36,10 @@ export class ProtoInComponent implements OnInit {
               private datePipe: DatePipe,
               private snackBar: MdSnackBar) {
     this.page.pageNumber = 0;
-    this.page.size = 10;
+    this.page.size = 5;
+
+    this.editorSampleOptions = new JsonEditorOptions();
+    this.editorSampleOptions.mode = 'code'; // set only one mode
 
     this.editorOptions = new JsonEditorOptions();
     // this.editorOptions.modes = ['code', 'text', 'tree', 'view']; // set all allowed modes
@@ -51,6 +59,40 @@ export class ProtoInComponent implements OnInit {
         that.updateStatus('JSON解析错误', false);
       }
     };
+
+    this.sample = [{
+      'name': '脉冲计数',
+      'bytes': 2,
+      'type': 'number'
+    },
+      {
+        'name': '脉冲类型',
+        'bytes': 1,
+        'type': 'number',
+        'enum': '0:脉冲Pdw,1:连续波,2:分集信号'
+      },
+      {
+        'name': '指令接收状态',
+        'bytes': 2,
+        'type': 'flag',
+        'remark': 'flag0会以绿色显示 flag1红色显示',
+        'flag0': '接收正常',
+        'flag1': '出现丢帧'
+      },
+      {
+        'name': '分机工作温度',
+        'bytes': 2,
+        'type': 'number',
+        'multiple': 0.0078125,
+        'unit': '℃'
+      },
+      {
+        'name': '备份',
+        'bytes': 16,
+        'type': 'string',
+        'remark': 'hide设为true，结果会从界面隐藏',
+        'hide': true
+      }];
   }
 
   ngOnInit() {
