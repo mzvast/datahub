@@ -6,6 +6,10 @@ md-grid-tile {
   background: pink;
 }
 
+.can-copy {
+  cursor: hand;
+}
+
 .container {
   width: 60vw;
   max-height: 80vh;

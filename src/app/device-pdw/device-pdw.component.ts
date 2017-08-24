@@ -2,6 +2,7 @@ import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, OnDestro
 import { TcpService } from 'app/tcp.service';
 import { Subscription } from 'rxjs/Subscription';
 import { NarrowBandFullPulseDataPack } from 'app/protocol/data-pack';
+import {MdSnackBar, MdSnackBarConfig} from '@angular/material';
 
 @Component({
   selector: 'app-device-pdw',
@@ -20,7 +21,7 @@ export class DevicePdwComponent implements OnInit, OnDestroy {
   host: string;
   protoId: number;
 
-  constructor(private tcpService: TcpService, private cd: ChangeDetectorRef) { }
+  constructor(private tcpService: TcpService, private cd: ChangeDetectorRef, private snackBar: MdSnackBar) { }
   ngOnInit() {
     this.subscription = this.tcpService.getMessage().subscribe((msg: NarrowBandFullPulseDataPack) => {
       if (msg.type === 1) {// 判断是窄带全脉冲
@@ -35,6 +36,22 @@ export class DevicePdwComponent implements OnInit, OnDestroy {
   }
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
+  }
+
+  valueCopied(value) {
+    if (!value) {
+      return;
+    }
+    if (value.length > 64) {
+      value = value.substr(0, 64) + '...';
+    }
+    this.showToast('已复制: ' + value);
+  }
+
+  showToast(message: string) {
+    const config = new MdSnackBarConfig();
+    config.duration = 5000;
+    this.snackBar.open(message, null, config);
   }
 
 }

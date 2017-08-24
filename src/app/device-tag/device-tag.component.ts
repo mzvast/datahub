@@ -1,7 +1,15 @@
-import { TagDataPack } from './../protocol/data-pack';
-import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { TcpService } from 'app/tcp.service';
-import { Subscription } from 'rxjs/Subscription';
+import {TagDataPack} from './../protocol/data-pack';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewEncapsulation
+} from '@angular/core';
+import {TcpService} from 'app/tcp.service';
+import {Subscription} from 'rxjs/Subscription';
+import {MdSnackBar, MdSnackBarConfig} from '@angular/material';
 
 @Component({
   selector: 'app-device-tag',
@@ -20,7 +28,9 @@ export class DeviceTagComponent implements OnInit, OnDestroy {
   host: string;
   protoId: number;
 
-  constructor(private tcpService: TcpService, private cd: ChangeDetectorRef) { }
+  constructor(private tcpService: TcpService, private cd: ChangeDetectorRef, private snackBar: MdSnackBar) {
+  }
+
   ngOnInit() {
     this.subscription = this.tcpService.getMessage().subscribe((msg: TagDataPack) => {
       if (msg.type === 0) {// 判断是标签包
@@ -34,7 +44,24 @@ export class DeviceTagComponent implements OnInit, OnDestroy {
       }
     });
   }
+
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
+  }
+
+  valueCopied(value) {
+    if (!value) {
+      return;
+    }
+    if (value.length > 64) {
+      value = value.substr(0, 64) + '...';
+    }
+    this.showToast('已复制: ' + value);
+  }
+
+  showToast(message: string) {
+    const config = new MdSnackBarConfig();
+    config.duration = 5000;
+    this.snackBar.open(message, null, config);
   }
 }

@@ -40,6 +40,10 @@ md-slider{
     width: 80%;
   }
 
+.can-copy {
+  cursor: hand;
+}
+
 @media screen and (min-width: 960px){
   .box {
     width: 50%;

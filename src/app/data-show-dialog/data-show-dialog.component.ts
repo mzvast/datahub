@@ -1,13 +1,20 @@
 import {
-  Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, Inject, Optional,
-  OnDestroy
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  OnDestroy,
+  OnInit,
+  Optional,
+  ViewEncapsulation
 } from '@angular/core';
-import { MD_DIALOG_DATA } from '@angular/material';
+import {MD_DIALOG_DATA, MdSnackBar, MdSnackBarConfig} from '@angular/material';
 import {ProtocolPack} from '../protocol/protocol-pack';
 import {Buffer} from 'buffer';
 import {
-  NarrowBandFullPulseDataPack, BaseDataPack, TagDataPack,
-  NarrowBandSourceDataPack
+  BaseDataPack,
+  NarrowBandFullPulseDataPack,
+  NarrowBandSourceDataPack,
+  TagDataPack
 } from './../protocol/data-pack';
 
 @Component({
@@ -22,10 +29,16 @@ export class DataShowDialogComponent implements OnInit, OnDestroy {
 
   items = [];
   dataPack: BaseDataPack;
+  raw: string;
 
-  constructor(@Optional() @Inject(MD_DIALOG_DATA) public data: any) {
+  constructor(@Optional() @Inject(MD_DIALOG_DATA) public data: any, private snackBar: MdSnackBar) {
     // console.log(data);
-    this.parserRaw(data.remote_host, data.raw, data.protoId, data.proto);
+    if (data.type === 'pkg') {
+      this.raw = data.raw;
+    } else {
+      this.parserRaw(data.remote_host, data.raw, data.protoId, data.proto);
+    }
+
   }
 
   parserRaw(host: string, raw: string, protoId: number, proto: JSON) {
@@ -73,10 +86,27 @@ export class DataShowDialogComponent implements OnInit, OnDestroy {
     this.items = pack.parseItems(pack.datas[0]);
   }
 
-  ngOnInit() { }
+  ngOnInit() {
+  }
 
   ngOnDestroy(): void {
     this.items = [];
     this.dataPack = null;
+  }
+
+  valueCopied(value) {
+    if (!value) {
+      return;
+    }
+    if (value.length > 64) {
+      value = value.substr(0, 64) + '...';
+    }
+    this.showToast('已复制: ' + value);
+  }
+
+  showToast(message: string) {
+    const config = new MdSnackBarConfig();
+    config.duration = 5000;
+    this.snackBar.open(message, null, config);
   }
 }

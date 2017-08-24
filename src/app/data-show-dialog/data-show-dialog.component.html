@@ -1,31 +1,42 @@
 <div class="container">
-  <h2>数据详情</h2>
+  <h2>数据详情
+    <button md-icon-button md-close md-dialog-close>
+    <md-icon  class="material-icons">cancel</md-icon>
+  </button></h2>
   <md-divider></md-divider>
   <md-card-content>
     <div class="container">
 
-      <h2 *ngIf="!dataPack">解析错误</h2>
+      <h2 *ngIf="!dataPack && !raw">解析错误</h2>
 
-      <md-grid-list cols="4" rowHeight="2em">
+      <div *ngIf="raw" [innerHTML]="raw" style="word-wrap: break-word;" ngxClipboard [cbContent]="raw" (cbOnSuccess)="valueCopied(raw)"
+           class="can-copy"></div>
+
+      <md-grid-list cols="4" rowHeight="2em" *ngIf="dataPack">
         <div>
           <md-grid-tile colspan=1 rowspan=1 class="title"><span>Host</span></md-grid-tile>
-          <md-grid-tile colspan=1 rowspan=1><span [innerHTML]="dataPack?.host"></span></md-grid-tile>
+          <md-grid-tile colspan=1 rowspan=1 ngxClipboard [cbContent]="dataPack?.host" (cbOnSuccess)="valueCopied(dataPack?.host)"
+          class="can-copy"><span [innerHTML]="dataPack?.host"></span></md-grid-tile>
         </div>
         <div>
           <md-grid-tile colspan=1 rowspan=1 class="title"><span>协议号</span></md-grid-tile>
-          <md-grid-tile colspan=1 rowspan=1><span [innerHTML]="dataPack?.protoId"></span></md-grid-tile>
+          <md-grid-tile colspan=1 rowspan=1 ngxClipboard [cbContent]="dataPack?.protoId" (cbOnSuccess)="valueCopied(dataPack?.protoId)"
+                        class="can-copy"><span [innerHTML]="dataPack?.protoId"></span></md-grid-tile>
         </div>
         <div>
           <md-grid-tile colspan=1 rowspan=2 class="title"><span>系统控制信息</span></md-grid-tile>
-          <md-grid-tile colspan=3 rowspan=2><span [innerHTML]="dataPack?.control"></span></md-grid-tile>
+          <md-grid-tile colspan=3 rowspan=2 ngxClipboard [cbContent]="dataPack?.control" (cbOnSuccess)="valueCopied(dataPack?.control)"
+                        class="can-copy"><span [innerHTML]="dataPack?.control"></span></md-grid-tile>
         </div>
         <div>
           <md-grid-tile colspan=1 rowspan=2 class="title"><span>当前GPS数据</span></md-grid-tile>
-          <md-grid-tile colspan=3 rowspan=2><span [innerHTML]="dataPack?.gps"></span></md-grid-tile>
+          <md-grid-tile colspan=3 rowspan=2 ngxClipboard [cbContent]="dataPack?.gps" (cbOnSuccess)="valueCopied(dataPack?.gps)"
+                        class="can-copy"><span [innerHTML]="dataPack?.gps"></span></md-grid-tile>
         </div>
         <div *ngFor="let item of items">
           <md-grid-tile colspan=1 rowspan=1 class="title"><span>{{item?.name}}</span></md-grid-tile>
-          <md-grid-tile colspan=1 rowspan=1><span [innerHTML]="item?.value"></span></md-grid-tile>
+          <md-grid-tile colspan=1 rowspan=1 ngxClipboard [cbContent]="item?.value" (cbOnSuccess)="valueCopied(item?.value)"
+                        class="can-copy"><span [innerHTML]="item?.value"></span></md-grid-tile>
         </div>
       </md-grid-list>
     </div>

@@ -27,6 +27,7 @@ import { DeviceIntfComponent } from './device-intf/device-intf.component';
 import { DataShowDialogComponent } from './data-show-dialog/data-show-dialog.component';
 import { DatePipe } from '@angular/common';
 import { Ng4JsonEditorModule } from 'angular4-jsoneditor';
+import { ClipboardModule } from 'ngx-clipboard';
 
 @NgModule({
   declarations: [
@@ -53,6 +54,7 @@ import { Ng4JsonEditorModule } from 'angular4-jsoneditor';
     MaterialModule,
     BrowserAnimationsModule,
     Ng4JsonEditorModule,
+    ClipboardModule,
     RouterModule.forRoot([
       {
         path: 'device',

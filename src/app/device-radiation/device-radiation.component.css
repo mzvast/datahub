@@ -4,3 +4,7 @@ md-grid-tile{
 .title{
   background: pink;
 }
+
+.can-copy {
+  cursor: hand;
+}

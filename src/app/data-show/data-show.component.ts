@@ -23,9 +23,10 @@ export class DataShowComponent implements OnInit, OnDestroy {
   rows = [];
   selected = [];
   columns: any[] = [
-    {name: '时间', prop: 'time'},
-    {name: '协议ID', prop: 'proto_id'},
-    {name: '数据', prop: 'raw'}
+    {name: 'ID', prop: 'id'},
+    {name: '接收时间', prop: 'time'},
+    {name: '协议号', prop: 'proto_id'},
+    // {name: '数据', prop: 'raw'}
   ];
   page = new Page();
 
@@ -88,6 +89,7 @@ export class DataShowComponent implements OnInit, OnDestroy {
       this.rows = result.rows.map((curVal, index, arr) => {
         // console.log(`data length: ${data.length}, curVal: ${curVal}`);
         return {
+          id: curVal.id,
           time: this.datePipe.transform(curVal.createdAt, 'yyyy-MM-dd HH:mm:ss'),
           remote_host: curVal.remote_host,
           proto_id: curVal.proto_id,
@@ -102,7 +104,13 @@ export class DataShowComponent implements OnInit, OnDestroy {
 
   onSelect({selected}) {
     if (this.type === 'pkg') {
-      // TODO 这个原始数据不用popup了，要不然copy数据到剪贴板？
+      this.dialog.open(DataShowDialogComponent, {
+        data: {
+          raw: this.selected[0]['raw'],
+          remote_host: this.selected[0]['remote_host'],
+          type: this.type
+        }
+      });
     } else {
       const protoId = this.selected[0]['proto_id'];
       this._databaseService.models['proto'].findById(protoId).then((result) => {
