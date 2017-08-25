@@ -39,7 +39,7 @@ export class DeviceTagComponent implements OnInit, OnDestroy {
         this.gps = [msg.gps.slice(0, 64), msg.gps.slice(64)].join('\n');
         this.control = [msg.control.slice(0, 64), msg.control.slice(64)].join('\n');
         // console.log(message);
-        this.items = msg.parseItems(msg.datas[0]);
+        this.items = msg.parseDataItems(0, 1);
         this.cd.detectChanges(); // 检测更改，更新UI。
       }
     });

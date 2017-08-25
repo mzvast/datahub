@@ -247,6 +247,7 @@ const doSendTag = () => {
   let hexMsg = makeTag();
   let message = Buffer.from(hexMsg, 'hex');
   let msgToSend = packageMessage(message);
+  // console.log(msgToSend.toString('hex'))
   let client = dgram.createSocket('udp4');
   client.send(msgToSend, 0, msgToSend.length, PORT, HOST, function (err, bytes) {
     if (err) throw err;
@@ -259,6 +260,7 @@ const doSendPDW = () => {
   let hexMsg = makePDW();
   let message = Buffer.from(hexMsg, 'hex');
   let msgToSend = packageMessage(message);
+  // console.log(msgToSend.toString('hex'))
   let client = dgram.createSocket('udp4');
   client.send(msgToSend, 0, msgToSend.length, PORT, HOST, function (err, bytes) {
     if (err) throw err;
@@ -271,6 +273,7 @@ const doSendRadiation = () => {
   let hexMsg = makeRadiation();
   let message = Buffer.from(hexMsg, 'hex');
   let msgToSend = packageMessage(message);
+  // console.log(msgToSend.toString('hex'))
   let client = dgram.createSocket('udp4');
   client.send(msgToSend, 0, msgToSend.length, PORT, HOST, function (err, bytes) {
     if (err) throw err;

@@ -19,6 +19,8 @@ export class DeviceRadiationComponent implements OnInit, OnDestroy {
   columns = [];
   currentIndex = 0;
   columnsPerTab = 10;
+  start = 0;
+  len = 1;
   dataPack: NarrowBandSourceDataPack;
 
   control: string;
@@ -37,7 +39,7 @@ export class DeviceRadiationComponent implements OnInit, OnDestroy {
         this.control = [msg.control.slice(0, 64), msg.control.slice(64)].join('\n');
         this.tabs = this.generateTabs();
         this.columns = this.generateColumns();
-        this.items = msg.parseItems(msg.datas[this.currentIndex]);
+        this.items = this.dataPack.parseDataItems(this.start, this.len);
         this.cd.detectChanges(); // 检测更改，更新UI。
       }
     });
@@ -62,16 +64,10 @@ export class DeviceRadiationComponent implements OnInit, OnDestroy {
     this.snackBar.open(message, null, config);
   }
 
-  tabSelected(event) {
-    this.currentIndex = event.index;
-    this.items = this.dataPack.parseItems(this.dataPack.datas[this.currentIndex]);
-    // console.log(event);
-  }
-
   generateTabs() {
     const items = [];
     const page = ~~((this.dataPack.datas.length - 1) / this.columnsPerTab + 1);
-    console.log(`datas length: ${this.dataPack.datas.length}, page: ${page}`);
+    // console.log(`datas length: ${this.dataPack.datas.length}, page: ${page}`);
     for (let i = 0; i < page; i++) {
       const obj = {};
       let end = i * this.columnsPerTab + this.columnsPerTab;
@@ -87,18 +83,26 @@ export class DeviceRadiationComponent implements OnInit, OnDestroy {
 
   generateColumns() {
     const start = this.currentIndex * this.columnsPerTab;
-    let end = start + this.columnsPerTab;
-    if (end > this.dataPack.datas.length) {
-      end = this.dataPack.datas.length;
+    let len = this.columnsPerTab;
+    if (start + len > this.dataPack.datas.length - 1) {
+      len = this.dataPack.datas.length - start;
     }
+    this.start = start;
+    this.len = len;
     const items = [];
-    for (let i = start; i < end; i++) {
+    for (let i = start; i < start + len; i++) {
       const obj = {};
       obj['name'] = i;
       obj['value'] = i;
       items.push(obj);
     }
     return items;
+  }
+
+  tabSelected(event) {
+    this.currentIndex = event.index;
+    this.columns = this.generateColumns();
+    this.items = this.dataPack.parseDataItems(this.start, this.len);
   }
 
 }

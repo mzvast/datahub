@@ -30,17 +30,50 @@ export class BaseDataPack {
     this.gps = gps;
   }
 
-  parseItems(data: Buffer): any {
+  parserValue(index: number, b: number, data: Buffer, item: JSON) {
+    if (index + b > data.length) {
+      console.log(`parser item index out of bound, index: ${index + b}, bound: ${data.length}`);
+      return null;
+    }
+    const unit = item.hasOwnProperty('unit') ? item['unit'] : '';
+    // name = name + unit;
+    const type = item['type'];
+    let value = '';
+    if (type === 'string') {
+      value = data.slice(index, index + b).toString('hex');
+    } else {
+      let v = data.readIntLE(index, b);
+      if (type === 'number') {
+        if (item.hasOwnProperty('enum')) {
+          const v2 = this.findEnum(item['enum'], v);
+          value = v2 ? v2 : ('<font color=\"red\">未知' + v + '</font>');
+        } else {
+          if (item.hasOwnProperty('multiple')) {
+            const multiple = item['multiple'];
+            v = v * multiple;
+          }
+          value = v + unit;
+          // value = v + '';
+        }
+      } else if (type === 'flag') {
+        if (v === 0) {
+          value = '<font color=\"blue\">' + item['flag0'] + '</font>';
+        } else {
+          value = '<font color=\"red\">' + item['flag0'] + '</font>';
+        }
+      }
+    }
+
+    return value;
+  }
+
+  parseDataItems(start: number, len: number): any {
     const items = [];
     let index = 0;
-    for (const key in this.proto) {
+    outer: for (const key in this.proto) {
       if (this.proto.hasOwnProperty(key)) {
         const item = this.proto[key];
         const b = item['bytes'];
-        if (index + b > data.length) {
-          console.log(`parser item index out of bound, index: ${index + b}, bound: ${data.length}`);
-          break;
-        }
         if (item.hasOwnProperty('hide')) {
           const hideValue = item['hide'];
           if (typeof hideValue === 'boolean' && hideValue === false) {
@@ -52,38 +85,18 @@ export class BaseDataPack {
 
         }
         const name = item['name'];
-        const unit = item.hasOwnProperty('unit') ? item['unit'] : '';
-        // name = name + unit;
-        const type = item['type'];
-        let value = '';
-        if (type === 'string') {
-          value = data.slice(index, index + b).toString('hex');
-        } else {
-          let v = data.readIntLE(index, b);
-          if (type === 'number') {
-            if (item.hasOwnProperty('enum')) {
-              const v2 = this.findEnum(item['enum'], v);
-              value = v2 ? v2 : ('<font color=\"red\">未知' + v + '</font>');
-            } else {
-              if (item.hasOwnProperty('multiple')) {
-                const multiple = item['multiple'];
-                v = v * multiple;
-              }
-              value = v + unit;
-              // value = v + '';
-            }
-          } else if (type === 'flag') {
-            if (v === 0) {
-              value = '<font color=\"blue\">' + item['flag0'] + '</font>';
-            } else {
-              value = '<font color=\"red\">' + item['flag0'] + '</font>';
-            }
-          }
-        }
-
         const obj = {};
         obj['name'] = name;
-        obj['value'] = value;
+        const values = [];
+        for (let j = start; j < start + len; j++) {
+          const value = this.parserValue(index, b, this.datas[j], item);
+          if (value == null) {
+            break outer;
+          } else {
+            values.push(value);
+          }
+        }
+        obj['value'] = values;
         items.push(obj);
         index = index + b;
       }

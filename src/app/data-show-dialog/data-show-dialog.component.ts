@@ -29,6 +29,8 @@ export class DataShowDialogComponent implements OnInit, OnDestroy {
   raw: string;
   currentIndex = 0;
   columnsPerTab = 10;
+  start = 0;
+  len = 1;
 
   constructor(@Optional() @Inject(MD_DIALOG_DATA) public data: any, private snackBar: MdSnackBar) {
     // console.log(data);
@@ -56,7 +58,7 @@ export class DataShowDialogComponent implements OnInit, OnDestroy {
 
       this.tabs = this.generateTabs();
       this.columns = this.generateColumns();
-      this.items = this.dataPack.parseItems(this.dataPack.datas[this.currentIndex]);
+      this.items = this.dataPack.parseDataItems(this.start, this.len);
     }
 
   }
@@ -64,7 +66,7 @@ export class DataShowDialogComponent implements OnInit, OnDestroy {
   generateTabs() {
     const items = [];
     const page = ~~((this.dataPack.datas.length - 1) / this.columnsPerTab + 1);
-    console.log(`datas length: ${this.dataPack.datas.length}, page: ${page}`);
+    // console.log(`datas length: ${this.dataPack.datas.length}, page: ${page}`);
     for (let i = 0; i < page; i++) {
       const obj = {};
       let end = i * this.columnsPerTab + this.columnsPerTab;
@@ -80,12 +82,14 @@ export class DataShowDialogComponent implements OnInit, OnDestroy {
 
   generateColumns() {
     const start = this.currentIndex * this.columnsPerTab;
-    let end = start + this.columnsPerTab;
-    if (end > this.dataPack.datas.length) {
-      end = this.dataPack.datas.length;
+    let len = this.columnsPerTab;
+    if (start + len > this.dataPack.datas.length - 1) {
+      len = this.dataPack.datas.length - start;
     }
+    this.start = start;
+    this.len = len;
     const items = [];
-    for (let i = start; i < end; i++) {
+    for (let i = start; i < start + len; i++) {
       const obj = {};
       obj['name'] = i;
       obj['value'] = i;
@@ -120,7 +124,7 @@ export class DataShowDialogComponent implements OnInit, OnDestroy {
 
   tabSelected(event) {
     this.currentIndex = event.index;
-    this.items = this.dataPack.parseItems(this.dataPack.datas[this.currentIndex]);
-    // console.log(event);
+    this.columns = this.generateColumns();
+    this.items = this.dataPack.parseDataItems(this.start, this.len);
   }
 }
