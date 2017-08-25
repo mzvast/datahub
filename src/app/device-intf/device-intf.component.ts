@@ -21,6 +21,7 @@ export class DeviceIntfComponent implements OnInit {
   fs = electron.remote.getGlobal('fs');
   subscription: Subscription;
   intf; // 参数
+  filter;
 
   serial: number = -1;
 

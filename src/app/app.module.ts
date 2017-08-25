@@ -29,6 +29,7 @@ import { DataShowDialogComponent } from './data-show-dialog/data-show-dialog.com
 import { DatePipe } from '@angular/common';
 import { Ng4JsonEditorModule } from 'angular4-jsoneditor';
 import { ClipboardModule } from 'ngx-clipboard';
+import { HighlightPipe } from './highlight.pipe';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import { ClipboardModule } from 'ngx-clipboard';
     DataComponent,
     PlaceholderComponent,
     DeviceIntfComponent,
-    DataShowDialogComponent
+    DataShowDialogComponent,
+    HighlightPipe
   ],
   imports: [
     NgxDatatableModule,
@@ -94,7 +96,7 @@ import { ClipboardModule } from 'ngx-clipboard';
   entryComponents: [
     DataShowDialogComponent
   ],
-  providers: [DatabaseService, TcpService, SettingService, DatePipe],
+  providers: [DatabaseService, TcpService, SettingService, DatePipe, HighlightPipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

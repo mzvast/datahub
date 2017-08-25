@@ -14,6 +14,12 @@
         0
         <md-slider min="0" max="25" step="1" value="1" [thumb-label]="true" [tick-interval]="1" [(ngModel)]="intf.collectTime"></md-slider>25
       </div>
+
+      <div>搜索：
+        <md-input-container class="">
+          <input mdInput [(ngModel)]="filter">
+        </md-input-container>
+        </div>
     </div>
 
     <md-divider style="margin-top:1em;"></md-divider>
@@ -22,7 +28,7 @@
     </md-card-header>
     <div class="container">
       <div class="box">
-        <span class="item-header">工作方式:</span>
+        <span class="item-header" [innerHTML]="'工作方式:' | highlight : filter"></span>
         <md-select [(ngModel)]="intf.workType" class="medium-select item-value">
           <md-option *ngFor="let state of workTypeSelect" [value]="state.code">{{ state.name }}</md-option>
         </md-select>
