@@ -49,7 +49,7 @@ export class ProtoInComponent implements OnInit {
     this.editorOptions.onChange = function () {
       try {
         const json = that.editor.get();
-        const validateResult = myGlobals.validateProtocol(json);
+        const validateResult = that.selectedProto === -4 ? myGlobals.validateOutProtocol(json) : myGlobals.validateProtocol(json);
         if (!validateResult.result) {
           that.updateStatus(validateResult.message, false);
         } else {
@@ -182,7 +182,7 @@ export class ProtoInComponent implements OnInit {
   doSave(selectedId: number) {
     try {
       const json = this.editor.get();
-      const validateResult = myGlobals.validateProtocol(json);
+      const validateResult = this.selectedProto === -4 ? myGlobals.validateOutProtocol(json) : myGlobals.validateProtocol(json);
       if (!validateResult.result) {
         this.showToast(validateResult.message);
         return;
@@ -229,9 +229,9 @@ export class ProtoInComponent implements OnInit {
     this.updateStatus('', false);
     this.currentData = data;
     try {
-      const jsonValue = JSON.parse(data['raw']);
-      this.editor.set(jsonValue);
-      const validateResult = myGlobals.validateProtocol(jsonValue);
+      const json = JSON.parse(data['raw']);
+      this.editor.set(json);
+      const validateResult = this.selectedProto === -4 ? myGlobals.validateOutProtocol(json) : myGlobals.validateProtocol(json);
       if (!validateResult.result) {
         this.updateStatus(validateResult.message, false);
       } else {
