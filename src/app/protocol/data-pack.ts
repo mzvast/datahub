@@ -18,6 +18,8 @@ export class BaseDataPack {
   proto: JSON; // 解析用的自定义协议
   protoId: number; // 解析用的自定义协议ID
 
+  // saveFlag = true; // 主要用在中频那边，如果是saveFlag false就不要保存
+
   // 接下来数据信息
   // 固定信息
   // private end: number; // 包尾4, 0x0000FC1D

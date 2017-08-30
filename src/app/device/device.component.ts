@@ -15,6 +15,7 @@ declare var electron: any; // 　Typescript 定义
 export class DeviceComponent implements OnInit, OnDestroy {
   server = electron.remote.getGlobal('udp').server;
   progress = false;
+  saveFlag = true;
   protocols = [
     {
       name: '标签包',
@@ -51,6 +52,10 @@ export class DeviceComponent implements OnInit, OnDestroy {
     console.log('停止TCP监听');
     this.tcpService.stopTcpServer();
     // this.parentRouter.navigateByUrl('/device'); // 切换到空白页
+  }
+
+  toggleSave() {
+    this.tcpService.toggleSave(!this.saveFlag);
   }
 
   toggle() {

@@ -2,7 +2,11 @@
   <h2>接收数据</h2>
   <md-divider></md-divider>
   <section class="example-section">
-      <md-slide-toggle mdTooltip="点击停止" class="example-margin" color="accent" [(ngModel)]='progress' (click)='toggle()'>
+    <md-slide-toggle mdTooltip="点击切换保存" class="example-margin" color="accent" [(ngModel)]='saveFlag' (click)='toggleSave()'>
+      <span *ngIf="saveFlag">保存</span>
+      <span *ngIf="!saveFlag">不保存</span>
+    </md-slide-toggle>
+      <md-slide-toggle mdTooltip="点击停止/开启" class="example-margin" color="accent" [(ngModel)]='progress' (click)='toggle()'>
         <span *ngIf="progress">接收开启</span>
         <span *ngIf="!progress">接收关闭</span>
       </md-slide-toggle>

@@ -19,6 +19,7 @@ export class TcpService {
   subject = new BehaviorSubject<any>({});
   protos: Map<number, JSON>;
   protoIds: Map<number, number>;
+  saveFlag = true;
 
   constructor(private _dbService: DatabaseService,
               private _settingService: SettingService,
@@ -68,6 +69,10 @@ export class TcpService {
     }).catch((error) => {
       console.log('can not load protos from db:', error);
     });
+  }
+
+  toggleSave(save: boolean) {
+    this.saveFlag = save;
   }
 
   startTcpServer() {
@@ -158,7 +163,12 @@ export class TcpService {
           const proto = this.protos.get(dataPack.type);
           dataPack.protoId = protoId;
           dataPack.proto = proto;
-          this.sendMessage(dataPack); // 发给UI
+          // dataPack.saveFlag = this.saveFlag;
+          if (dataPack.type === 4 && !this.saveFlag) {
+            // 如果是中频且不要保存，就不要发过去了，因为不显示的
+          } else {
+            this.sendMessage(dataPack); // 发给UI
+          }
           this.saveRawDataToDB(dataPack.type, protoId, host, protocolPack.data);
         }
 
@@ -193,7 +203,12 @@ export class TcpService {
                   const proto = this.protos.get(dataPack.type);
                   dataPack.protoId = protoId;
                   dataPack.proto = proto;
-                  this.sendMessage(dataPack); // 发给UI
+                  // dataPack.saveFlag = this.saveFlag;
+                  if (dataPack.type === 4 && !this.saveFlag) {
+                    // 如果是中频且不要保存，就不要发过去了，因为不显示的
+                  } else {
+                    this.sendMessage(dataPack); // 发给UI
+                  }
                   this.saveRawDataToDB(dataPack.type, protoId, host, workingProtocolPack.data);
                 }
               }
@@ -260,7 +275,10 @@ export class TcpService {
    * 存的是protocol-pack里的data字段
    */
   saveRawDataToDB(type: number, protoId: number, host: string, data: Buffer) {
-    console.log(`save raw to db, type: ${type}, protoId: ${protoId}, host: ${host}`);
+    console.log(`save raw to db, type: ${type}, protoId: ${protoId}, host: ${host}, save: ${this.saveFlag}`);
+    if (!this.saveFlag) {
+      return;
+    }
     switch (type) {
       case 0: // 标签包
         this._dbService.create('tag', protoId, host, data.toString('hex'));
