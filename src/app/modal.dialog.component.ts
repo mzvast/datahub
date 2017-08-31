@@ -1,4 +1,5 @@
 import {Component} from '@angular/core';
+import {MdDialogRef} from '@angular/material';
 
 @Component({
   selector: 'app-modal-dialog',
@@ -10,6 +11,6 @@ export class ModalDialogComponent {
   positiveButton: string;
   cancelButton: string;
   constructor(
-    // public dialogRef: MdDialogRef<ModalDialogComponent>
+    public dialogRef: MdDialogRef<ModalDialogComponent>
   ) { }
 }
