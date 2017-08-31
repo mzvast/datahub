@@ -59,6 +59,9 @@
                   <!--设为当前协议-->
                   <!--</button>-->
                   <md-icon [hidden]="!value">done</md-icon>
+                  <button [hidden]="value" md-icon-button class="md-24" color="warn" (click)="deleteProtoAlert(row['id'])">
+                    <md-icon class="md-24" [hidden]="value">delete</md-icon>
+                  </button>
                 </ng-template>
               </ngx-datatable-column>
 

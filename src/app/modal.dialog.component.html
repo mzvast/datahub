@@ -1,0 +1,8 @@
+<h3>{{content}}</h3>
+<!--<button md-raised-button (click)="dialogRef.close()">Close dialog</button>-->
+<div style="float:right;">
+  <button md-raised-button [md-dialog-close]="0">{{cancelButton?cancelButton:'取消'}}</button>
+  <button *ngIf="positiveButton" md-raised-button color="primary" [md-dialog-close]="1">{{positiveButton}}</button>
+  <button *ngIf="destroyButton" md-raised-button color="warn" [md-dialog-close]="2">{{destroyButton}}</button>
+</div>
+

@@ -4,7 +4,8 @@ import * as myGlobals from '../globals.service';
 import {Page} from '../globals.service';
 import {JsonEditorComponent, JsonEditorOptions} from 'angular4-jsoneditor/jsoneditor/jsoneditor.component';
 import {DatePipe} from '@angular/common';
-import {MdSnackBar, MdSnackBarConfig} from '@angular/material';
+import {MdDialog, MdSnackBar, MdSnackBarConfig} from '@angular/material';
+import {ModalDialogComponent} from '../modal.dialog.component';
 
 @Component({
   selector: 'app-proto-in',
@@ -34,7 +35,8 @@ export class ProtoInComponent implements OnInit {
 
   constructor(private _databaseService: DatabaseService,
               private datePipe: DatePipe,
-              private snackBar: MdSnackBar) {
+              private snackBar: MdSnackBar,
+              public dialog: MdDialog) {
     this.page.pageNumber = 0;
     this.page.size = 5;
 
@@ -101,6 +103,24 @@ export class ProtoInComponent implements OnInit {
     this.fetch({offset: 0});
   }
 
+  deleteProtoAlert(id) {
+    const dialogRef = this.dialog.open(ModalDialogComponent);
+    dialogRef.componentInstance.content = '确定要删除协议？协议号：' + id;
+    dialogRef.componentInstance.destroyButton = '删除';
+    dialogRef.componentInstance.cancelButton = '取消';
+    const that = this;
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 2) {
+        that._databaseService.models['proto'].update(
+          {in_use: 2}, {where: {id: id, in_use: 0}}
+        ).then(function () {
+          that.showToast('成功删除');
+          that.fetchAndSelect({offset: 0}, that.currentData['id'] === id);
+        });
+      }
+    });
+  }
+
   updateSelectedProto() {
     // console.log(`selectedProto:${this.selectedProto}`);
     this.fetchAndSelect({offset: 0}, true);
@@ -110,8 +130,8 @@ export class ProtoInComponent implements OnInit {
     this.page.pageNumber = pageInfo.offset;
     this._databaseService.models['proto'].findAndCountAll({
       where: {
-        type: this.selectedProto
-        // ,attr2: 'cake'
+        type: this.selectedProto,
+        in_use: {$in: [0, 1]}
       },
       // where: ['remote_host = "::ffff:127.0.0.1"'],
       order: 'in_use desc, id desc',
@@ -147,9 +167,18 @@ export class ProtoInComponent implements OnInit {
   }
 
   onSelect({selected}) {
-    // console.log('Select Event', selected, this.selected);
-    this.updateCurrentEditor(this.selected[0]);
+    // console.log('Select Event', selected);
+    if (this.selected && this.selected.length > 0) {
+      this.updateCurrentEditor(this.selected[0]);
+    }
   }
+
+  // checkSelectable(event) {
+  //   console.log('Checking if selectable', event);
+  //   return true;
+  //   // return new Date().getTime() - this.lastDeleteClicked > 300;
+  // }
+
 
   onActivate(event) {
     // console.log('Activate Event', event);

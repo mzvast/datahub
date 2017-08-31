@@ -73,6 +73,7 @@ export class TcpService {
 
   toggleSave(save: boolean) {
     this.saveFlag = save;
+    console.log(`save record flag: ${this.saveFlag}`);
   }
 
   startTcpServer() {
