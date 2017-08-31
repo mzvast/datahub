@@ -9,7 +9,10 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       in_use: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.INTEGER
+      },
+      name: {
+        type: Sequelize.STRING
       },
       type: {
         type: Sequelize.INTEGER
