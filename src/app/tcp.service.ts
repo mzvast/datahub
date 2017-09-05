@@ -39,7 +39,7 @@ export class TcpService {
     // this.sendMsg('Hello World');
   }
 
-  sendMessage(message: any) {
+  sendMessage(message: BaseDataPack) {
     this.subject.next(message);
   }
 
@@ -63,7 +63,8 @@ export class TcpService {
         this.protos.set(curVal.type, JSON.parse(curVal.raw.toString()));
         this.protoIds.set(curVal.type, curVal.id);
         if (this._settingService.debug) {
-          console.log(`in use proto type: ${curVal.type}, ${curVal.raw.toString()}`);
+          console.log(`in use proto type: ${curVal.type}}`);
+          // console.log(`in use proto type: ${curVal.type}, ${curVal.raw.toString()}`);
         }
       });
     }).catch((error) => {
@@ -158,8 +159,8 @@ export class TcpService {
       }
       if (dataPack) {
         const protoId = this.protoIds.get(dataPack.type);
-        if (!protoId) {
-          console.error(`can not find current protoId, abort`);
+        if (dataPack.type !== 4 && !protoId) {
+          console.error(`can not find current protoId with type: ${dataPack.type}, abort`);
         } else {
           const proto = this.protos.get(dataPack.type);
           dataPack.protoId = protoId;
@@ -198,8 +199,8 @@ export class TcpService {
                 //   console.log(`dataPackV2 send dataPack message, type: ${dataPack.type}`);
                 // }
                 const protoId = this.protoIds.get(dataPack.type);
-                if (!protoId) {
-                  console.error(`can not find current protoId, abort`);
+                if (dataPack.type !== 4 && !protoId) {
+                  console.error(`can not find current protoId with type: ${dataPack.type}, abort`);
                 } else {
                   const proto = this.protos.get(dataPack.type);
                   dataPack.protoId = protoId;
@@ -276,7 +277,9 @@ export class TcpService {
    * 存的是protocol-pack里的data字段
    */
   saveRawDataToDB(type: number, protoId: number, host: string, data: Buffer) {
-    console.log(`save raw to db, type: ${type}, protoId: ${protoId}, host: ${host}, save: ${this.saveFlag}`);
+    if (this._settingService.debug) {
+      console.log(`save raw to db, type: ${type}, protoId: ${protoId}, host: ${host}, save: ${this.saveFlag}`);
+    }
     if (!this.saveFlag) {
       return;
     }
