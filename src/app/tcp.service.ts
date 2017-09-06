@@ -94,7 +94,9 @@ export class TcpService {
         if (!electron.remote.getGlobal('tcp').server) {
           return;
         }
-        console.log(`server got ${data.length} bytes from ${sock.remoteAddress}:${sock.remotePort}`);
+        if (this._settingService.debug) {
+          console.log(`server got ${data.length} bytes from ${sock.remoteAddress}:${sock.remotePort}`);
+        }
         that.parserProtocolPack(Buffer.from(data), sock.remoteAddress, sock.remotePort);
         if (that._settingService.record) {
           that._dbService.createRaw('pkg', sock.remoteAddress, `${data.toString('hex')}`);
@@ -103,7 +105,7 @@ export class TcpService {
 
       sock.on('close', function (data) {
         that.showMessage('已断开: ' + sock.remoteAddress);
-        console.log(`client disconnected: ${sock.remoteAddress}:${sock.remotePort}`);
+        console.warn(`client disconnected: ${sock.remoteAddress}:${sock.remotePort}`);
       });
 
     }).listen(this._settingService.local_port);
