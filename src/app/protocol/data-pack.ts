@@ -61,7 +61,7 @@ export class BaseDataPack {
         if (v === 0) {
           value = '<font color=\"blue\">' + item['flag0'] + '</font>';
         } else {
-          value = '<font color=\"red\">' + item['flag0'] + '</font>';
+          value = '<font color=\"red\">' + item['flag1'] + '</font>';
         }
       }
     }
