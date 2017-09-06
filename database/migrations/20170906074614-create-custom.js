@@ -1,20 +1,20 @@
 'use strict';
 module.exports = {
   up: function(queryInterface, Sequelize) {
-    return queryInterface.createTable('protos', {
+    return queryInterface.createTable('customs', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      in_use: {
-        type: Sequelize.INTEGER
-      },
-      name: {
+      remote_host: {
         type: Sequelize.STRING
       },
       type: {
+        type: Sequelize.INTEGER
+      },
+      proto_id: {
         type: Sequelize.INTEGER
       },
       raw: {
@@ -31,6 +31,6 @@ module.exports = {
     });
   },
   down: function(queryInterface, Sequelize) {
-    return queryInterface.dropTable('protos');
+    return queryInterface.dropTable('customs');
   }
 };
