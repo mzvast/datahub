@@ -27,7 +27,7 @@ export class DeviceRadiationComponent implements OnInit, OnDestroy {
   control: string;
   gps: string;
   host: string;
-  protoId = -1;
+  protoId: number;
   time: string;
 
   constructor(private tcpService: TcpService,
@@ -55,7 +55,6 @@ export class DeviceRadiationComponent implements OnInit, OnDestroy {
     });
   }
   ngOnDestroy(): void {
-    this.protoId = -1;
     this.subscription.unsubscribe();
   }
 
