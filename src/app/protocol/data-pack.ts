@@ -8,6 +8,7 @@ import {Buffer} from 'buffer';
  * 数据基类
  */
 export class BaseDataPack {
+  time: number; // 接收时间
   host: string; // 来自哪个IP
   // private head = 0x1ACF; // 帧有效标记2
   type: number; // 数据类型 2
@@ -30,6 +31,7 @@ export class BaseDataPack {
     this.host = host;
     this.control = control;
     this.gps = gps;
+    this.time = new Date().getTime();
   }
 
   parserValue(index: number, b: number, data: Buffer, item: JSON) {

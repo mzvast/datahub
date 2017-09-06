@@ -3,6 +3,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { NarrowBandSourceDataPack } from 'app/protocol/data-pack';
 import {MdSnackBar, MdSnackBarConfig} from '@angular/material';
+import {DatePipe} from '@angular/common';
 
 @Component({
   selector: 'app-device-radiation',
@@ -26,25 +27,35 @@ export class DeviceRadiationComponent implements OnInit, OnDestroy {
   control: string;
   gps: string;
   host: string;
-  protoId: number;
+  protoId = -1;
+  time: string;
 
-  constructor(private tcpService: TcpService, private cd: ChangeDetectorRef, private snackBar: MdSnackBar) { }
+  constructor(private tcpService: TcpService,
+              private cd: ChangeDetectorRef,
+              private datePipe: DatePipe,
+              private snackBar: MdSnackBar) {
+  }
+
   ngOnInit() {
     this.subscription = this.tcpService.getMessage().subscribe((msg: NarrowBandSourceDataPack) => {
       if (msg.type === 5) {// 判断是窄带辐射源
         this.dataPack = msg;
         this.host = msg.host;
-        this.protoId = msg.protoId;
         this.gps = [msg.gps.slice(0, 64), msg.gps.slice(64)].join('\n');
         this.control = [msg.control.slice(0, 64), msg.control.slice(64)].join('\n');
-        this.tabs = this.generateTabs();
-        this.columns = this.generateColumns();
+        this.time = this.datePipe.transform(msg.time, 'yyyy-MM-dd HH:mm:ss.') + msg.time.toString().substring(10, 13);
+        if (this.protoId !== msg.protoId) {
+          this.tabs = this.generateTabs();
+          this.columns = this.generateColumns();
+          this.protoId = msg.protoId;
+        }
         this.items = this.dataPack.parseDataItems(this.start, this.len);
         this.cd.detectChanges(); // 检测更改，更新UI。
       }
     });
   }
   ngOnDestroy(): void {
+    this.protoId = -1;
     this.subscription.unsubscribe();
   }
 

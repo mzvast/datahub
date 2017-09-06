@@ -94,7 +94,7 @@ export class TcpService {
         if (!electron.remote.getGlobal('tcp').server) {
           return;
         }
-        if (this._settingService.debug) {
+        if (that._settingService.debug) {
           console.log(`server got ${data.length} bytes from ${sock.remoteAddress}:${sock.remotePort}`);
         }
         that.parserProtocolPack(Buffer.from(data), sock.remoteAddress, sock.remotePort);

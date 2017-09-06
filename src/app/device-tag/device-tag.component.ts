@@ -10,6 +10,7 @@ import {
 import {TcpService} from 'app/tcp.service';
 import {Subscription} from 'rxjs/Subscription';
 import {MdSnackBar, MdSnackBarConfig} from '@angular/material';
+import {DatePipe} from '@angular/common';
 
 @Component({
   selector: 'app-device-tag',
@@ -27,8 +28,12 @@ export class DeviceTagComponent implements OnInit, OnDestroy {
   gps: string;
   host: string;
   protoId: number;
+  time: string;
 
-  constructor(private tcpService: TcpService, private cd: ChangeDetectorRef, private snackBar: MdSnackBar) {
+  constructor(private tcpService: TcpService,
+              private cd: ChangeDetectorRef,
+              private datePipe: DatePipe,
+              private snackBar: MdSnackBar) {
   }
 
   ngOnInit() {
@@ -38,6 +43,7 @@ export class DeviceTagComponent implements OnInit, OnDestroy {
         this.protoId = msg.protoId;
         this.gps = [msg.gps.slice(0, 64), msg.gps.slice(64)].join('\n');
         this.control = [msg.control.slice(0, 64), msg.control.slice(64)].join('\n');
+        this.time = this.datePipe.transform(msg.time, 'yyyy-MM-dd HH:mm:ss.') + msg.time.toString().substring(10, 13);
         // console.log(message);
         this.items = msg.parseDataItems(0, 1);
         this.cd.detectChanges(); // 检测更改，更新UI。
