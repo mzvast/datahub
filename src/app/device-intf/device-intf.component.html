@@ -1,32 +1,30 @@
 <md-card>
-  <md-card-header>
-    <h2>中频长度设定（范围：0-25毫秒）</h2>
-  </md-card-header>
   <md-card-content>
-    <div class="container">
-      <div class="box display">
-        <md-input-container class="medium-input">
-          <input mdInput [(ngModel)]="intf.collectTime" type="number" max="25" min="0" step="1">
-        </md-input-container>
-        毫秒
-      </div>
-      <div class="box slider">
-        0
-        <md-slider min="0" max="25" step="1" value="1" [thumb-label]="true" [tick-interval]="1" [(ngModel)]="intf.collectTime"></md-slider>25
-      </div>
+    <!--<div class="container">-->
+      <!--<div>搜索：-->
+        <!--<md-input-container class="">-->
+          <!--<input mdInput [(ngModel)]="filter">-->
+        <!--</md-input-container>-->
+        <!--</div>-->
+      <!--<div class="box">-->
+        <!--<span class="item-header" [innerHTML]="'工作方式:' | highlight : filter"></span>-->
+        <!--<md-select [(ngModel)]="intf.workType" class="medium-select item-value">-->
+          <!--<md-option *ngFor="let state of workTypeSelect" [value]="state.code">{{ state.name }}</md-option>-->
+        <!--</md-select>-->
+      <!--</div>-->
+    <!--</div>-->
 
-      <div>搜索：
-        <md-input-container class="">
-          <input mdInput [(ngModel)]="filter">
-        </md-input-container>
-        </div>
-    </div>
-
-    <md-divider style="margin-top:1em;"></md-divider>
     <md-card-header>
-      <h2>其他参数设定</h2>
+      <h2>参数设定</h2>
     </md-card-header>
     <div class="container">
+      <div class="box">
+        <span class="item-header">中频长度:</span>
+        <md-input-container class="medium-input item-value">
+          <input mdInput [(ngModel)]="intf.collectTime" type="number" min="1" max="25">
+        </md-input-container>
+        <span></span>
+      </div>
       <div class="box">
         <span class="item-header" [innerHTML]="'工作方式:' | highlight : filter"></span>
         <md-select [(ngModel)]="intf.workType" class="medium-select item-value">
