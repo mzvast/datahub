@@ -18,7 +18,8 @@ import {Page} from '../globals.service';
 export class DataShowComponent implements OnInit, OnDestroy {
   hosts: Array<string>;
   selectedHost;
-  type: string;
+  model: string;
+  custom = -1;
   private sub: any;
   rows = [];
   selected = [];
@@ -52,7 +53,15 @@ export class DataShowComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.sub = this.route.params.subscribe(params => {
-      this.type = params['type']; //
+      const type = params['type'];
+      if (type.startsWith('custom')) {
+        this.model = 'custom';
+        const tp = type.substring(6, type.length);
+        this.custom = parseInt(tp, 10);
+      } else {
+        this.model = type;
+        this.custom = -1;
+      }
       this._databaseService.authenticate();
       this._settingService.fetchSettingFromDB().then(() => {
         this.parseSetting();
@@ -71,11 +80,19 @@ export class DataShowComponent implements OnInit, OnDestroy {
 
   fetch(pageInfo) {
     this.page.pageNumber = pageInfo.offset;
-    this._databaseService.models[this.type].findAndCountAll({
-      where: {
+    let where;
+    if (this.custom > 0) {
+      where = {
+        remote_host: this.selectedHost,
+        type: this.custom
+      };
+    } else {
+      where = {
         remote_host: this.selectedHost
-        // ,attr2: 'cake'
-      },
+      };
+    }
+    this._databaseService.models[this.model].findAndCountAll({
+      where: where,
       // where: ['remote_host = "::ffff:127.0.0.1"'],
       order: 'createdAt desc',
       offset: this.page.pageNumber * this.page.size,
@@ -90,7 +107,7 @@ export class DataShowComponent implements OnInit, OnDestroy {
         // console.log(`data length: ${data.length}, curVal: ${curVal}`);
         return {
           id: curVal.id,
-          time: this.datePipe.transform(curVal.createdAt, 'yyyy-MM-dd HH:mm:ss'),
+          time: this.datePipe.transform(curVal.createdAt, 'yyyy-MM-dd HH:mm:ss.') + curVal.createdAt.getTime().toString().substring(10, 13),
           remote_host: curVal.remote_host,
           proto_id: curVal.proto_id,
           raw: curVal.raw.toString()
@@ -103,12 +120,12 @@ export class DataShowComponent implements OnInit, OnDestroy {
   }
 
   onSelect({selected}) {
-    if (this.type === 'pkg') {
+    if (this.model === 'pkg') {
       this.dialog.open(DataShowDialogComponent, {
         data: {
           raw: this.selected[0]['raw'],
           remote_host: this.selected[0]['remote_host'],
-          type: this.type
+          type: this.model
         }
       });
     } else {
@@ -121,9 +138,11 @@ export class DataShowComponent implements OnInit, OnDestroy {
           data: {
             raw: this.selected[0]['raw'],
             remote_host: this.selected[0]['remote_host'],
-            type: this.type,
+            time: this.selected[0]['time'],
+            type: this.model,
             protoId: result.id,
-            proto: JSON.parse(result.raw.toString())
+            proto: JSON.parse(result.raw.toString()),
+            custom: this.custom
           }
         });
       }).catch((error) => {
@@ -151,8 +170,8 @@ export class DataShowComponent implements OnInit, OnDestroy {
   }
 
   clearHistory() {
-    console.log('Clear History', this.type);
-    this._databaseService.destroyTable(this.type);
+    console.log(`Clear History, model: ${this.model}, custom: ${this.custom}`);
+    this._databaseService.destroyTable(this.model, this.custom);
     this.fetch({offset: 0});
   }
 }

@@ -60,9 +60,17 @@ export class DatabaseService {
     });
   }
 
-  destroyTable(table: string) {
+  destroyTable(table: string, custom: number) {
+    let where;
+    if (custom > 0) {
+      where = {
+        type: custom
+      };
+    } else {
+      where = {};
+    }
     this.models[table].destroy({
-      where: {},
+      where: where,
       truncate: true
     });
   }

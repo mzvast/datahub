@@ -31,24 +31,26 @@ export class DataShowDialogComponent implements OnInit, OnDestroy {
   columnsPerTab = 10;
   start = 0;
   len = 1;
+  time: string;
 
   constructor(@Optional() @Inject(MD_DIALOG_DATA) public data: any, private snackBar: MdSnackBar) {
     // console.log(data);
     if (data.type === 'pkg') {
       this.raw = data.raw;
     } else {
-      this.parserRaw(data.remote_host, data.raw, data.protoId, data.proto);
+      this.parserRaw(data.time, data.remote_host, data.raw, data.protoId, data.proto);
     }
 
   }
 
-  parserRaw(host: string, raw: string, protoId: number, proto: JSON) {
+  parserRaw(time: string, host: string, raw: string, protoId: number, proto: JSON) {
     // 数据库里前面的东西没有存，没用，只存了data，所以放一些0
     const protocolPack = new ProtocolPack(host, 0, 0, 0, 0, 0, 1, Buffer.from(raw, 'hex'));
     this.dataPack = protocolPack.parserDataPack(false); // 解析包数据
     this.dataPack.proto = proto;
     this.dataPack.protoId = protoId;
     this.currentIndex = 0;
+    this.time = time;
     console.log(`data pack parser ok, type: ${this.dataPack.type}, protoId: ${protoId}`);
     if (this.dataPack) {
       const gps = this.dataPack.gps;

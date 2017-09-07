@@ -6,6 +6,7 @@ import {JsonEditorComponent, JsonEditorOptions} from 'angular4-jsoneditor/jsoned
 import {DatePipe} from '@angular/common';
 import {MdDialog, MdSnackBar, MdSnackBarConfig} from '@angular/material';
 import {ModalDialogComponent} from '../modal.dialog.component';
+import {SettingService} from '../setting.service';
 
 @Component({
   selector: 'app-proto-in',
@@ -34,9 +35,18 @@ export class ProtoInComponent implements OnInit {
   page = new Page();
 
   constructor(private _databaseService: DatabaseService,
+              private _settingService: SettingService,
               private datePipe: DatePipe,
               private snackBar: MdSnackBar,
               public dialog: MdDialog) {
+    this._settingService.fetchSettingFromDB().then(() => {
+      this.protos.push({code : 6, name: _settingService.fetchCustomName(6)});
+      this.protos.push({code : 7, name: _settingService.fetchCustomName(7)});
+      this.protos.push({code : 8, name: _settingService.fetchCustomName(8)});
+      this.protos.push({code : 9, name: _settingService.fetchCustomName(9)});
+      this.protos.push({code : 10, name: _settingService.fetchCustomName(10)});
+    });
+
     this.page.pageNumber = 0;
     this.page.size = 5;
 

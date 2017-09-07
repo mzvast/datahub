@@ -28,6 +28,10 @@
                       class="can-copy"><span [innerHTML]="dataPack?.protoId"></span></md-grid-tile>
       </div>
       <div>
+        <md-grid-tile colspan=1 rowspan=1 class="title"><span>接收时间</span></md-grid-tile>
+        <md-grid-tile colspan=3 rowspan=1><span [innerHTML]="time"></span></md-grid-tile>
+      </div>
+      <div>
         <md-grid-tile colspan=1 rowspan=2 class="title"><span>系统控制信息</span></md-grid-tile>
         <md-grid-tile colspan=3 rowspan=2 ngxClipboard [cbContent]="dataPack?.control"
                       (cbOnSuccess)="valueCopied(dataPack?.control)"

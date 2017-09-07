@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
-import { DatabaseService } from 'app/database.service';
 import { TcpService } from 'app/tcp.service';
+import {SettingService} from '../setting.service';
 
 declare var electron: any; // 　Typescript 定义
 
@@ -31,8 +30,14 @@ export class DeviceComponent implements OnInit, OnDestroy {
       url: 'intf'
     }
   ];
-  constructor(private databaseService: DatabaseService, private tcpService: TcpService, private parentRouter: Router) {
-
+  constructor(private _settingService: SettingService, private tcpService: TcpService) {
+    this._settingService.fetchSettingFromDB().then(() => {
+      this.protocols.push({url : 'custom/6', name: _settingService.fetchCustomName(6)});
+      this.protocols.push({url : 'custom/7', name: _settingService.fetchCustomName(7)});
+      this.protocols.push({url : 'custom/8', name: _settingService.fetchCustomName(8)});
+      this.protocols.push({url : 'custom/9', name: _settingService.fetchCustomName(9)});
+      this.protocols.push({url : 'custom/10', name: _settingService.fetchCustomName(10)});
+    });
   }
 
   ngOnInit() {

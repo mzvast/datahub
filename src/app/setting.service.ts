@@ -22,6 +22,14 @@ export class SettingService {
     });
   }
 
+  fetchCustomName(type: number) {
+    const name = this.otherSt['custom' + type];
+    if (!name) {
+      return '自定义协议' + type;
+    }
+    return name;
+  }
+
   fetchSettingFromDB() { // 从数据库读取
     return new Promise((resolve) => {
       this._dbService.models.setting.findOne({
@@ -86,6 +94,14 @@ export class SettingService {
     this.other = JSON.stringify(this.otherSt);
     // console.log(`other: ${this.other}`);
     this.updateSettingToDB();
+  }
+
+  updateCustomsToDB(custom6: string, custom7: string, custom8: string, custom9: string, custom10: string) {
+    this.otherSt['custom6'] = custom6;
+    this.otherSt['custom7'] = custom7;
+    this.otherSt['custom8'] = custom8;
+    this.otherSt['custom9'] = custom9;
+    this.otherSt['custom10'] = custom10;
   }
 
   updateSettingToDB() { // 更新数据库
