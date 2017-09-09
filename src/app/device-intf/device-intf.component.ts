@@ -27,6 +27,10 @@ export class DeviceIntfComponent implements OnInit {
   protoId;
   folderPath: 'C:';
   items = [];
+
+  control: string;
+  gps: string;
+  host: string;
   time;
 
   serial: number = -1;
@@ -44,6 +48,9 @@ export class DeviceIntfComponent implements OnInit {
     this.subscription = this.tcpService.getMessage().subscribe((msg: IntermediateFrequencyDataPack) => {
       console.log(`receive intermediate freq data pack, type: ${msg.type}`);
       if (msg.type === 4) {// 判断是中频数据
+        this.host = msg.host;
+        this.gps = [msg.gps.slice(0, 64), msg.gps.slice(64)].join('\n');
+        this.control = [msg.control.slice(0, 64), msg.control.slice(64)].join('\n');
         this.time = this.datePipe.transform(msg.time, 'yyyy-MM-dd HH:mm:ss.') + msg.time.toString().substring(10, 13);
         if (msg.save) {
           this.exportData(msg.datas[0], msg.time);
