@@ -21,8 +21,12 @@
                       class="can-copy"><span [innerHTML]="host"></span></md-grid-tile>
       </div>
       <div>
+        <md-grid-tile colspan=1 rowspan=1 class="title"><span>协议号</span></md-grid-tile>
+        <md-grid-tile colspan=1 rowspan=1><span [innerHTML]="protoId"></span></md-grid-tile>
+      </div>
+      <div>
         <md-grid-tile colspan=1 rowspan=1 class="title"><span>接收时间</span></md-grid-tile>
-        <md-grid-tile colspan=1 rowspan=1><span [innerHTML]="time"></span></md-grid-tile>
+        <md-grid-tile colspan=3 rowspan=1><span [innerHTML]="time"></span></md-grid-tile>
       </div>
       <div>
         <md-grid-tile colspan=1 rowspan=2 class="title"><span>系统控制信息</span></md-grid-tile>
@@ -48,7 +52,7 @@
       <div class="box" *ngFor="let item of items">
         <span class="item-header">{{item.name}}:</span>
         <md-input-container class="medium-input item-value" *ngIf="!item.enums">
-          <input mdInput [(ngModel)]="intf[item.index]" type="number" min="1" max="25">
+          <input mdInput [(ngModel)]="intf[item.index]" type="number">
         </md-input-container>
         <md-select [(ngModel)]="intf[item.index]" class="medium-select item-value" *ngIf="item.enums">
           <md-option *ngFor="let state of item.enums" [value]="state.code">{{ state.name }}</md-option>
