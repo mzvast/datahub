@@ -14,173 +14,31 @@
       <!--</div>-->
     <!--</div>-->
 
+    <md-card-actions>
+      <button md-button (click)="sendRequest()">发送请求</button>
+      <button md-button (click)="saveProtoValueAndToast()">保存参数</button>
+      <button md-button (click)="selectPath()"><span>CSV保存位置: {{folderPath}}</span></button>
+    </md-card-actions>
+
     <md-card-header>
-      <h2>参数设定</h2>
+      <h4 style="color: #E91E63;" *ngIf="time">收到数据... 接收时间：{{time}}</h4>
     </md-card-header>
+    <!--<md-card-header>-->
+      <!--<h2>参数设定</h2>-->
+    <!--</md-card-header>-->
     <div class="container">
-      <div class="box">
-        <span class="item-header">中频长度:</span>
-        <md-input-container class="medium-input item-value">
-          <input mdInput [(ngModel)]="intf.collectTime" type="number" min="1" max="25">
+      <div class="box" *ngFor="let item of items">
+        <span class="item-header">{{item.name}}:</span>
+        <md-input-container class="medium-input item-value" *ngIf="!item.enums">
+          <input mdInput [(ngModel)]="intf[item.index]" type="number" min="1" max="25">
         </md-input-container>
-        <span></span>
-      </div>
-      <div class="box">
-        <span class="item-header" [innerHTML]="'工作方式:' | highlight : filter"></span>
-        <md-select [(ngModel)]="intf.workType" class="medium-select item-value">
-          <md-option *ngFor="let state of workTypeSelect" [value]="state.code">{{ state.name }}</md-option>
+        <md-select [(ngModel)]="intf[item.index]" class="medium-select item-value" *ngIf="item.enums">
+          <md-option *ngFor="let state of item.enums" [value]="state.code">{{ state.name }}</md-option>
         </md-select>
+        <span class="ph">{{item.placeholder}}</span>
       </div>
-      <div class="box">
-        <span class="item-header">带宽选择:</span>
-        <md-select [(ngModel)]="intf.broadband" class="medium-select item-value">
-          <md-option *ngFor="let state of broadbandSelect" [value]="state.code">{{ state.name }}</md-option>
-        </md-select>
-      </div>
-      <div class="box">
-        <span class="item-header">工作周期数:</span>
-        <md-input-container class="medium-input item-value">
-          <input mdInput [(ngModel)]="intf.workPeriod" type="number" min="0">
-        </md-input-container>
-        <span>(0：表示长期驻留)</span>
-      </div>
-      <div class="box">
-        <span class="item-header">工作周期长度:</span>
-        <md-input-container class="medium-input item-value">
-          <input mdInput [(ngModel)]="intf.workPeriodLength" type="number" min="0">
-        </md-input-container>
-        <span>(单位：20ms)</span>
-      </div>
-      <div class="box">
-        <span class="item-header">衰减码1:</span>
-        <md-select [(ngModel)]="intf.attenuationCode1" class="medium-select item-value">
-          <md-option *ngFor="let state of attenuationCode1Select" [value]="state.code">{{ state.name }}</md-option>
-        </md-select>
-      </div>
-      <div class="box">
-        <span class="item-header">衰减码2:</span>
-        <md-input-container class="medium-input item-value">
-          <input mdInput [(ngModel)]="intf.attenuationCode2" type="number" min="0" max="35">
-        </md-input-container>
-        <span>(单位：dB)</span>
-      </div>
-      <div class="box">
-        <span class="item-header">前端工作模式:</span>
-        <md-select [(ngModel)]="intf.frontWorkModel" class="medium-select item-value">
-          <md-option *ngFor="let state of frontWorkModelSelect" [value]="state.code">{{ state.name }}</md-option>
-        </md-select>
-      </div>
-      <div class="box">
-        <span class="item-header">工作中心频率:</span>
-        <md-input-container class="medium-input item-value">
-          <input mdInput [(ngModel)]="intf.workCenterFreq" type="number">
-        </md-input-container>
-        <span>(范围：2GHz-12GHz)</span>
-      </div>
-      <div class="box">
-        <span class="item-header">单刀五掷:</span>
-        <md-input-container class="medium-input item-value">
-          <input mdInput [(ngModel)]="intf.singlePoleFiveRolls" type="number">
-        </md-input-container>
-        <span></span>
-      </div>
-      <div class="box">
-        <span class="item-header">脉宽剔除门限值:</span>
-        <md-input-container class="medium-input item-value">
-          <input mdInput [(ngModel)]="intf.excludePulseThreshold" type="number">
-        </md-input-container>
-        <span>(单位：100ns)</span>
-      </div>
-      <div class="box">
-        <span class="item-header">测向处理脉冲个数:</span>
-        <md-input-container class="medium-input item-value">
-          <input mdInput [(ngModel)]="intf.sideProcessPulseCount" type="number" min="1" max="255">
-        </md-input-container>
-        <span>(取值：1～255)</span>
-      </div>
-      <div class="box">
-        <span class="item-header">方位角搜索起始值:</span>
-        <md-input-container class="medium-input item-value">
-          <input mdInput [(ngModel)]="intf.azimuthSearchStart" type="number" min="0" max="362">
-        </md-input-container>
-        <span>(单位：度；取值0～362)</span>
-      </div>
-      <div class="box">
-        <span class="item-header">方位角搜索终止值:</span>
-        <md-input-container class="medium-input item-value">
-          <input mdInput [(ngModel)]="intf.azimuthSearchEnd" type="number" min="0" max="362">
-        </md-input-container>
-        <span>(单位：度；取值0～362)</span>
-      </div>
-      <div class="box">
-        <span class="item-header">仰角搜索起始值:</span>
-        <md-input-container class="medium-input item-value">
-          <input mdInput [(ngModel)]="intf.elevationSearchStart" type="number" min="51" max="90">
-        </md-input-container>
-        <span>(单位：度；取值51～90)</span>
-      </div>
-      <div class="box">
-        <span class="item-header">仰角搜索起始值:</span>
-        <md-input-container class="medium-input item-value">
-          <input mdInput [(ngModel)]="intf.elevationSearchEnd" type="number" min="51" max="90">
-        </md-input-container>
-        <span>(单位：度；取值51～90)</span>
-      </div>
-      <div class="box">
-        <span class="item-header">方位角粗搜索步长:</span>
-        <md-input-container class="medium-input item-value">
-          <input mdInput [(ngModel)]="intf.azimuthSearchStepLength" type="number">
-        </md-input-container>
-        <span>(单位：度)</span>
-      </div>
-      <div class="box">
-        <span class="item-header">方位角粗搜索步长:</span>
-        <md-input-container class="medium-input item-value">
-          <input mdInput [(ngModel)]="intf.elevationSearchStepLength" type="number">
-        </md-input-container>
-        <span>(单位：度)</span>
-      </div>
-      <div class="box">
-        <span class="item-header">个数估计门限:</span>
-        <md-input-container class="medium-input item-value">
-          <input mdInput [(ngModel)]="intf.countEstimatedThreshold" type="number" min="1" max="100">
-        </md-input-container>
-        <span>(取值1～100)</span>
-      </div>
-      <div class="box">
-        <span class="item-header">攻击准则选择:</span>
-        <md-select [(ngModel)]="intf.attackCriterionSelect" class="medium-select item-value">
-          <md-option *ngFor="let state of attackCriterionSelectSelect" [value]="state.code">{{ state.name }}</md-option>
-        </md-select>
-      </div>
-      <div class="box">
-        <span class="item-header">脉宽匹配容差:</span>
-        <md-input-container class="medium-input item-value">
-          <input mdInput [(ngModel)]="intf.pulseMatchTolerance" type="number">
-        </md-input-container>
-        <span>(单位：ns)</span>
-      </div>
-      <div class="box">
-        <span class="item-header">PRI匹配容差:</span>
-        <md-input-container class="medium-input item-value">
-          <input mdInput [(ngModel)]="intf.priMatchTolerance" type="number">
-        </md-input-container>
-        <span>(单位：ns)</span>
-      </div>
-      <div class="box">
-        <span class="item-header">分机控制:</span>
-        <md-input-container class="medium-input item-value">
-          <input mdInput [(ngModel)]="intf.extControl" type="number">
-        </md-input-container>
-        <span></span>
-      </div>
+
     </div>
   </md-card-content>
 
-  <md-card-actions>
-    <button md-button (click)="sendRequest()">发送请求</button>
-    <!--<button md-button (click)="exportData()" *ngIf="intf.folderPath">导出数据</button>-->
-    <button md-button (click)="selectPath()"><span *ngIf="!intf.folderPath">选择CSV保存位置</span><span *ngIf="intf.folderPath">CSV保存位置: {{intf.folderPath}}</span></button>
-    <button md-button (click)="saveConfig()">保存参数</button>
-  </md-card-actions>
 </md-card>

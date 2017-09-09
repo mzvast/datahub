@@ -167,12 +167,8 @@ export class TcpService {
           const proto = this.protos.get(dataPack.type);
           dataPack.protoId = protoId;
           dataPack.proto = proto;
-          // dataPack.saveFlag = this.saveFlag;
-          if (dataPack.type === 4 && !this.saveFlag) {
-            // 如果是中频且不要保存，就不要发过去了，因为不显示的
-          } else {
-            this.sendMessage(dataPack); // 发给UI
-          }
+          dataPack.save = this.saveFlag;
+          this.sendMessage(dataPack); // 发给UI
           this.saveRawDataToDB(dataPack.type, protoId, host, protocolPack.data);
         }
 
@@ -207,12 +203,8 @@ export class TcpService {
                   const proto = this.protos.get(dataPack.type);
                   dataPack.protoId = protoId;
                   dataPack.proto = proto;
-                  // dataPack.saveFlag = this.saveFlag;
-                  if (dataPack.type === 4 && !this.saveFlag) {
-                    // 如果是中频且不要保存，就不要发过去了，因为不显示的
-                  } else {
-                    this.sendMessage(dataPack); // 发给UI
-                  }
+                  dataPack.save = this.saveFlag;
+                  this.sendMessage(dataPack); // 发给UI
                   this.saveRawDataToDB(dataPack.type, protoId, host, workingProtocolPack.data);
                 }
               }
@@ -309,9 +301,12 @@ export class TcpService {
   sendIntFreqRequest(intFreCtlPack: IntermediateFrequencyControlPack) {
     const client = this.dgram.createSocket('udp4');
     const message = intFreCtlPack.packageMessage();
-    console.log(`intFreCtlPack: ${message.toString('hex')}`);
+    if (this._settingService.debug) {
+      console.log(`intFreCtlPack length: ${message.length}, data: ${message.toString('hex')}`);
+    }
     client.send(message, 0, message.length, this._settingService.remote_port, this._settingService.remote_host, (err) => {
       console.log(`UDP message sent to ${this._settingService.remote_host}:${this._settingService.remote_port} `);
+      this.showMessage('发送成功：' + this._settingService.remote_host + ":" + this._settingService.remote_port)
       client.close();
     });
   }

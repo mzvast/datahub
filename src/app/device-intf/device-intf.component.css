@@ -44,6 +44,10 @@ md-slider{
   cursor: hand;
 }
 
+.ph {
+  color: gray;
+}
+
 @media screen and (min-width: 960px){
   .box {
     width: 50%;

@@ -1,11 +1,12 @@
-import { SettingService } from './../setting.service';
-import { IntermediateFrequencyControlPack, IntermediateFrequencyDataPack } from './../protocol/data-pack';
-import { Subscription } from 'rxjs/Subscription';
-import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { TcpService } from 'app/tcp.service';
-import { DatePipe } from '@angular/common';
-import { MdSnackBar, MdSnackBarConfig} from '@angular/material';
-import { Buffer } from 'buffer';
+import {SettingService} from './../setting.service';
+import {DatabaseService} from '../database.service';
+import {IntermediateFrequencyControlPack, IntermediateFrequencyDataPack} from './../protocol/data-pack';
+import {Subscription} from 'rxjs/Subscription';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {TcpService} from 'app/tcp.service';
+import {DatePipe} from '@angular/common';
+import {MdSnackBar, MdSnackBarConfig} from '@angular/material';
+import {Buffer} from 'buffer';
 
 declare var electron: any; // 　Typescript 定义
 
@@ -21,29 +22,33 @@ export class DeviceIntfComponent implements OnInit {
   fs = electron.remote.getGlobal('fs');
   subscription: Subscription;
   intf; // 参数
-  filter;
+  // filter;
+  proto: JSON;
+  protoId;
+  folderPath: 'C:';
+  items = [];
+  time;
 
   serial: number = -1;
 
-  workTypeSelect = [{ code: 0, name: '实时校正模式' }, { code: 1, name: '自检模式' }, { code: 2, name: '搜索模式' }, { code: 3, name: '跟踪模式' }];
-  broadbandSelect = [{ code: 0, name: '40M' }, { code: 1, name: '400M' }];
-  attenuationCode1Select = [{ code: 0, name: '不衰减' }, { code: 1, name: '衰减20dB' }];
-  frontWorkModelSelect = [{ code: 0, name: '直通' }, { code: 1, name: '放大' }];
-  attackCriterionSelectSelect = [{ code: 0, name: '脉宽最大作为攻击对象' }, { code: 1, name: '重频最高作为攻击对象' }];
-
-  constructor(
-    private tcpService: TcpService,
-    private _cd: ChangeDetectorRef,
-    private datePipe: DatePipe,
-    private snackBar: MdSnackBar,
-    private _settingService: SettingService) { }
+  constructor(private tcpService: TcpService,
+              private _cd: ChangeDetectorRef,
+              private datePipe: DatePipe,
+              private snackBar: MdSnackBar,
+              private _dbService: DatabaseService,
+              private _settingService: SettingService) {
+  }
 
   ngOnInit() {
     this.loadConfig();
     this.subscription = this.tcpService.getMessage().subscribe((msg: IntermediateFrequencyDataPack) => {
       console.log(`receive intermediate freq data pack, type: ${msg.type}`);
       if (msg.type === 4) {// 判断是中频数据
-        this.exportData(msg.datas[0]);
+        this.time = this.datePipe.transform(msg.time, 'yyyy-MM-dd HH:mm:ss.') + msg.time.toString().substring(10, 13);
+        if (msg.save) {
+          this.exportData(msg.datas[0], msg.time);
+        }
+
         this._cd.detectChanges(); // 检测更改，更新UI。
       }
     });
@@ -51,37 +56,75 @@ export class DeviceIntfComponent implements OnInit {
 
 
   sendRequest() {
-    console.log(`intermediateFrequencyCollectTime: ${this.intf.collectTime}`);
     this.serial++;
     if (this.serial >= 65535) {
       this.serial = 0;
     }
-    const pack = new IntermediateFrequencyControlPack(this.serial);
-    pack.intermediateFrequencyCollectTime = this.intf.collectTime;
-    pack.workType = this.intf.workType;
-    pack.broadband = this.intf.broadband;
-    pack.workPeriod = this.intf.workPeriod;
-    pack.workPeriodCount = this.serial; // 这个暂时和serial一样
-    pack.workPeriodLength = this.intf.workPeriodLength;
-    pack.attenuationCode1 = this.intf.attenuationCode1;
-    pack.attenuationCode2 = this.intf.attenuationCode2;
-    pack.frontWorkModel = this.intf.frontWorkModel;
-    pack.workCenterFreq = this.intf.workCenterFreq;
-    pack.singlePoleFiveRolls = this.intf.singlePoleFiveRolls;
-    pack.excludePulseThreshold = this.intf.excludePulseThreshold;
-    pack.sideProcessPulseCount = this.intf.sideProcessPulseCount;
-    pack.azimuthSearchStart = this.intf.azimuthSearchStart;
-    pack.azimuthSearchEnd = this.intf.azimuthSearchEnd;
-    pack.elevationSearchStart = this.intf.elevationSearchStart;
-    pack.elevationSearchEnd = this.intf.elevationSearchEnd;
-    pack.azimuthSearchStepLength = this.intf.azimuthSearchStepLength;
-    pack.elevationSearchStepLength = this.intf.elevationSearchStepLength;
-    pack.countEstimatedThreshold = this.intf.countEstimatedThreshold;
-    pack.attackCriterionSelect = this.intf.attackCriterionSelect;
-    pack.pulseMatchTolerance = this.intf.pulseMatchTolerance;
-    pack.priMatchTolerance = this.intf.priMatchTolerance;
-    pack.extControl = this.intf.extControl;
+    const pack = new IntermediateFrequencyControlPack();
+    let index = -1;
+    const buffers = [];
+    for (const key in this.proto) {
+      if (this.proto.hasOwnProperty(key)) {
+        const item = this.proto[key];
+        index++;
+        const type = item['type'];
+        const b = item['bytes'];
+        if (type === 'increase') {
+          buffers.push(pack.numberToBuffer(this.serial, b));
+          continue;
+        }
+        if (type === 'timestamp') {
+          buffers.push(pack.timestamp());
+          continue;
+        }
+        item.type = type;
+        let value = this.intf[index];
+        if (value) {
+
+        } else {
+          value = item['value'];
+        }
+        if (type === 'number') {
+          buffers.push(pack.numberToBuffer(value ? value : 0, b));
+        } else {
+          buffers.push(pack.stringToBuffer(value ? value : 0, b));
+        }
+      }
+    }
+    pack.data = Buffer.concat(buffers);
     this.tcpService.sendIntFreqRequest(pack);
+    this.saveProtoValue(false);
+  }
+
+  saveProtoValueAndToast() {
+    this.saveProtoValue(true);
+  }
+
+  saveProtoValue(toast: boolean) {
+    let index = -1;
+    for (const key in this.proto) {
+      if (this.proto.hasOwnProperty(key)) {
+        const item = this.proto[key];
+        index++;
+        const type = item['type'];
+        const valueInIntf = this.intf[index];
+        if (type === 'number') {
+          item['value'] = valueInIntf;
+        } else if (type === 'string') {
+          item['value'] = valueInIntf;
+        }
+      }
+    }
+    // console.log(JSON.stringify(this.proto));
+    const that = this;
+    this._dbService.models['proto'].update(
+      {raw: JSON.stringify(this.proto)}, {where: {id: this.protoId}}
+    ).then(() => {
+        if (toast) {
+          that.showToast('保存成功');
+        }
+      }
+    );
   }
 
   writeFile(fileName: string, content: any) {
@@ -115,17 +158,15 @@ export class DeviceIntfComponent implements OnInit {
     return csv;
   }
 
-  exportData(data: Buffer) {
+  exportData(data: Buffer, time: number) {
     console.log('export data start');
     const content = this.data2csv(data);
-    const now = new Date();
-    const defaultFileName = this.datePipe.transform(now, 'yyyyMMdd_HHmmss') + '_' + now.getMilliseconds() + '.csv';
-    if (this.intf.folderPath) {// 选定了默认位置，直接存储
-      this.writeFile(this.intf.folderPath + '\\' + defaultFileName, content);
-    } else { // 否则选择存储位置
-      // You can obviously give a direct path without use the dialog (C:/Program Files/path/myfileexample.txt)
-      this.dialog.showErrorBox('路径错误', '请先选择保存位置');
-    }
+    const defaultFileName = this.datePipe.transform(time, 'yyyyMMdd_HHmmss') + '_' + time.toString().substring(10, 13) + '.csv';
+    this.writeFile(this.folderPath + '\\' + defaultFileName, content);
+    // else { // 否则选择存储位置
+    //   // You can obviously give a direct path without use the dialog (C:/Program Files/path/myfileexample.txt)
+    //   this.dialog.showErrorBox('路径错误', '请先选择保存位置');
+    // }
   }
 
   selectPath() {
@@ -139,7 +180,7 @@ export class DeviceIntfComponent implements OnInit {
         return;
       } else {
         console.log(folderPaths);
-        this.intf.folderPath = folderPaths[0];
+        this.folderPath = folderPaths[0];
         this.saveConfig();
         this._cd.detectChanges(); // 检测更改，更新UI。
       }
@@ -147,30 +188,89 @@ export class DeviceIntfComponent implements OnInit {
   }
 
   saveConfig() { // 保存中频配置到数据库
-    this._settingService.setIntf(JSON.stringify(this.intf)).updateSettingToDB();
+    const intf1 = {folderPath: this.folderPath};
+    this._settingService.setIntf(JSON.stringify(intf1)).updateSettingToDB();
     // console.log('保存完成');
   }
 
+  generateIntfParams(raw: string) {
+    this.proto = JSON.parse(raw);
+    const items = [];
+    let index = -1;
+    for (const key in this.proto) {
+      if (this.proto.hasOwnProperty(key)) {
+        const item = this.proto[key];
+        index++;
+        if (item.hasOwnProperty('hide')) {
+          const hideValue = item['hide'];
+          if (typeof hideValue === 'boolean' && hideValue === false) {
+            // 如果hide是false就不要忽略了
+          } else {
+            continue;
+          }
+        }
+        const type = item['type'];
+        item.type = type;
+        if (type === 'number' || type === 'string') {
+          // 只有number和string需要
+        } else {
+          continue;
+        }
+        const name = item['name'];
+        item.name = name;
+        if (item.hasOwnProperty('enum')) {
+          item.enums = this.parserEnums(item['enum']);
+        }
+
+        const placeholder = item['placeholder'];
+        item.placeholder = placeholder;
+        this.intf[index] = item['value'];
+
+        item['index'] = index;
+        items.push(item);
+      }
+    }
+    return items;
+  }
+
+  parserEnums(str: string) {
+    const enums = str.split(',');
+    const items = [];
+    for (let i = 0; i < enums.length; i++) {
+      const item = enums[i].split(':');
+      items.push({code: parseInt(item[0], 10), name: item[1]});
+    }
+    return items;
+  }
+
+  showToast(message: string) {
+    const config = new MdSnackBarConfig();
+    config.duration = 5000;
+    this.snackBar.open(message, null, config);
+  }
+
   loadConfig() { // 读取中频配置
-    const defaultIntfConfig = {workType: 2, broadband: 0, workPeriod: 0, workPeriodLength: 50, attenuationCode1: 1,
-      attenuationCode2: 0, frontWorkModel: 1, singlePoleFiveRolls: 0, excludePulseThreshold: 0, sideProcessPulseCount: 1,
-      workCenterFreq: 2, collectTime: 1, // 中频采集时间
-      azimuthSearchStart: 1, azimuthSearchEnd: 1, elevationSearchStart: 1, elevationSearchEnd: 1, azimuthSearchStepLength: 0,
-      elevationSearchStepLength: 0, countEstimatedThreshold: 0, attackCriterionSelect: 1, pulseMatchTolerance: 0,
-      priMatchTolerance: 0, extControl: 0, folderPath: 'C:'
-    };
-    this.intf = defaultIntfConfig;
+    this.intf = new Object();
+    this._dbService.models['proto'].findOne({
+      where: {
+        in_use: 1,
+        type: -4
+      },
+    }).then(proto => {
+      if (proto) {
+        this.protoId = proto.id;
+        this.items = this.generateIntfParams(proto.raw.toString());
+      }
+      // console.log(`proto raw: ${proto.raw}`);
+    });
+
     this._settingService.fetchSettingFromDB().then(() => {
       try {
-        this.intf = JSON.parse(this._settingService.intf);
+        const intf1 = JSON.parse(this._settingService.intf);
+        this.folderPath = intf1.folderPath;
       } catch (e) {
         console.error(`error parser intf params, ${e}`);
-        this.intf = defaultIntfConfig;
       }
-      if (!this.intf.folderPath) { // 默认保存路径
-        this.intf.folderPath = 'C:';
-      }
-      console.log(`intf params: ${JSON.stringify(this.intf)}`);
       this._cd.detectChanges(); // 检测更改，更新UI。
 
       // Test save file
