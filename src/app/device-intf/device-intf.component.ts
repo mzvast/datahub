@@ -134,6 +134,16 @@ export class DeviceIntfComponent implements OnInit {
     );
   }
 
+  valueCopied(value) {
+    if (!value) {
+      return;
+    }
+    if (value.length > 64) {
+      value = value.substr(0, 64) + '...';
+    }
+    this.showToast('已复制: ' + value);
+  }
+
   writeFile(fileName: string, content: any) {
     this.fs.writeFile(fileName, content, (err) => {
       if (err) {
