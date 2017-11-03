@@ -56,8 +56,10 @@ export class BaseDataPack {
           if (item.hasOwnProperty('multiple')) {
             const multiple = item['multiple'];
             v = v * multiple;
+            value = this.formatNumber(v) + unit;
+          } else {
+            value = v + unit;
           }
-          value = v + unit;
           // value = v + '';
         }
       } else if (type === 'flag') {
@@ -70,6 +72,14 @@ export class BaseDataPack {
     }
 
     return value;
+  }
+
+  formatNumber(num: number) {
+    const string = num.toPrecision(2);
+    if (string.endsWith('.00')) {
+      return num.toPrecision(0);
+    }
+    return string;
   }
 
   parseDataItems(start: number, len: number): any {
