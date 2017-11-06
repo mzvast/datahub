@@ -15,7 +15,7 @@ export class MysidenavComponent implements OnInit {
   record: boolean;
   devices = [
     {
-      name: '接收数据',
+      name: '系统界面',
       icon: 'home',
       url: 'device'
     }

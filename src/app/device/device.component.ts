@@ -17,6 +17,9 @@ export class DeviceComponent implements OnInit, OnDestroy {
   saveFlag = true;
   protocols = [
     {
+      name: '系统控制指令',
+      url: 'intf'
+    }, {
       name: '标签包',
       url: 'tag'
     }, {
@@ -25,9 +28,6 @@ export class DeviceComponent implements OnInit, OnDestroy {
     }, {
       name: '辐射源',
       url: 'radiation'
-    }, {
-      name: '中频数据',
-      url: 'intf'
     }
   ];
   constructor(private _settingService: SettingService, private tcpService: TcpService) {
