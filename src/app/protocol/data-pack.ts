@@ -75,9 +75,9 @@ export class BaseDataPack {
   }
 
   formatNumber(num: number) {
-    const string = num.toPrecision(2);
+    const string = num.toFixed(2);
     if (string.endsWith('.00')) {
-      return num.toPrecision(0);
+      return num.toFixed(0);
     }
     return string;
   }
