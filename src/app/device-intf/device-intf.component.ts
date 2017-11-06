@@ -107,6 +107,18 @@ export class DeviceIntfComponent implements OnInit {
     this.saveProtoValue(true);
   }
 
+  cleanProto(json: JSON) {
+    for (const key in json) {
+      if (json.hasOwnProperty(key)) {
+        const item = json[key];
+        if (item.hasOwnProperty('index')) {
+          delete item['index'];
+        }
+      }
+    }
+    return json;
+  }
+
   saveProtoValue(toast: boolean) {
     let index = -1;
     for (const key in this.proto) {
@@ -125,7 +137,7 @@ export class DeviceIntfComponent implements OnInit {
     // console.log(JSON.stringify(this.proto));
     const that = this;
     this._dbService.models['proto'].update(
-      {raw: JSON.stringify(this.proto)}, {where: {id: this.protoId}}
+      {raw: JSON.stringify(this.cleanProto(this.proto))}, {where: {id: this.protoId}}
     ).then(() => {
         if (toast) {
           that.showToast('保存成功');
