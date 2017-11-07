@@ -36,6 +36,8 @@ export class DevicePdwComponent implements OnInit, OnDestroy {
   host: string;
   protoId: number;
   time: string;
+  timer: any;
+  tmpMsg: NarrowBandFullPulseDataPack;
 
   constructor(private tcpService: TcpService,
               private cd: ChangeDetectorRef,
@@ -44,26 +46,54 @@ export class DevicePdwComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    let vm = this;
+    /**
+     * 进入后开启定时器,500ms更新一次DOM
+     */
+    this.timer = setInterval(function() {
+      // console.log('dectection');
+      if (!vm.tmpMsg) { // 判空
+        return;
+      }
+      vm.updateData(vm.tmpMsg);
+      vm.cd.detectChanges(); // 检测更改，更新UI。
+    }, 500);
     this.subscription = this.tcpService.getMessage().subscribe((msg: NarrowBandFullPulseDataPack) => {
+      // console.log('onSubscribe');
       if (msg.type === 1) {// 判断是窄带全脉冲
-        this.dataPack = msg;
-        this.host = msg.host;
-        this.gps = [msg.gps.slice(0, 64), msg.gps.slice(64)].join('\n');
-        this.control = [msg.control.slice(0, 64), msg.control.slice(64)].join('\n');
-        this.time = this.datePipe.transform(msg.time, 'yyyy-MM-dd HH:mm:ss.') + msg.time.toString().substring(10, 13);
-        if (this.protoId !== msg.protoId) {
-          this.tabs = this.generateTabs();
-          this.columns = this.generateColumns();
-          this.protoId = msg.protoId;
-        }
-        this.items = this.dataPack.parseDataItems(this.start, this.len);
-        this.cd.detectChanges(); // 检测更改，更新UI。
+        // console.log('onSubscribe窄带全脉冲');
+        this.tmpMsg = msg; // 只存，不解析，提高性能
       }
     });
   }
 
+  /**
+   * 索引，据说提高性能
+   */
+  itemByIndex(index: number, item: any) {
+    return index;
+  }
+
   ngOnDestroy(): void {
+    clearInterval(this.timer); // exit清除定时器
     this.subscription.unsubscribe();
+  }
+
+  /**
+   * 更新数据模型
+   */
+  updateData(msg: NarrowBandFullPulseDataPack) {
+    this.dataPack = msg;
+    this.host = msg.host;
+    this.gps = [msg.gps.slice(0, 64), msg.gps.slice(64)].join('\n');
+    this.control = [msg.control.slice(0, 64), msg.control.slice(64)].join('\n');
+    this.time = this.datePipe.transform(msg.time, 'yyyy-MM-dd HH:mm:ss.') + msg.time.toString().substring(10, 13);
+    if (this.protoId !== msg.protoId) {
+      this.tabs = this.generateTabs();
+      this.columns = this.generateColumns();
+      this.protoId = msg.protoId;
+    }
+    this.items = this.dataPack.parseDataItems(this.start, this.len);
   }
 
   valueCopied(value) {

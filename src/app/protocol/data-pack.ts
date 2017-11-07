@@ -36,6 +36,9 @@ export class BaseDataPack {
   }
 
   parserValue(index: number, b: number, data: Buffer, item: JSON) {
+    if (data instanceof Buffer === false) {
+      return null;
+    }
     if (index + b > data.length) {
       console.log(`parser item index out of bound, index: ${index + b}, bound: ${data.length}`);
       return null;
