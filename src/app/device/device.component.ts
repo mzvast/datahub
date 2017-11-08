@@ -40,11 +40,13 @@ export class DeviceComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.progress = this.tcpService.checkProgressFlag();
+    this.saveFlag = this.tcpService.saveFlag;
   }
 
   ngOnDestroy(): void {
-    console.log('停止TCP监听');
-    this.tcpService.stopTcpServer();
+    // console.log('停止TCP监听');
+    // this.tcpService.stopTcpServer();
   }
 
   startReceive() {
@@ -70,10 +72,10 @@ export class DeviceComponent implements OnInit, OnDestroy {
     }
   }
   checkToggle() {
-    if (!this.progress) {// 启动
-      this.progress = !this.progress;
-      this.startReceive();
-    }
+    // if (!this.progress) {// 启动
+    //   this.progress = !this.progress;
+    //   this.startReceive();
+    // }
   }
 
 }

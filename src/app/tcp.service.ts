@@ -19,7 +19,9 @@ export class TcpService {
   subject = new BehaviorSubject<any>({});
   protos: Map<number, JSON>;
   protoIds: Map<number, number>;
+
   saveFlag = true;
+  progressFlag = false;
 
   constructor(private _dbService: DatabaseService,
               private _settingService: SettingService,
@@ -111,7 +113,16 @@ export class TcpService {
     }).listen(this._settingService.local_port);
 
     console.log(`tcp server listening on: ${this._settingService.local_port}`);
+    this.progressFlag = true;
 
+  }
+
+  checkProgressFlag() {
+    return this.progressFlag;
+  }
+
+  checkSaveFlag() {
+    return this.saveFlag;
   }
 
   showMessage(message) {
@@ -129,6 +140,7 @@ export class TcpService {
       });
       electron.remote.getGlobal('tcp').server = null; // 重置null，防止内存泄露
     }
+    this.progressFlag = false;
 
   }
 
