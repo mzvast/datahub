@@ -6,6 +6,7 @@ import {
   OnInit,
   ViewEncapsulation
 } from '@angular/core';
+import {SettingService} from './../setting.service';
 import {TcpService} from 'app/tcp.service';
 import {Subscription} from 'rxjs/Subscription';
 import {NarrowBandFullPulseDataPack} from 'app/protocol/data-pack';
@@ -43,22 +44,28 @@ export class DevicePdwComponent implements OnInit, OnDestroy {
   constructor(private tcpService: TcpService,
               private cd: ChangeDetectorRef,
               private datePipe: DatePipe,
-              private snackBar: MdSnackBar) {
+              private snackBar: MdSnackBar,
+              private _settingService: SettingService) {
   }
 
   ngOnInit() {
-    const vm = this;
-    /**
-     * 进入后开启定时器,500ms更新一次DOM
-     */
-    this.timer = setInterval(function() {
-      // console.log('dectection');
-      if (!vm.tmpMsg) { // 判空
-        return;
-      }
-      vm.updateData(vm.tmpMsg);
-      vm.cd.detectChanges(); // 检测更改，更新UI。
-    }, 500);
+    this._settingService.fetchSettingFromDB().then(() => {
+      const refreshRate = this._settingService.otherSt['refreshRate'];
+      const vm = this;
+      /**
+       * 进入后开启定时器,500ms更新一次DOM
+       */
+      this.timer = setInterval(function() {
+        // console.log('dectection');
+        if (!vm.tmpMsg) { // 判空
+          return;
+        }
+        vm.updateData(vm.tmpMsg);
+        vm.cd.detectChanges(); // 检测更改，更新UI。
+      }, refreshRate);
+      console.log(`ui refresh rate: ${refreshRate}ms`);
+    });
+
     this.subscription = this.tcpService.getMessage().subscribe((msg: NarrowBandFullPulseDataPack) => {
       // console.log('onSubscribe');
       if (msg.type === 1) {// 判断是窄带全脉冲

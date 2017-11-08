@@ -14,6 +14,7 @@ export class SettingsComponent implements OnInit {
   remotePort: number;
   remoteHost: string;
   hosts: string;
+  refreshRate: number;
   custom6: string;
   custom7: string;
   custom8: string;
@@ -38,7 +39,7 @@ export class SettingsComponent implements OnInit {
     this._settingService.remote_host = this.remoteHost;
     this._settingService.remote_port = this.remotePort;
     this._settingService.updateCustomsToDB(this.custom6, this.custom7, this.custom8, this.custom9, this.custom10);
-    this._settingService.updateOtherSettingToDB(this.hosts.split(','), null);
+    this._settingService.updateOtherSettingToDB(this.hosts.split(','), null, this.refreshRate);
     const config = new MdSnackBarConfig();
     config.duration = 5000;
     this.snackBar.open('保存成功', null, config);
@@ -51,6 +52,10 @@ export class SettingsComponent implements OnInit {
     this.remotePort = this._settingService.remote_port;
     const hosts = this._settingService.otherSt['hosts'];
     this.hosts = hosts.join(',');
+    this.refreshRate = this._settingService.otherSt['refreshRate'];
+    if (!this.refreshRate) {
+      this.refreshRate = 500;
+    }
     this.custom6 = this._settingService.otherSt['custom6'];
     this.custom7 = this._settingService.otherSt['custom7'];
     this.custom8 = this._settingService.otherSt['custom8'];

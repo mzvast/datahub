@@ -48,7 +48,7 @@ export class DataShowComponent implements OnInit, OnDestroy {
 
   updateSelectedHost() {
     this.fetch({offset: 0});
-    this._settingService.updateOtherSettingToDB(null, this.selectedHost);
+    this._settingService.updateOtherSettingToDB(null, this.selectedHost, 0);
   }
 
   ngOnInit() {

@@ -79,17 +79,20 @@ export class SettingService {
     const hosts = this.otherSt['hosts'];
     if (hosts.indexOf(host) < 0) {
       hosts.push(host);
-      this.updateOtherSettingToDB(hosts, null);
+      this.updateOtherSettingToDB(hosts, null, 0);
       console.warn(`settings hosts not contains: ${host}, append it to settings`);
     }
   }
 
-  updateOtherSettingToDB(hosts: Array<string>, selectedHost: string) {
+  updateOtherSettingToDB(hosts: Array<string>, selectedHost: string, refreshRate: number) {
     if (hosts != null) {
       this.otherSt['hosts'] = hosts;
     }
     if (selectedHost != null) {
       this.otherSt['remoteHost'] = selectedHost;
+    }
+    if (refreshRate > 0) {
+      this.otherSt['refreshRate'] = refreshRate;
     }
     this.other = JSON.stringify(this.otherSt);
     // console.log(`other: ${this.other}`);

@@ -12,7 +12,6 @@ declare var electron: any; // 　Typescript 定义
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class DeviceComponent implements OnInit, OnDestroy {
-  server = electron.remote.getGlobal('udp').server;
   progress = false;
   saveFlag = true;
   protocols = [
