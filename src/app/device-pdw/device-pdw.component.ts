@@ -36,6 +36,7 @@ export class DevicePdwComponent implements OnInit, OnDestroy {
   host: string;
   protoId: number;
   time: string;
+
   timer: any;
   tmpMsg: NarrowBandFullPulseDataPack;
 
@@ -46,7 +47,7 @@ export class DevicePdwComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    let vm = this;
+    const vm = this;
     /**
      * 进入后开启定时器,500ms更新一次DOM
      */
