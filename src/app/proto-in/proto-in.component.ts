@@ -23,7 +23,7 @@ export class ProtoInComponent implements OnInit {
   @ViewChild('editor') editor: JsonEditorComponent;
   @ViewChild('editorSample') editorSample: JsonEditorComponent;
 
-  protos = [{code: 0, name: '标签包'}, {code: 1, name: '全脉冲'}, {code: 5, name: '辐射源'}, {code: -4, name: '中频控制'}];
+  protos = [{code: -4, name: '系统控制指令'}, {code: 0, name: '标签包'}, {code: 1, name: '全脉冲'}, {code: 5, name: '辐射源'}];
   selectedProto: number;
   status: string;
 
