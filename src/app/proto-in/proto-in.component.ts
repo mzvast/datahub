@@ -45,10 +45,14 @@ export class ProtoInComponent implements OnInit {
       this.protos.push({code : 8, name: _settingService.fetchCustomName(8)});
       this.protos.push({code : 9, name: _settingService.fetchCustomName(9)});
       this.protos.push({code : 10, name: _settingService.fetchCustomName(10)});
+
+      this.protos.push({code : -6, name: _settingService.fetchCustomName(-6)});
+      this.protos.push({code : -7, name: _settingService.fetchCustomName(-7)});
+      this.protos.push({code : -8, name: _settingService.fetchCustomName(-8)});
     });
 
     this.page.pageNumber = 0;
-    this.page.size = 5;
+    this.page.size = 8;
 
     this.editorSampleOptions = new JsonEditorOptions();
     this.editorSampleOptions.mode = 'code'; // set only one mode
@@ -61,7 +65,7 @@ export class ProtoInComponent implements OnInit {
     this.editorOptions.onChange = function () {
       try {
         const json = that.editor.get();
-        const validateResult = that.selectedProto === -4 ? myGlobals.validateOutProtocol(json) : myGlobals.validateProtocol(json);
+        const validateResult = that.selectedProto < 0 ? myGlobals.validateOutProtocol(json) : myGlobals.validateProtocol(json);
         if (!validateResult.result) {
           that.updateStatus(validateResult.message, false);
         } else {
@@ -221,7 +225,7 @@ export class ProtoInComponent implements OnInit {
   doSave(selectedId: number) {
     try {
       const json = this.editor.get();
-      const validateResult = this.selectedProto === -4 ? myGlobals.validateOutProtocol(json) : myGlobals.validateProtocol(json);
+      const validateResult = this.selectedProto < 0 ? myGlobals.validateOutProtocol(json) : myGlobals.validateProtocol(json);
       if (!validateResult.result) {
         this.showToast(validateResult.message);
         return;
@@ -270,7 +274,7 @@ export class ProtoInComponent implements OnInit {
     try {
       const json = JSON.parse(data['raw']);
       this.editor.set(json);
-      const validateResult = this.selectedProto === -4 ? myGlobals.validateOutProtocol(json) : myGlobals.validateProtocol(json);
+      const validateResult = this.selectedProto < 0 ? myGlobals.validateOutProtocol(json) : myGlobals.validateProtocol(json);
       if (!validateResult.result) {
         this.updateStatus(validateResult.message, false);
       } else {

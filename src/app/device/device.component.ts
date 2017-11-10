@@ -36,6 +36,10 @@ export class DeviceComponent implements OnInit, OnDestroy {
       this.protocols.push({url : 'custom/8', name: _settingService.fetchCustomName(8)});
       this.protocols.push({url : 'custom/9', name: _settingService.fetchCustomName(9)});
       this.protocols.push({url : 'custom/10', name: _settingService.fetchCustomName(10)});
+
+      this.protocols.push({url : 'custom-out/-6', name: _settingService.fetchCustomName(-6)});
+      this.protocols.push({url : 'custom-out/-7', name: _settingService.fetchCustomName(-7)});
+      this.protocols.push({url : 'custom-out/-8', name: _settingService.fetchCustomName(-8)});
     });
   }
 

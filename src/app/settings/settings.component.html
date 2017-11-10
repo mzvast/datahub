@@ -40,6 +40,12 @@
             </td>
           </tr>
           <tr>
+            <h3 for="">CSV保存位置</h3>
+            <td colspan="2">
+                <button md-button (click)="selectPath()"><span>{{folderPath}}</span></button>
+            </td>
+          </tr>
+          <tr>
             <h3 for="">UI刷新速度</h3>
             <td colspan="2">
               <md-input-container class="example-full-width">
@@ -84,6 +90,31 @@
             <td colspan="2">
               <md-input-container class="example-full-width">
                 <input mdInput placeholder="名称" [(ngModel)]="custom10" name="custom10">
+              </md-input-container>
+            </td>
+          </tr>
+
+          <tr>
+            <h3 for="">自定义发送协议6</h3>
+            <td colspan="2">
+              <md-input-container class="example-full-width">
+                <input mdInput placeholder="名称" [(ngModel)]="custom_6" name="custom_6">
+              </md-input-container>
+            </td>
+          </tr>
+          <tr>
+            <h3 for="">自定义发送协议7</h3>
+            <td colspan="2">
+              <md-input-container class="example-full-width">
+                <input mdInput placeholder="名称" [(ngModel)]="custom_7" name="custom_7">
+              </md-input-container>
+            </td>
+          </tr>
+          <tr>
+            <h3 for="">自定义发送协议8</h3>
+            <td colspan="2">
+              <md-input-container class="example-full-width">
+                <input mdInput placeholder="名称" [(ngModel)]="custom_8" name="custom_8">
               </md-input-container>
             </td>
           </tr>

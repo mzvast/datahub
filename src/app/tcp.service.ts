@@ -7,11 +7,13 @@ import {ProtocolPack} from 'app/protocol/protocol-pack';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Observable} from 'rxjs/Observable';
 import {MdSnackBar, MdSnackBarConfig} from '@angular/material';
+import {DatePipe} from '@angular/common';
 
 declare var electron: any; // 　Typescript 定义
 
 @Injectable()
 export class TcpService {
+  fs = electron.remote.getGlobal('fs');
   net = electron.remote.getGlobal('net');
   dgram = electron.remote.getGlobal('dgram');
   workingBuffers: Map<string, Buffer>;
@@ -19,12 +21,14 @@ export class TcpService {
   subject = new BehaviorSubject<any>({});
   protos: Map<number, JSON>;
   protoIds: Map<number, number>;
+  folderPath: 'C:';
 
   saveFlag = true;
   progressFlag = false;
 
   constructor(private _dbService: DatabaseService,
               private _settingService: SettingService,
+              private datePipe: DatePipe,
               private snackBar: MdSnackBar) {
     this._dbService.authenticate();
     // this._dbService.index();
@@ -51,6 +55,18 @@ export class TcpService {
 
   getMessage(): Observable<any> {
     return this.subject.asObservable();
+  }
+
+  loadSettings() {
+    this._settingService.fetchSettingFromDB().then(() => {
+      try {
+        const intf1 = JSON.parse(this._settingService.intf);
+        this.folderPath = intf1.folderPath;
+        console.log(`csv save folder path: ${this.folderPath}`);
+      } catch (e) {
+        console.error(`error parser intf params, ${e}`);
+      }
+    });
   }
 
   loadProtocols() {
@@ -80,6 +96,7 @@ export class TcpService {
   }
 
   startTcpServer() {
+    this.loadSettings();
     this.loadProtocols();
     this.workingBuffers = new Map();
     this.workingProtocolPacks = new Map();
@@ -173,17 +190,20 @@ export class TcpService {
       }
       if (dataPack) {
         const protoId = this.protoIds.get(dataPack.type);
-        if (dataPack.type !== 4 && !protoId) {
-          console.error(`can not find current protoId with type: ${dataPack.type}, abort`);
+        if (dataPack.type === 4) {
+          this.exportData(dataPack.datas[0], dataPack.time);
         } else {
-          const proto = this.protos.get(dataPack.type);
-          dataPack.protoId = protoId;
-          dataPack.proto = proto;
-          dataPack.save = this.saveFlag;
-          this.sendMessage(dataPack); // 发给UI
-          this.saveRawDataToDB(dataPack.type, protoId, host, protocolPack.data);
+          if (!protoId) {
+            console.error(`can not find current protoId with type: ${dataPack.type}, abort`);
+          } else {
+            const proto = this.protos.get(dataPack.type);
+            dataPack.protoId = protoId;
+            dataPack.proto = proto;
+            dataPack.save = this.saveFlag;
+            this.sendMessage(dataPack); // 发给UI
+            this.saveRawDataToDB(dataPack.type, protoId, host, protocolPack.data);
+          }
         }
-
       }
     } else {
       if (this._settingService.debug) {
@@ -209,15 +229,19 @@ export class TcpService {
                 //   console.log(`dataPackV2 send dataPack message, type: ${dataPack.type}`);
                 // }
                 const protoId = this.protoIds.get(dataPack.type);
-                if (dataPack.type !== 4 && !protoId) {
-                  console.error(`can not find current protoId with type: ${dataPack.type}, abort`);
+                if (dataPack.type === 4) {
+                  this.exportData(dataPack.datas[0], dataPack.time);
                 } else {
-                  const proto = this.protos.get(dataPack.type);
-                  dataPack.protoId = protoId;
-                  dataPack.proto = proto;
-                  dataPack.save = this.saveFlag;
-                  this.sendMessage(dataPack); // 发给UI
-                  this.saveRawDataToDB(dataPack.type, protoId, host, workingProtocolPack.data);
+                  if (!protoId) {
+                    console.error(`can not find current protoId with type: ${dataPack.type}, abort`);
+                  } else {
+                    const proto = this.protos.get(dataPack.type);
+                    dataPack.protoId = protoId;
+                    dataPack.proto = proto;
+                    dataPack.save = this.saveFlag;
+                    this.sendMessage(dataPack); // 发给UI
+                    this.saveRawDataToDB(dataPack.type, protoId, host, workingProtocolPack.data);
+                  }
                 }
               }
               workingProtocolPack = null; // 删除局部变量
@@ -300,6 +324,49 @@ export class TcpService {
         this._dbService.create('radiation', protoId, host, data.toString('hex'));
         break;
     }
+  }
+
+  exportData(data: Buffer, time: number) {
+    if (this._settingService.debug) {
+      console.log(`export intf data to csv, save: ${this.saveFlag}`);
+    }
+    if (!this.saveFlag) {
+      return;
+    }
+    const content = this.data2csv(data);
+    const defaultFileName = this.datePipe.transform(time, 'yyyyMMdd_HHmmss') + '_' + time.toString().substring(10, 13) + '.csv';
+    this.writeFile(this.folderPath + '\\' + defaultFileName, content);
+  }
+
+  /**
+   * 一个通道有两组数据，分别由高位和低位表示。
+   * @param data
+   * @returns {string}
+   */
+  data2csv(data: Buffer): string {
+    let csv = '';
+    for (let i = 0; i < data.length / 2; i++) {
+      csv = csv + data.readInt16LE(i * 2); // 有符号的，所以是Int，否则是readUInt16LE
+      if (i % 2 === 0) { // 如果是第一个数据，就后面加逗号，否则换行(0x0A)
+        csv += ',';
+      } else {
+        csv += '\n'; // 最后一行可能会是一个空行，应该也不要紧，如果要紧就判断是最后两个字节后去掉
+      }
+    }
+    return csv;
+  }
+
+  writeFile(fileName: string, content: any) {
+    this.fs.writeFile(fileName, content, (err) => {
+      if (err) {
+        this.snackBar.open('CSV文件保存失败: ' + err.message);
+        // alert('An error ocurred creating the file ' + err.message);
+      } else {
+        const config = new MdSnackBarConfig();
+        config.duration = 5000;
+        this.snackBar.open('CSV文件成功保存至: ' + fileName, null, config);
+      }
+    });
   }
 
   sendMsg(message: any) {

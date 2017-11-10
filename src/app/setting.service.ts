@@ -23,9 +23,14 @@ export class SettingService {
   }
 
   fetchCustomName(type: number) {
-    const name = this.otherSt['custom' + type];
+    const key = type > 0 ? ('custom' + type) : ('custom_' + (-type));
+    const name = this.otherSt[key];
     if (!name) {
-      return '自定义协议' + type;
+      if (type > 0) {
+        return '自定义接收协议' + type;
+      } else {
+        return '自定义发送协议' + (-type);
+      }
     }
     return name;
   }
@@ -99,12 +104,17 @@ export class SettingService {
     this.updateSettingToDB();
   }
 
-  updateCustomsToDB(custom6: string, custom7: string, custom8: string, custom9: string, custom10: string) {
+  updateCustomsToDB(custom6: string, custom7: string, custom8: string, custom9: string, custom10: string,
+                    custom_6: string, custom_7: string, custom_8: string) {
     this.otherSt['custom6'] = custom6;
     this.otherSt['custom7'] = custom7;
     this.otherSt['custom8'] = custom8;
     this.otherSt['custom9'] = custom9;
     this.otherSt['custom10'] = custom10;
+
+    this.otherSt['custom_6'] = custom_6;
+    this.otherSt['custom_7'] = custom_7;
+    this.otherSt['custom_8'] = custom_8;
   }
 
   updateSettingToDB() { // 更新数据库

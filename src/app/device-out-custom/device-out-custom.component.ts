@@ -1,32 +1,50 @@
+import {SettingService} from './../setting.service';
 import {DatabaseService} from '../database.service';
 import {IntermediateFrequencyControlPack} from './../protocol/data-pack';
-import {ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {TcpService} from 'app/tcp.service';
 import {MdSnackBar, MdSnackBarConfig} from '@angular/material';
 import {Buffer} from 'buffer';
+import {ActivatedRoute} from '@angular/router';
+
+declare var electron: any; // 　Typescript 定义
 
 @Component({
-  selector: 'app-device-intf',
-  templateUrl: './device-intf.component.html',
-  styleUrls: ['./device-intf.component.css'],
+  selector: 'app-device-out-custom',
+  templateUrl: './device-out-custom.component.html',
+  styleUrls: ['./device-out-custom.component.css'],
   encapsulation: ViewEncapsulation.Emulated,
   changeDetection: ChangeDetectionStrategy.Default
 })
-export class DeviceIntfComponent implements OnInit {
+export class DeviceOutCustomComponent implements OnInit {
+  private sub: any;
+
+  custom: number;
   intf; // 参数
+  // filter;
   proto: JSON;
   protoId;
   items = [];
 
+  control: string;
+  gps: string;
+  host: string;
+  time;
+
   serial: number = -1;
 
-  constructor(private tcpService: TcpService,
+  constructor(private route: ActivatedRoute,
+              private tcpService: TcpService,
               private snackBar: MdSnackBar,
               private _dbService: DatabaseService) {
   }
 
   ngOnInit() {
-    this.loadConfig();
+    this.sub = this.route.params.subscribe(params => {
+      this.custom = params['custom'];
+      // console.log(`this.custom: ${this.custom}`);
+      this.loadConfig();
+    });
   }
 
 
@@ -115,6 +133,16 @@ export class DeviceIntfComponent implements OnInit {
     );
   }
 
+  valueCopied(value) {
+    if (!value) {
+      return;
+    }
+    if (value.length > 64) {
+      value = value.substr(0, 64) + '...';
+    }
+    this.showToast('已复制: ' + value);
+  }
+
   generateIntfParams(raw: string) {
     this.proto = JSON.parse(raw);
     const items = [];
@@ -176,7 +204,7 @@ export class DeviceIntfComponent implements OnInit {
     this._dbService.models['proto'].findOne({
       where: {
         in_use: 1,
-        type: -4
+        type: this.custom
       },
     }).then(proto => {
       if (proto) {

@@ -31,7 +31,8 @@ import {ClipboardModule} from 'ngx-clipboard';
 import {HighlightPipe} from './highlight.pipe';
 import {ProtoInComponent} from './proto-in/proto-in.component';
 import {ModalDialogComponent} from './modal.dialog.component';
-import {DeviceCustomComponent} from "./device-custom/device-custom.component";
+import {DeviceCustomComponent} from './device-custom/device-custom.component';
+import {DeviceOutCustomComponent} from './device-out-custom/device-out-custom.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +43,8 @@ import {DeviceCustomComponent} from "./device-custom/device-custom.component";
     ProtoOutComponent,
     DevicePdwComponent,
     DeviceTagComponent,
+    DeviceCustomComponent,
+    DeviceOutCustomComponent,
     DeviceRadiationComponent,
     DeviceComponent,
     SettingsComponent,
@@ -73,6 +76,7 @@ import {DeviceCustomComponent} from "./device-custom/device-custom.component";
           {path: 'pdw', component: DevicePdwComponent},
           {path: 'radiation', component: DeviceRadiationComponent},
           {path: 'custom/:custom', component: DeviceCustomComponent},
+          {path: 'custom-out/:custom', component: DeviceOutCustomComponent},
           {path: 'intf', component: DeviceIntfComponent}
         ]
       },

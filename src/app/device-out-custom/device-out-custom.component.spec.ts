@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DeviceCustomComponent } from './device-custom.component';
+import { DeviceOutCustomComponent } from './device-out-custom.component';
 
-describe('DeviceCustomComponent', () => {
-  let component: DeviceCustomComponent;
-  let fixture: ComponentFixture<DeviceCustomComponent>;
+describe('DeviceOutCustomComponent', () => {
+  let component: DeviceOutCustomComponent;
+  let fixture: ComponentFixture<DeviceOutCustomComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DeviceCustomComponent ]
+      declarations: [ DeviceOutCustomComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DeviceCustomComponent);
+    fixture = TestBed.createComponent(DeviceOutCustomComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
