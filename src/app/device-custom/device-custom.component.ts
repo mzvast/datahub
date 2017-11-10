@@ -29,7 +29,7 @@ export class DeviceCustomComponent implements OnInit, OnDestroy {
   tabs = [];
   columns = [];
   currentIndex = 0;
-  columnsPerTab = 10;
+  columnsPerTab = 8;
   start = 0;
   len = 1;
   dataPack: BaseDataPack;

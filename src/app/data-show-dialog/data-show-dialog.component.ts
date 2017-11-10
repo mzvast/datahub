@@ -28,7 +28,7 @@ export class DataShowDialogComponent implements OnInit, OnDestroy {
   dataPack: BaseDataPack;
   raw: string;
   currentIndex = 0;
-  columnsPerTab = 10;
+  columnsPerTab = 8;
   start = 0;
   len = 1;
   time: string;
