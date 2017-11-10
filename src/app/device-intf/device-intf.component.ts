@@ -136,8 +136,9 @@ export class DeviceIntfComponent implements OnInit {
     }
     // console.log(JSON.stringify(this.proto));
     const that = this;
+    const cloneProto = JSON.parse(JSON.stringify(this.proto));
     this._dbService.models['proto'].update(
-      {raw: JSON.stringify(this.cleanProto(this.proto))}, {where: {id: this.protoId}}
+      {raw: JSON.stringify(this.cleanProto(cloneProto))}, {where: {id: this.protoId}}
     ).then(() => {
         if (toast) {
           that.showToast('保存成功');
