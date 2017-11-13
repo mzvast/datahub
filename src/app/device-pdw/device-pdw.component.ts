@@ -50,7 +50,11 @@ export class DevicePdwComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this._settingService.fetchSettingFromDB().then(() => {
-      const refreshRate = this._settingService.otherSt['refreshRate'];
+      let refreshRate = this._settingService.otherSt['refreshRate'];
+      if (!refreshRate) {
+        console.error(`can not load refresh rate, use default 500ms`);
+        refreshRate = 500;
+      }
       const vm = this;
       /**
        * 进入后开启定时器,500ms更新一次DOM
