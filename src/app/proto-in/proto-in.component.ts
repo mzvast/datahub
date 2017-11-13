@@ -7,6 +7,7 @@ import {DatePipe} from '@angular/common';
 import {MdDialog, MdSnackBar, MdSnackBarConfig} from '@angular/material';
 import {ModalDialogComponent} from '../modal.dialog.component';
 import {SettingService} from '../setting.service';
+import {TcpService} from '../tcp.service';
 
 @Component({
   selector: 'app-proto-in',
@@ -36,6 +37,7 @@ export class ProtoInComponent implements OnInit {
 
   constructor(private _databaseService: DatabaseService,
               private _settingService: SettingService,
+              private _tcpService: TcpService,
               private datePipe: DatePipe,
               private snackBar: MdSnackBar,
               public dialog: MdDialog) {
@@ -216,6 +218,10 @@ export class ProtoInComponent implements OnInit {
         that.fetchAndSelect({offset: 0}, false);
       });
     });
+
+    if (this._tcpService.checkProgressFlag()) {
+      this._tcpService.loadProtocols();
+    }
   }
 
   saveNew() {

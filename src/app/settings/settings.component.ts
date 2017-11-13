@@ -1,6 +1,7 @@
 import { SettingService } from './../setting.service';
 import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { MdSnackBar, MdSnackBarConfig} from '@angular/material';
+import {TcpService} from '../tcp.service';
 
 declare var electron: any; // 　Typescript 定义
 
@@ -34,6 +35,7 @@ export class SettingsComponent implements OnInit {
 
   constructor(
     private _settingService: SettingService,
+    private _tcpService: TcpService,
     private _cd: ChangeDetectorRef,
     private snackBar: MdSnackBar) {
     this._settingService.fetchSettingFromDB().then(() => {
@@ -103,6 +105,10 @@ export class SettingsComponent implements OnInit {
 
         const intf1 = {folderPath: this.folderPath};
         this._settingService.setIntf(JSON.stringify(intf1)).updateSettingToDB();
+
+        if (this._tcpService.checkProgressFlag()) {
+          this._tcpService.loadSettings();
+        }
 
         this._cd.detectChanges(); // 检测更改，更新UI。
       }
