@@ -10,6 +10,7 @@
 - `npm start` 启动开发服务器（Angular2）
 - `npm run electron` 启动Electron
 - `npm run mock` 启动mock服务
+- `npm run replay` 回放已记录的数据库文件（确保安装了java,数据库文件位置./mock/dev_db.sqlite）
 
 ---以下为Angular CLI自动生成---
 
