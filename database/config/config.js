@@ -1,6 +1,10 @@
 module.exports = {
     development: {
         storage: './database/dev_db.sqlite',
+        replication: {
+            read: [{host: 'localhost', username: null, password: null}],
+            write: {host: 'localhost', username: null, password: null}
+        },
         pool: {
             max: 5,
             min: 0,
