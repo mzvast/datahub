@@ -50,7 +50,7 @@
     "@types/jasmine": "2.5.38",
     "@types/node": "~6.0.60",
     "codelyzer": "~2.0.0",
-    "electron": "^1.8.8",
+    "electron": "^7.2.4",
     "electron-installer-windows": "^0.2.0",
     "electron-packager": "^8.6.0",
     "electron-rebuild": "^1.5.7",
