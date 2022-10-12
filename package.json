@@ -45,14 +45,14 @@
     "zone.js": "^0.8.4"
   },
   "devDependencies": {
-    "@angular/cli": "1.0.0",
+    "@angular/cli": "1.7.4",
     "@angular/compiler-cli": "^4.0.0",
     "@types/jasmine": "2.5.38",
     "@types/node": "~6.0.60",
     "codelyzer": "~2.0.0",
     "electron": "^1.8.8",
     "electron-installer-windows": "^0.2.0",
-    "electron-packager": "^8.6.0",
+    "electron-packager": "^16.0.0",
     "electron-rebuild": "^1.5.7",
     "jasmine-core": "~2.5.2",
     "jasmine-spec-reporter": "~3.2.0",
